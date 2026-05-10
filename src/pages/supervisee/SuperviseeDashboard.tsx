@@ -3,7 +3,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
-import { ClipboardList, FileText, Calendar, Wrench, BookOpen, ListTodo, Settings, ChevronRight } from "lucide-react";
+import { ClipboardList, FileText, Calendar, Wrench, BookOpen, ListTodo, Settings, ChevronRight, Target } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useAuth } from "@/hooks/useAuth";
@@ -25,6 +25,7 @@ const SuperviseeDashboard = () => {
 
   const tools = [
     { label: portalT.caseLogsLabel || "Case Logs", path: "/supervisee/case-logs", icon: ClipboardList, description: portalT.caseLogsDesc || "Log session details, targets, and interventions", accentColor: "#3b82f6", iconBg: "rgba(59,130,246,0.10)" },
+    { label: "Competencies", path: "/supervisee/competencies", icon: Target, description: "Track your competencies, evidence and self-assessment", accentColor: "#0ea5e9", iconBg: "rgba(14,165,233,0.10)" },
     { label: portalT.myDocsLabel || "My Documents", path: "/supervisee/documents", icon: FileText, description: portalT.myDocsDesc || "Upload and view supervision documents", accentColor: "#8b5cf6", iconBg: "rgba(139,92,246,0.10)" },
     { label: portalT.calendarLabel || "Calendar", path: "/supervisee/calendar", icon: Calendar, description: portalT.calendarDesc || "View your session schedule", accentColor: "#10b981", iconBg: "rgba(16,185,129,0.10)" },
     { label: portalT.clinicalToolsLabel || "Clinical Tools", path: "/supervisee/clinical-tools", icon: Wrench, description: portalT.clinicalToolsDesc || "ABC data sheets, functional assessments & more", accentColor: "#f59e0b", iconBg: "rgba(245,158,11,0.10)" },

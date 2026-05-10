@@ -2078,6 +2078,215 @@ export type Database = {
         }
         Relationships: []
       }
+      supervision_competencies: {
+        Row: {
+          can_break_down: boolean
+          created_at: string
+          definition: string
+          display_order: number
+          domain: string
+          id: string
+          name: string
+          number: string
+          parent_id: string | null
+          supervisee_id: string
+          supervisor_id: string
+          updated_at: string
+        }
+        Insert: {
+          can_break_down?: boolean
+          created_at?: string
+          definition?: string
+          display_order?: number
+          domain?: string
+          id?: string
+          name: string
+          number?: string
+          parent_id?: string | null
+          supervisee_id: string
+          supervisor_id: string
+          updated_at?: string
+        }
+        Update: {
+          can_break_down?: boolean
+          created_at?: string
+          definition?: string
+          display_order?: number
+          domain?: string
+          id?: string
+          name?: string
+          number?: string
+          parent_id?: string | null
+          supervisee_id?: string
+          supervisor_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supervision_competencies_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "supervision_competencies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      supervision_journal: {
+        Row: {
+          author_id: string
+          author_role: string
+          conclusion: string
+          created_at: string
+          description: string
+          entry_date: string
+          entry_type: string
+          evidence: string
+          id: string
+          next_check_date: string | null
+          notes: string
+          related_competency_id: string | null
+          supervisee_id: string
+          supervisee_task: string
+          supervisor_task: string
+          updated_at: string
+        }
+        Insert: {
+          author_id: string
+          author_role: string
+          conclusion?: string
+          created_at?: string
+          description?: string
+          entry_date?: string
+          entry_type?: string
+          evidence?: string
+          id?: string
+          next_check_date?: string | null
+          notes?: string
+          related_competency_id?: string | null
+          supervisee_id: string
+          supervisee_task?: string
+          supervisor_task?: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string
+          author_role?: string
+          conclusion?: string
+          created_at?: string
+          description?: string
+          entry_date?: string
+          entry_type?: string
+          evidence?: string
+          id?: string
+          next_check_date?: string | null
+          notes?: string
+          related_competency_id?: string | null
+          supervisee_id?: string
+          supervisee_task?: string
+          supervisor_task?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supervision_journal_related_competency_id_fkey"
+            columns: ["related_competency_id"]
+            isOneToOne: false
+            referencedRelation: "supervision_competencies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      supervision_supervisee_input: {
+        Row: {
+          competency_id: string
+          created_at: string
+          evidence: string
+          id: string
+          notes: string
+          observations_count: number
+          self_assessment_level: Database["public"]["Enums"]["supervision_level"]
+          supervisee_id: string
+          updated_at: string
+        }
+        Insert: {
+          competency_id: string
+          created_at?: string
+          evidence?: string
+          id?: string
+          notes?: string
+          observations_count?: number
+          self_assessment_level?: Database["public"]["Enums"]["supervision_level"]
+          supervisee_id: string
+          updated_at?: string
+        }
+        Update: {
+          competency_id?: string
+          created_at?: string
+          evidence?: string
+          id?: string
+          notes?: string
+          observations_count?: number
+          self_assessment_level?: Database["public"]["Enums"]["supervision_level"]
+          supervisee_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supervision_supervisee_input_competency_id_fkey"
+            columns: ["competency_id"]
+            isOneToOne: true
+            referencedRelation: "supervision_competencies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      supervision_supervisor_input: {
+        Row: {
+          competency_id: string
+          created_at: string
+          final_level: Database["public"]["Enums"]["supervision_level"]
+          id: string
+          next_goal: string
+          notes: string
+          status: string
+          supervisee_id: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          competency_id: string
+          created_at?: string
+          final_level?: Database["public"]["Enums"]["supervision_level"]
+          id?: string
+          next_goal?: string
+          notes?: string
+          status?: string
+          supervisee_id: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          competency_id?: string
+          created_at?: string
+          final_level?: Database["public"]["Enums"]["supervision_level"]
+          id?: string
+          next_goal?: string
+          notes?: string
+          status?: string
+          supervisee_id?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supervision_supervisor_input_competency_id_fkey"
+            columns: ["competency_id"]
+            isOneToOne: true
+            referencedRelation: "supervision_competencies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       support_agreements: {
         Row: {
           body: string
@@ -2565,6 +2774,12 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "client" | "team_member" | "supervisee"
+      supervision_level:
+        | "not_started"
+        | "beginning"
+        | "developing_with_support"
+        | "independent"
+        | "leading"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -2693,6 +2908,13 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "client", "team_member", "supervisee"],
+      supervision_level: [
+        "not_started",
+        "beginning",
+        "developing_with_support",
+        "independent",
+        "leading",
+      ],
     },
   },
 } as const

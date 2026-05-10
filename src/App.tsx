@@ -89,6 +89,8 @@ import CourseLessonManager from "./pages/admin/CourseLessonManager";
 import SuperviseeDashboard from "./pages/supervisee/SuperviseeDashboard";
 import CaseLogs from "./pages/supervisee/CaseLogs";
 import SuperviseeDocuments from "./pages/supervisee/SuperviseeDocuments";
+import SuperviseeCompetencies from "./pages/supervisee/SuperviseeCompetencies";
+import SupervisionTrackerAdmin from "./pages/admin/SupervisionTracker";
 // Blog / Insights
 import InsightsHub from "./pages/insights/InsightsHub";
 import ArticlePage from "./pages/insights/ArticlePage";
@@ -215,6 +217,7 @@ const App = () => (
                   <Route path="/admin/fba-report" element={<AdminRoute><FBAReportTool /></AdminRoute>} />
                   <Route path="/admin/story-engine" element={<AdminRoute><StoryEngine /></AdminRoute>} />
                   <Route path="/admin/pathway-templates" element={<AdminRoute><PathwayTemplateManager /></AdminRoute>} />
+                  <Route path="/admin/supervision" element={<AdminRoute><SupervisionTrackerAdmin /></AdminRoute>} />
 
                   {/* Staff/Therapist portal */}
                   <Route path="/staff" element={<StaffRoute><StaffDashboard /></StaffRoute>} />
@@ -255,6 +258,7 @@ const App = () => (
                   <Route path="/supervisee/clinical/hexaflex" element={<SuperviseeRoute><HexaflexTracker /></SuperviseeRoute>} />
                   <Route path="/supervisee/clinical/behaviour-log" element={<SuperviseeRoute><BehaviourLog /></SuperviseeRoute>} />
                   <Route path="/supervisee/clinical/case-formulation" element={<SuperviseeRoute><CaseFormulation /></SuperviseeRoute>} />
+                  <Route path="/supervisee/competencies" element={<SuperviseeRoute><SuperviseeCompetencies /></SuperviseeRoute>} />
 
                   {/* Business Planner */}
                   <Route path="/planner" element={<ProtectedRoute><PlannerLayout /></ProtectedRoute>}>
