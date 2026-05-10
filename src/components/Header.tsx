@@ -69,12 +69,14 @@ const Header = ({ hidelogo = false }: { hidelogo?: boolean }) => {
         ? "glass shadow-apple"
         : "bg-background/60 backdrop-blur-md"
     }`}>
-      <div className={`container flex items-center justify-between transition-all duration-500 ${scrolled ? "h-14" : "h-16 md:h-20"}`}>
+      <div className={`container flex items-center justify-between transition-all duration-500 ${scrolled ? "h-16" : "h-20 md:h-24"}`}>
         <Link to="/" className="flex items-center gap-3">
           <img
             alt="Binyan Adam"
-            className={`transition-all duration-500 mix-blend-multiply dark:mix-blend-screen dark:invert ${hidelogo ? "opacity-0 scale-90" : "opacity-100 scale-100"} ${scrolled ? "h-7 md:h-8" : "h-9 md:h-10"}`}
-            src="/lovable-uploads/ed0abcc5-2b9d-4294-a3b6-3d6945c02959.png"
+            loading="eager"
+            decoding="async"
+            className={`transition-all duration-500 dark:invert ${hidelogo ? "opacity-0 scale-90" : "opacity-100 scale-100"} ${scrolled ? "h-12 md:h-14" : "h-16 md:h-20"} w-auto`}
+            src="/lovable-uploads/binyan-adam-logo.png"
           />
         </Link>
 
