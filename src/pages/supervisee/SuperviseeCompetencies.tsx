@@ -154,8 +154,8 @@ const SuperviseeCompetencies = () => {
     const padStyle = isRTL ? { paddingRight: 12 + depth * 20 } : { paddingLeft: 12 + depth * 20 };
     const obsCount = se?.observations_count ?? 0;
     return (
-      <div key={c.id}>
-        <div className="grid grid-cols-12 gap-2 items-start py-3 px-3 border-b text-sm" style={padStyle}>
+      <div key={c.id} dir={isRTL ? "rtl" : "ltr"}>
+        <div className="grid grid-cols-12 gap-2 items-start py-3 px-3 border-b text-sm" dir={isRTL ? "rtl" : "ltr"} style={padStyle}>
           <div className="col-span-12 sm:col-span-4 flex items-start gap-2">
             {kids.length > 0 ? (
               <button onClick={() => setExpanded((p) => ({ ...p, [c.id]: !isOpen }))} className="mt-1">
@@ -242,14 +242,14 @@ const SuperviseeCompetencies = () => {
           </div>
         </div>
 
-        <Tabs defaultValue="competencies">
+        <Tabs defaultValue="competencies" dir={isRTL ? "rtl" : "ltr"}>
           <TabsList>
             <TabsTrigger value="competencies">{t.competencies}</TabsTrigger>
             <TabsTrigger value="journal">{t.journal}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="competencies">
-            <div className="border rounded-lg overflow-hidden">
+            <div className="border rounded-lg overflow-hidden" dir={isRTL ? "rtl" : "ltr"}>
               {tree.roots.length === 0 && <div className="p-8 text-center text-sm text-muted-foreground">{t.none}</div>}
               {tree.roots.map((c) => renderRow(c))}
             </div>

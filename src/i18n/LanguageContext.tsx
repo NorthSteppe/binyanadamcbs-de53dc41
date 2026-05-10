@@ -25,6 +25,9 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem("binyan-lang", language);
     document.documentElement.dir = isRTL ? "rtl" : "ltr";
     document.documentElement.lang = language;
+    if (typeof document !== "undefined" && document.body) {
+      document.body.dir = isRTL ? "rtl" : "ltr";
+    }
   }, [language, isRTL]);
 
   return (
