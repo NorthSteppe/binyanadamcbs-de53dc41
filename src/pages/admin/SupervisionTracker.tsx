@@ -380,7 +380,7 @@ const SupervisionTrackerAdmin = () => {
         {!activeId ? (
           <div className="border rounded-lg p-12 text-center text-muted-foreground">{t.noSupervisees}</div>
         ) : (
-          <Tabs defaultValue="competencies">
+          <Tabs defaultValue="competencies" dir={isRTL ? "rtl" : "ltr"}>
             <TabsList>
               <TabsTrigger value="competencies">{t.competencies}</TabsTrigger>
               <TabsTrigger value="dashboard">{t.dashboard}</TabsTrigger>
