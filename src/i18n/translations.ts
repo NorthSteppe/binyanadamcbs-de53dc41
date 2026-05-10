@@ -2671,7 +2671,7 @@ export const translations = {
         therapy: "טיפול",
         families: "תמיכה משפחתית",
         organisations: "ארגונים",
-        supervision: "הנחיה",
+        supervision: "הדרכה",
         bookConsultation: "קביעת ייעוץ",
       },
     },
