@@ -311,3 +311,32 @@
   }
 }
 
+
+/* ===== Hebrew / RTL global enforcement ===== */
+html[dir="rtl"],
+body.lang-he {
+  direction: rtl;
+  text-align: right;
+}
+
+body.lang-he {
+  font-family: 'DM Sans', 'Inter', system-ui, sans-serif;
+}
+
+/* Flip flex rows that visually depend on order in RTL */
+body.lang-he .flex-row { flex-direction: row-reverse; }
+
+/* Make sure form text input aligns to start in RTL */
+body.lang-he input[type="text"],
+body.lang-he input[type="email"],
+body.lang-he input[type="search"],
+body.lang-he input:not([type]),
+body.lang-he textarea {
+  text-align: right;
+}
+
+/* Editorial serif looks awkward in Hebrew — use DM Sans */
+body.lang-he .font-editorial,
+body.lang-he .font-serif {
+  font-family: 'DM Sans', system-ui, sans-serif !important;
+}
