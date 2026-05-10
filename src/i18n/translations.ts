@@ -2315,7 +2315,7 @@ export const translations = {
       therapy: "טיפול",
       families: "משפחות",
       organisations: "ארגונים",
-      supervision: "סופרוויז׳ן",
+      supervision: "הדרכה",
       bookConsultation: "לקביעת ייעוץ",
     },
 
