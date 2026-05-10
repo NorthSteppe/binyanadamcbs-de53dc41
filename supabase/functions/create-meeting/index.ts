@@ -89,13 +89,48 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
+    // ── Authentication: require a valid Supabase JWT ─────────────────────────
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
+    const userClient = createClient(SUPABASE_URL, ANON_KEY, {
+      global: { headers: { Authorization: authHeader } },
+    });
+    const token = authHeader.replace("Bearer ", "");
+    const { data: claimsData, error: claimsErr } = await userClient.auth.getClaims(token);
+    if (claimsErr || !claimsData?.claims?.sub) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const callerId = claimsData.claims.sub as string;
+
+    const supabase = createClient(SUPABASE_URL, SERVICE_ROLE);
+
+    // ── Authorization: caller must be admin or team_member ───────────────────
+    const { data: roles } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", callerId);
+    const allowed = (roles || []).some((r: any) => r.role === "admin" || r.role === "team_member");
+    if (!allowed) {
+      return new Response(JSON.stringify({ error: "Forbidden" }), {
+        status: 403,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const body = await req.json() as MeetingRequest;
     const { host_user_id, provider, title, start_iso, duration_minutes, attendee_email } = body;
     if (!host_user_id || !provider || !title || !start_iso || !duration_minutes) {
       throw new Error("Missing required fields");
     }
-
-    const supabase = createClient(SUPABASE_URL, SERVICE_ROLE);
     const { data: integration } = await supabase
       .from("staff_integrations")
       .select("*")

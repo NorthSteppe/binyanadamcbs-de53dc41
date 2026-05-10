@@ -52,9 +52,39 @@ function mainKeyboard() {
 
 // ── Main handler ───────────────────────────────────────────────────────────────
 
+function safeEqual(a: string | null, b: string): boolean {
+  if (!a || a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
+}
+
+async function deriveTelegramWebhookSecret(): Promise<string | null> {
+  // Prefer an explicit env secret; fall back to deriving from TELEGRAM_API_KEY
+  const explicit = Deno.env.get("TELEGRAM_WEBHOOK_SECRET");
+  if (explicit) return explicit;
+  const apiKey = Deno.env.get("TELEGRAM_API_KEY");
+  if (!apiKey) return null;
+  const data = new TextEncoder().encode(`telegram-webhook:${apiKey}`);
+  const digest = await crypto.subtle.digest("SHA-256", data);
+  return btoa(String.fromCharCode(...new Uint8Array(digest)))
+    .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
+  }
+
+  // ── Verify Telegram secret token to reject forged updates ──────────────────
+  const expectedSecret = await deriveTelegramWebhookSecret();
+  if (!expectedSecret) {
+    console.error("telegram-webhook: missing TELEGRAM_API_KEY/TELEGRAM_WEBHOOK_SECRET");
+    return new Response("Unauthorized", { status: 401 });
+  }
+  const provided = req.headers.get("x-telegram-bot-api-secret-token");
+  if (!safeEqual(provided, expectedSecret)) {
+    return new Response("Unauthorized", { status: 401 });
   }
 
   const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;

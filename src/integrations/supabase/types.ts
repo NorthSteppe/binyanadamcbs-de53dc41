@@ -2424,7 +2424,72 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      team_members_public: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string | null
+          credentials: string | null
+          display_order: number | null
+          id: string | null
+          initials: string | null
+          is_active: boolean | null
+          long_bio: string | null
+          name: string | null
+          profile_image_url: string | null
+          role: string | null
+          signature_url: string | null
+          slug: string | null
+          social_linkedin: string | null
+          social_twitter: string | null
+          social_website: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          credentials?: string | null
+          display_order?: number | null
+          id?: string | null
+          initials?: string | null
+          is_active?: boolean | null
+          long_bio?: string | null
+          name?: string | null
+          profile_image_url?: string | null
+          role?: string | null
+          signature_url?: string | null
+          slug?: string | null
+          social_linkedin?: string | null
+          social_twitter?: string | null
+          social_website?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          credentials?: string | null
+          display_order?: number | null
+          id?: string | null
+          initials?: string | null
+          is_active?: boolean | null
+          long_bio?: string | null
+          name?: string | null
+          profile_image_url?: string | null
+          role?: string | null
+          signature_url?: string | null
+          slug?: string | null
+          social_linkedin?: string | null
+          social_twitter?: string | null
+          social_website?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       create_notification: {

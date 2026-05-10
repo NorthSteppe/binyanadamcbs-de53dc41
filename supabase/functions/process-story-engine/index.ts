@@ -112,9 +112,42 @@ async function pingSitemap() {
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
-  const supabase = createClient(SUPABASE_URL, SERVICE_KEY);
-  const results: any[] = [];
+  // ── Authentication: require an admin JWT ─────────────────────────────────
+  const authHeader = req.headers.get("Authorization");
+  if (!authHeader?.startsWith("Bearer ")) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+  const ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
+  const userClient = createClient(SUPABASE_URL, ANON_KEY, {
+    global: { headers: { Authorization: authHeader } },
+  });
+  const token = authHeader.replace("Bearer ", "");
+  const { data: claimsData, error: claimsErr } = await userClient.auth.getClaims(token);
+  if (claimsErr || !claimsData?.claims?.sub) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
 
+  const supabase = createClient(SUPABASE_URL, SERVICE_KEY);
+
+  // ── Authorization: caller must be admin ──────────────────────────────────
+  const { data: roles } = await supabase
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", claimsData.claims.sub);
+  if (!(roles || []).some((r: any) => r.role === "admin")) {
+    return new Response(JSON.stringify({ error: "Forbidden" }), {
+      status: 403,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
+  const results: any[] = [];
   try {
     // Pick up to 3 pending sources per run
     const { data: pending, error } = await supabase
