@@ -34,6 +34,7 @@ const categories = [
       { label: "Parent FBA Intakes", path: "/staff/fba-intakes", icon: ClipboardList, description: "Send Hanley intake forms to parents and pull answers straight into the report" },
       { label: "FBA Report Tool", path: "/admin/fba-report", icon: Brain, description: "ACT-informed, constructional Functional Behaviour Assessment report builder" },
       { label: "Pathway Templates", path: "/admin/pathway-templates", icon: ListTodo, description: "Edit the default Support and FBA pathway steps every client sees" },
+      { label: "Supervision Tracker", path: "/admin/supervision", icon: GraduationCap, description: "Build competencies, evaluate supervisees, and journal together" },
     ],
   },
   {
