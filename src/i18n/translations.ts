@@ -2621,7 +2621,7 @@ export const translations = {
       emailPlaceholder: "you@example.com",
       interestedLabel: "מתעניין/ת ב",
       selectService: "בחרו תחום שירות",
-      serviceOptions: ["PBS בחינוך", "טיפול", "תמיכה משפחתית", "ארגונים", "הנחיה", "אחר"],
+      serviceOptions: ["PBS בחינוך", "טיפול", "תמיכה משפחתית", "ארגונים", "הדרכה וליווי", "אחר"],
       messageLabel: "הודעה",
       messagePlaceholder: "ספרו לנו קצת על המצב שלכם ואיך נוכל לעזור...",
       sendButton: "שליחת הודעה",
