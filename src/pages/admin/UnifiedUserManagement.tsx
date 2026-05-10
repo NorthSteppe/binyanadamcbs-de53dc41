@@ -37,11 +37,12 @@ type Assignment = {
   assignee_name: string;
 };
 
-const ROLE_OPTIONS = ["admin", "team_member", "supervisee", "client"] as const;
-const ROLE_LABELS: Record<string, string> = { admin: "Admin", team_member: "Therapist", supervisee: "Supervisee", client: "Client" };
+const ROLE_OPTIONS = ["admin", "team_member", "supervisor", "supervisee", "client"] as const;
+const ROLE_LABELS: Record<string, string> = { admin: "Admin", team_member: "Therapist", supervisor: "Supervisor", supervisee: "Supervisee", client: "Client" };
 const ROLE_COLORS: Record<string, string> = {
   admin: "bg-destructive/10 text-destructive border-destructive/20",
   team_member: "bg-primary/10 text-primary border-primary/20",
+  supervisor: "bg-secondary/40 text-secondary-foreground border-secondary/40",
   supervisee: "bg-accent/20 text-accent-foreground border-accent/20",
   client: "bg-muted text-muted-foreground border-border",
 };

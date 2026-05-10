@@ -360,7 +360,7 @@ const SupervisionTrackerAdmin = () => {
   return (
     <div className="min-h-screen bg-background" dir={isRTL ? "rtl" : "ltr"}>
       <Header />
-      <div className="container max-w-7xl py-8 space-y-6">
+      <div className="container max-w-7xl pt-28 pb-8 space-y-6">
         <div className="flex items-end gap-4 flex-wrap">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">{t.title}</h1>
