@@ -29,16 +29,26 @@ Deno.serve(async (req) => {
   }
 
   // Derive the project ref from the Supabase URL
-  // e.g. https://wcqjmjceelcainyyqjmi.supabase.co → wcqjmjceelcainyyqjmi
   const projectRef = SUPABASE_URL.replace("https://", "").split(".")[0];
   const webhookUrl = `https://${projectRef}.supabase.co/functions/v1/telegram-webhook`;
+
+  // Derive a stable secret token to verify incoming Telegram webhooks
+  async function deriveSecret(apiKey: string): Promise<string> {
+    const explicit = Deno.env.get("TELEGRAM_WEBHOOK_SECRET");
+    if (explicit) return explicit;
+    const data = new TextEncoder().encode(`telegram-webhook:${apiKey}`);
+    const digest = await crypto.subtle.digest("SHA-256", data);
+    return btoa(String.fromCharCode(...new Uint8Array(digest)))
+      .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+  }
+  const secretToken = await deriveSecret(TELEGRAM_API_KEY);
 
   const res = await fetch(
     `https://api.telegram.org/bot${TELEGRAM_API_KEY}/setWebhook`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ url: webhookUrl }),
+      body: JSON.stringify({ url: webhookUrl, secret_token: secretToken }),
     },
   );
 
