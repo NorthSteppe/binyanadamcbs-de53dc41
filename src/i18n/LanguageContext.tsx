@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { translations, type Language } from "./translations";
+import { startAutoTranslate, stopAutoTranslate } from "./autoTranslate";
 
 type TranslationsType = typeof translations.en;
 
@@ -13,7 +14,7 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
-  const [language, setLanguage] = useState<Language>(() => {
+  const [language, setLanguageState] = useState<Language>(() => {
     const saved = localStorage.getItem("binyan-lang");
     return (saved === "he" ? "he" : "en") as Language;
   });
@@ -27,8 +28,26 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     document.documentElement.lang = language;
     if (typeof document !== "undefined" && document.body) {
       document.body.dir = isRTL ? "rtl" : "ltr";
+      if (isRTL) document.body.classList.add("lang-he");
+      else document.body.classList.remove("lang-he");
+    }
+    if (isRTL) {
+      // Run after React commits so observer sees rendered nodes
+      const id = window.setTimeout(() => startAutoTranslate(), 0);
+      return () => window.clearTimeout(id);
     }
   }, [language, isRTL]);
+
+  const setLanguage = (lang: Language) => {
+    const wasRTL = isRTL;
+    const willBeRTL = lang === "he";
+    setLanguageState(lang);
+    // If switching FROM Hebrew back to English, reload to restore original DOM text
+    // (the DOM observer mutated text nodes in place).
+    if (wasRTL && !willBeRTL) {
+      stopAutoTranslate();
+    }
+  };
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage, t, isRTL }}>
