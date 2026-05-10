@@ -258,6 +258,7 @@ const App = () => (
                   <Route path="/supervisee/clinical/hexaflex" element={<SuperviseeRoute><HexaflexTracker /></SuperviseeRoute>} />
                   <Route path="/supervisee/clinical/behaviour-log" element={<SuperviseeRoute><BehaviourLog /></SuperviseeRoute>} />
                   <Route path="/supervisee/clinical/case-formulation" element={<SuperviseeRoute><CaseFormulation /></SuperviseeRoute>} />
+                  <Route path="/supervisee/competencies" element={<SuperviseeRoute><SuperviseeCompetencies /></SuperviseeRoute>} />
 
                   {/* Business Planner */}
                   <Route path="/planner" element={<ProtectedRoute><PlannerLayout /></ProtectedRoute>}>
