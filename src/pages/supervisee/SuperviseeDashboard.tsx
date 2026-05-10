@@ -3,7 +3,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
-import { ClipboardList, FileText, Calendar, Wrench, BookOpen, ListTodo, Settings, ChevronRight } from "lucide-react";
+import { ClipboardList, FileText, Calendar, Wrench, BookOpen, ListTodo, Settings, ChevronRight, Target } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useAuth } from "@/hooks/useAuth";
