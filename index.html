@@ -17,6 +17,15 @@
     <link rel="canonical" href="https://binyanadamcbs.lovable.app" />
   </head>
   <body>
+    <script>
+      (function () {
+        try {
+          var lang = localStorage.getItem("binyan-lang") === "he" ? "he" : "en";
+          document.documentElement.lang = lang;
+          document.documentElement.dir = lang === "he" ? "rtl" : "ltr";
+        } catch (e) {}
+      })();
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
