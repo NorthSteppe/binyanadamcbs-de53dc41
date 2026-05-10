@@ -242,14 +242,14 @@ const SuperviseeCompetencies = () => {
           </div>
         </div>
 
-        <Tabs defaultValue="competencies">
+        <Tabs defaultValue="competencies" dir={isRTL ? "rtl" : "ltr"}>
           <TabsList>
             <TabsTrigger value="competencies">{t.competencies}</TabsTrigger>
             <TabsTrigger value="journal">{t.journal}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="competencies">
-            <div className="border rounded-lg overflow-hidden">
+            <div className="border rounded-lg overflow-hidden" dir={isRTL ? "rtl" : "ltr"}>
               {tree.roots.length === 0 && <div className="p-8 text-center text-sm text-muted-foreground">{t.none}</div>}
               {tree.roots.map((c) => renderRow(c))}
             </div>
