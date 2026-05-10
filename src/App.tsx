@@ -89,6 +89,8 @@ import CourseLessonManager from "./pages/admin/CourseLessonManager";
 import SuperviseeDashboard from "./pages/supervisee/SuperviseeDashboard";
 import CaseLogs from "./pages/supervisee/CaseLogs";
 import SuperviseeDocuments from "./pages/supervisee/SuperviseeDocuments";
+import SuperviseeCompetencies from "./pages/supervisee/SuperviseeCompetencies";
+import SupervisionTrackerAdmin from "./pages/admin/SupervisionTracker";
 // Blog / Insights
 import InsightsHub from "./pages/insights/InsightsHub";
 import ArticlePage from "./pages/insights/ArticlePage";
