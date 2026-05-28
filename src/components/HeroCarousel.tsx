@@ -93,6 +93,11 @@ const HeroCarousel = ({ onQuoteChange }: HeroCarouselProps) => {
               opacity: isActive ? 1 : 0,
               zIndex: isActive ? 1 : 0,
               transition: "opacity 800ms cubic-bezier(0.4, 0, 0.2, 1)",
+              willChange: "opacity",
+              transform: "translateZ(0)",
+              backfaceVisibility: "hidden",
+            }}
+          >
             <img
               src={img.image_url}
               alt={img.alt_text}
@@ -103,13 +108,8 @@ const HeroCarousel = ({ onQuoteChange }: HeroCarouselProps) => {
               width={1920}
               height={1080}
             />
-
-              className="w-full h-full object-cover"
-              loading="eager"
-              decoding="async"
-              fetchPriority={i === 0 ? "high" : "auto"}
-            />
           </div>
+
         );
       })}
 
