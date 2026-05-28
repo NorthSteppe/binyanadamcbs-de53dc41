@@ -52,7 +52,13 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <Seo
+        title="Contact Binyan Adam — Get in Touch"
+        description="Reach out to Binyan Adam about therapy, supervision, family or school support. We respond to enquiries from Manchester and across the UK."
+        path="/contact"
+      />
       <Header />
+
 
       <section className="pt-40 pb-24">
         <div className="container">

@@ -38,7 +38,13 @@ const Courses = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Seo
+        title="Courses — Binyan Adam Continuing Education"
+        description="Online courses and continuing-education programmes from Binyan Adam, covering constructional behaviour analysis, supervision, and applied clinical practice."
+        path="/courses"
+      />
       <Header />
+
       <section className="pt-28 pb-20">
         <div className="container max-w-5xl">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-16">

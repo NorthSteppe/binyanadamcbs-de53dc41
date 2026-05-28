@@ -22,7 +22,13 @@ const Services = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Seo
+        title="Services — Binyan Adam Clinical Behaviour"
+        description="Explore Binyan Adam's clinical behaviour services: therapy, family coaching, school consultation, organisational training, and clinical supervision."
+        path="/services"
+      />
       <Header />
+
 
       {/* Hero */}
       <section className="pt-40 pb-24">

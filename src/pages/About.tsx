@@ -37,7 +37,13 @@ const About = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <Seo
+        title="About Binyan Adam — Our Mission and Team"
+        description="Meet the team behind Binyan Adam and learn how our constructional clinical behaviour approach builds capability with individuals, families, and organisations."
+        path="/about"
+      />
       <Header />
+
 
       {/* Hero */}
       <section className="relative min-h-[60vh] flex items-end overflow-hidden">
