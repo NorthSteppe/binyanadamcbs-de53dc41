@@ -39,7 +39,24 @@ Deno.serve(async (req) => {
   }
 
   // ── Telegram webhook event (Telegram POSTs updates here) ───────────────────
+  // ── Telegram webhook event (Telegram POSTs updates here) ───────────────────
   if ("update_id" in body) {
+    // Verify the Telegram secret token to prevent unauthenticated forgery
+    const providedSecret = req.headers.get("x-telegram-bot-api-secret-token") || "";
+    async function deriveSecret(apiKey: string): Promise<string> {
+      const explicit = Deno.env.get("TELEGRAM_WEBHOOK_SECRET");
+      if (explicit) return explicit;
+      const data = new TextEncoder().encode(`telegram-webhook:${apiKey}`);
+      const digest = await crypto.subtle.digest("SHA-256", data);
+      return btoa(String.fromCharCode(...new Uint8Array(digest)))
+        .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+    }
+    const expectedSecret = await deriveSecret(BOT_TOKEN);
+    if (!providedSecret || providedSecret !== expectedSecret) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
     await handleUpdate(body, BOT_TOKEN, supabase);
     return new Response("OK", { status: 200 });
   }

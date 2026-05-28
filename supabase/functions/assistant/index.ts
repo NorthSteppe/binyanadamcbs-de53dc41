@@ -193,16 +193,28 @@ ${userContext}
 
 Always be supportive, clear, and use markdown formatting. Keep responses concise and conversational.`;
 
-    // Save/update conversation
+    // Save/update conversation — verify ownership to prevent IDOR
     if (conversation_id) {
-      await supabaseAdmin
+      const { data: convo } = await supabaseAdmin
         .from("assistant_conversations")
-        .update({
-          messages: sanitized,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", conversation_id);
+        .select("user_id")
+        .eq("id", conversation_id)
+        .maybeSingle();
+      const ownerOk =
+        convo &&
+        ((userId === null && convo.user_id === null) ||
+         (userId !== null && convo.user_id === userId));
+      if (ownerOk) {
+        await supabaseAdmin
+          .from("assistant_conversations")
+          .update({
+            messages: sanitized,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", conversation_id);
+      }
     }
+
 
     const recentMessages = sanitized.slice(-20);
 

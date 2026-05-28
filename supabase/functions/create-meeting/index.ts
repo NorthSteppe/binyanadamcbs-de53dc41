@@ -114,12 +114,15 @@ Deno.serve(async (req) => {
     const supabase = createClient(SUPABASE_URL, SERVICE_ROLE);
 
     // ── Authorization: caller must be admin or team_member ───────────────────
+    // ── Authorization: caller must be admin or team_member ───────────────────
     const { data: roles } = await supabase
       .from("user_roles")
       .select("role")
       .eq("user_id", callerId);
-    const allowed = (roles || []).some((r: any) => r.role === "admin" || r.role === "team_member");
-    if (!allowed) {
+    const roleList = (roles || []).map((r: any) => r.role);
+    const isAdmin = roleList.includes("admin");
+    const isTeamMember = roleList.includes("team_member");
+    if (!isAdmin && !isTeamMember) {
       return new Response(JSON.stringify({ error: "Forbidden" }), {
         status: 403,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -131,6 +134,15 @@ Deno.serve(async (req) => {
     if (!host_user_id || !provider || !title || !start_iso || !duration_minutes) {
       throw new Error("Missing required fields");
     }
+
+    // Non-admins may only use their own connected OAuth integration
+    if (!isAdmin && host_user_id !== callerId) {
+      return new Response(JSON.stringify({ error: "Forbidden: cannot use another user's integration" }), {
+        status: 403,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const { data: integration } = await supabase
       .from("staff_integrations")
       .select("*")
