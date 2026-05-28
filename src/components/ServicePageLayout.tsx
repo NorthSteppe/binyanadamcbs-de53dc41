@@ -10,6 +10,8 @@ import Footer from "./Footer";
 import ScrollReveal from "./ScrollReveal";
 import EditableText from "./editable/EditableText";
 import EditableImage from "./editable/EditableImage";
+import Seo from "./Seo";
+
 
 interface ServicePackage {
   name: string;
@@ -67,7 +69,22 @@ const ServicePageLayout = ({
 
   return (
     <div className="min-h-screen bg-background">
+      <Seo
+        title={`${title} — Binyan Adam`}
+        description={subtitle || tagline}
+        path={basePath}
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Service",
+          name: title,
+          description: subtitle || tagline,
+          provider: { "@type": "Organization", name: "Binyan Adam", url: "https://bacbs.com/" },
+          areaServed: "GB",
+          url: `https://bacbs.com${basePath}`,
+        }}
+      />
       <Header />
+
 
       {/* Full-bleed hero */}
       <section className="relative min-h-[70vh] flex items-end overflow-hidden">
