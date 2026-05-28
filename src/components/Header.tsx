@@ -175,10 +175,12 @@ const Header = ({ hidelogo = false }: { hidelogo?: boolean }) => {
             variant="ghost"
             size="sm"
             onClick={toggleLanguage}
+            aria-label={language === "en" ? "Switch language to Hebrew" : "Switch language to English"}
             className="text-[13px] font-medium text-muted-foreground hover:text-foreground rounded-full h-8 px-3"
           >
             {language === "en" ? "HE" : "EN"}
           </Button>
+
 
           {user ? (
             <>
@@ -239,12 +241,13 @@ const Header = ({ hidelogo = false }: { hidelogo?: boolean }) => {
             <Search size={18} />
           </Button>
           {user && <NotificationBell />}
-          <Button variant="ghost" size="icon" onClick={toggleLanguage} className="text-muted-foreground rounded-full">
+          <Button variant="ghost" size="icon" onClick={toggleLanguage} aria-label={language === "en" ? "Switch language to Hebrew" : "Switch language to English"} className="text-muted-foreground rounded-full">
             <Globe size={18} />
           </Button>
-          <Button variant="ghost" size="icon" onClick={() => setMobileOpen(!mobileOpen)} className="text-muted-foreground rounded-full">
+          <Button variant="ghost" size="icon" onClick={() => setMobileOpen(!mobileOpen)} aria-label={mobileOpen ? "Close menu" : "Open menu"} aria-expanded={mobileOpen} className="text-muted-foreground rounded-full">
             {mobileOpen ? <X size={20} /> : <Menu size={20} />}
           </Button>
+
         </div>
       </div>
 

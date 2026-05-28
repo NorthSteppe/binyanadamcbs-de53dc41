@@ -1,3 +1,4 @@
+import Seo from "@/components/Seo";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -54,7 +55,13 @@ const InsightsHub = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Seo
+        title="Insights — Clinical Articles by Binyan Adam"
+        description="Practitioner notes, case reflections, and clinical articles on constructional behaviour analysis, therapy, supervision, and family practice."
+        path="/insights"
+      />
       <Header />
+
 
       {/* Hero */}
       <section className="pt-32 pb-16 px-4">

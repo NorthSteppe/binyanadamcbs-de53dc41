@@ -1,0 +1,16 @@
+# Binyan Adam
+
+> Constructional clinical behaviour services for individuals, families, schools, and organisations in Manchester and across the UK. We build capability through compassionate, evidence-based therapy, supervision, and training.
+
+## Pages
+
+- [About](/about): Our mission, team, and approach to constructional clinical work.
+- [Services](/services): Overview of all clinical behaviour services we offer.
+- [Therapy](/therapy): One-to-one therapy and behavioural support for individuals.
+- [Families](/families): Family-centred support, coaching, and consultations.
+- [Education](/education): Workshops, training, and consultation for schools.
+- [Organisations](/organisations): Behavioural consultation and training for organisations.
+- [Supervision](/supervision): Clinical supervision for behaviour analysts and supervisees.
+- [Courses](/courses): Online courses and continuing-education programmes.
+- [Insights](/insights): Clinical articles, case reflections, and practitioner notes.
+- [Contact](/contact): Get in touch to discuss services or supervision.

@@ -1,3 +1,4 @@
+import Seo from "@/components/Seo";
 import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Shield, Users, LayoutDashboard, ArrowRight } from "lucide-react";
@@ -32,7 +33,24 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <Seo
+        title="Binyan Adam — Constructional Clinical Behaviour Services"
+        description="Therapy, supervision, and training rooted in compassionate, constructional behaviour science. Serving individuals, families, schools, and organisations in Manchester and across the UK."
+        path="/"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "Binyan Adam",
+          url: "https://bacbs.com/",
+          potentialAction: {
+            "@type": "SearchAction",
+            target: "https://bacbs.com/search?q={search_term_string}",
+            "query-input": "required name=search_term_string",
+          },
+        }}
+      />
       <Header hidelogo={showBigLogo} />
+
 
       {/* Full-bleed hero section */}
       <section className="relative min-h-screen flex items-end">

@@ -1,3 +1,4 @@
+import Seo from "@/components/Seo";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight, CheckCircle2, GraduationCap, Heart, Building2, Users, BookOpen, Linkedin, Twitter, Globe, Award } from "lucide-react";
@@ -37,7 +38,13 @@ const About = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <Seo
+        title="About Binyan Adam — Our Mission and Team"
+        description="Meet the team behind Binyan Adam and learn how our constructional clinical behaviour approach builds capability with individuals, families, and organisations."
+        path="/about"
+      />
       <Header />
+
 
       {/* Hero */}
       <section className="relative min-h-[60vh] flex items-end overflow-hidden">

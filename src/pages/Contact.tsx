@@ -1,3 +1,4 @@
+import Seo from "@/components/Seo";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, MapPin } from "lucide-react";
@@ -52,7 +53,13 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <Seo
+        title="Contact Binyan Adam — Get in Touch"
+        description="Reach out to Binyan Adam about therapy, supervision, family or school support. We respond to enquiries from Manchester and across the UK."
+        path="/contact"
+      />
       <Header />
+
 
       <section className="pt-40 pb-24">
         <div className="container">
@@ -87,17 +94,24 @@ const Contact = () => {
               >
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
-                    <EditableText contentKey="contact.nameLabel" defaultValue={t.contact.nameLabel} as="label" className="text-[12px] uppercase tracking-wider text-muted-foreground mb-2 block" />
-                    <Input required name="name" placeholder={t.contact.namePlaceholder} className="rounded-lg bg-background border-border h-11" />
+                    <label htmlFor="contact-name" className="block">
+                      <EditableText contentKey="contact.nameLabel" defaultValue={t.contact.nameLabel} as="span" className="text-[12px] uppercase tracking-wider text-muted-foreground mb-2 block" />
+                    </label>
+                    <Input id="contact-name" required name="name" placeholder={t.contact.namePlaceholder} className="rounded-lg bg-background border-border h-11" />
                   </div>
                   <div>
-                    <EditableText contentKey="contact.emailLabel" defaultValue={t.contact.emailLabel} as="label" className="text-[12px] uppercase tracking-wider text-muted-foreground mb-2 block" />
-                    <Input required name="email" type="email" placeholder={t.contact.emailPlaceholder} className="rounded-lg bg-background border-border h-11" />
+                    <label htmlFor="contact-email" className="block">
+                      <EditableText contentKey="contact.emailLabel" defaultValue={t.contact.emailLabel} as="span" className="text-[12px] uppercase tracking-wider text-muted-foreground mb-2 block" />
+                    </label>
+                    <Input id="contact-email" required name="email" type="email" placeholder={t.contact.emailPlaceholder} className="rounded-lg bg-background border-border h-11" />
                   </div>
                 </div>
                 <div>
-                  <EditableText contentKey="contact.interestedLabel" defaultValue={t.contact.interestedLabel} as="label" className="text-[12px] uppercase tracking-wider text-muted-foreground mb-2 block" />
+                  <label htmlFor="contact-service" className="block">
+                    <EditableText contentKey="contact.interestedLabel" defaultValue={t.contact.interestedLabel} as="span" className="text-[12px] uppercase tracking-wider text-muted-foreground mb-2 block" />
+                  </label>
                   <select
+                    id="contact-service"
                     className="w-full border border-border bg-background rounded-lg px-3 py-2.5 text-sm text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                     name="service"
                     defaultValue=""
@@ -109,9 +123,12 @@ const Contact = () => {
                   </select>
                 </div>
                 <div>
-                  <EditableText contentKey="contact.messageLabel" defaultValue={t.contact.messageLabel} as="label" className="text-[12px] uppercase tracking-wider text-muted-foreground mb-2 block" />
-                  <Textarea required name="message" rows={5} placeholder={t.contact.messagePlaceholder} className="rounded-lg bg-background border-border" />
+                  <label htmlFor="contact-message" className="block">
+                    <EditableText contentKey="contact.messageLabel" defaultValue={t.contact.messageLabel} as="span" className="text-[12px] uppercase tracking-wider text-muted-foreground mb-2 block" />
+                  </label>
+                  <Textarea id="contact-message" required name="message" rows={5} placeholder={t.contact.messagePlaceholder} className="rounded-lg bg-background border-border" />
                 </div>
+
                 <Button type="submit" className="w-full rounded-full bg-primary text-primary-foreground hover:bg-primary/90 h-11 text-[14px] font-medium shadow-apple" size="lg" disabled={submitting}>
                   {submitting ? t.contact.sending : t.contact.sendButton}
                 </Button>
