@@ -1,3 +1,4 @@
+import Seo from "@/components/Seo";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight, CheckCircle2, GraduationCap, Heart, Building2, Users, BookOpen, Linkedin, Twitter, Globe, Award } from "lucide-react";

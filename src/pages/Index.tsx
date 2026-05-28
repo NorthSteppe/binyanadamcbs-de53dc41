@@ -1,3 +1,4 @@
+import Seo from "@/components/Seo";
 import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Shield, Users, LayoutDashboard, ArrowRight } from "lucide-react";

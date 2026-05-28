@@ -1,3 +1,4 @@
+import Seo from "@/components/Seo";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { BookOpen, Leaf, UsersRound, Landmark, Compass, Check, ArrowRight } from "lucide-react";
