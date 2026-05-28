@@ -67,10 +67,15 @@ const HeroCarousel = ({ onQuoteChange }: HeroCarouselProps) => {
           className="w-full h-full object-cover"
           src="/lovable-uploads/93c59eae-410f-4380-a222-312d8d41af41.jpg"
           loading="eager"
+          decoding="async"
+          fetchPriority="high"
+          width={1920}
+          height={1080}
         />
       </div>
     );
   }
+
 
   return (
     <div className="overflow-hidden relative bg-muted w-full h-full">
