@@ -70,9 +70,8 @@ const FBAAttachDialog = ({ open, onOpenChange, reportHtml, reportData, clientNam
       ]);
       if (h.error) throw h.error;
       if (j.error) throw j.error;
-      const htmlUrl = bucket.getPublicUrl(htmlPath).data.publicUrl;
       const { error: insErr } = await supabase.from("client_documents").insert([
-        { client_id: clientId, uploaded_by: user.id, file_name: `${base}.html`, file_url: htmlUrl, file_type: "fba-report-html", notes: "FBA report (printable)" },
+        { client_id: clientId, uploaded_by: user.id, file_name: `${base}.html`, file_url: htmlPath, file_type: "fba-report-html", notes: "FBA report (printable)" },
         { client_id: clientId, uploaded_by: user.id, file_name: `${base}.fba.json`, file_url: jsonPath, file_type: "fba-draft-json", notes: "FBA editable draft — re-uploadable into the tool" },
       ]);
       if (insErr) throw insErr;
