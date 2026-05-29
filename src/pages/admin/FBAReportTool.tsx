@@ -646,6 +646,7 @@ const FBAReportTool = () => {
   });
   const [assessor, setAssessor] = useState<AssessorInfo | null>(null);
   const [uploading, setUploading] = useState<Record<number, boolean>>({});
+  const [attachOpen, setAttachOpen] = useState(false);
 
   // Fetch Adam Dayan's profile
   useEffect(() => {
