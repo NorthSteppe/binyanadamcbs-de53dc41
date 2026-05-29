@@ -1391,6 +1391,9 @@ const FBAReportTool = () => {
                   }} className="h-7 px-2 text-[11px] text-muted-foreground hover:text-destructive">
                     {t.fbaTool.ui.clearDraft}
                   </Button>
+                  <Button size="sm" variant="outline" onClick={() => setAttachOpen(true)} className="h-7 text-[11px] gap-1.5">
+                    <Paperclip size={13} /> Attach / Reopen
+                  </Button>
                   <Button size="sm" onClick={handlePrint} className="h-7 text-[11px] gap-1.5 shadow-sm">
                     <Printer size={13} /> {t.fbaTool.ui.exportPdf}
                   </Button>
