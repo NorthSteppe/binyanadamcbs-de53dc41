@@ -1420,6 +1420,15 @@ const FBAReportTool = () => {
 
         </div>
       </div>
+      <FBAAttachDialog
+        open={attachOpen}
+        onOpenChange={setAttachOpen}
+        reportHtml={generateStyledHTML(data, assessor, t, isRTL, ASSESSMENT_METHODS.filter(m => data.methods[m.key]).map(m => t.fbaTool.form[m.key] || m.label))}
+        reportData={data}
+        clientNameHint={data.clientName}
+        onClearDraft={() => { setData(initialData); setStep(1); localStorage.removeItem("fba-report-draft"); }}
+        onLoadDraft={(d) => { setData(d as FBAData); setStep(1); }}
+      />
       <Footer />
     </div>
   );
