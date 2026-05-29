@@ -22,6 +22,7 @@ import { METAL_BG } from "@/components/portal/PortalShell";
 import { toast } from "sonner";
 import { useLanguage } from "@/i18n/LanguageContext";
 import FBAIntakeManager from "@/components/clinical/FBAIntakeManager";
+import FBAAttachDialog from "@/components/clinical/FBAAttachDialog";
 import {
   FBA_PREFILL_EVENT,
   FBA_PREFILL_STORAGE_KEY,
@@ -645,6 +646,7 @@ const FBAReportTool = () => {
   });
   const [assessor, setAssessor] = useState<AssessorInfo | null>(null);
   const [uploading, setUploading] = useState<Record<number, boolean>>({});
+  const [attachOpen, setAttachOpen] = useState(false);
 
   // Fetch Adam Dayan's profile
   useEffect(() => {
@@ -1389,6 +1391,9 @@ const FBAReportTool = () => {
                   }} className="h-7 px-2 text-[11px] text-muted-foreground hover:text-destructive">
                     {t.fbaTool.ui.clearDraft}
                   </Button>
+                  <Button size="sm" variant="outline" onClick={() => setAttachOpen(true)} className="h-7 text-[11px] gap-1.5">
+                    <Paperclip size={13} /> Attach / Reopen
+                  </Button>
                   <Button size="sm" onClick={handlePrint} className="h-7 text-[11px] gap-1.5 shadow-sm">
                     <Printer size={13} /> {t.fbaTool.ui.exportPdf}
                   </Button>
@@ -1415,6 +1420,15 @@ const FBAReportTool = () => {
 
         </div>
       </div>
+      <FBAAttachDialog
+        open={attachOpen}
+        onOpenChange={setAttachOpen}
+        reportHtml={generateStyledHTML(data, assessor, t, isRTL, ASSESSMENT_METHODS.filter(m => data.methods[m.key]).map(m => t.fbaTool.form[m.key] || m.label))}
+        reportData={data}
+        clientNameHint={data.clientName}
+        onClearDraft={() => { setData(initialData); setStep(1); localStorage.removeItem("fba-report-draft"); }}
+        onLoadDraft={(d) => { setData(d as FBAData); setStep(1); }}
+      />
       <Footer />
     </div>
   );
