@@ -76,8 +76,34 @@ const ArticlePage = () => {
   const author = post.blog_authors as any;
   const category = post.blog_categories as any;
 
+  const rawDesc = (post.abstract || "").replace(/\s+/g, " ").trim();
+  const description = rawDesc.length > 160 ? `${rawDesc.slice(0, 157)}…` : (rawDesc || `${post.title} — Binyan Adam Insights`);
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.title,
+    description: rawDesc || undefined,
+    datePublished: post.published_at || undefined,
+    dateModified: post.updated_at || post.published_at || undefined,
+    image: post.cover_image_url || undefined,
+    author: author ? { "@type": "Person", name: author.name } : undefined,
+    publisher: {
+      "@type": "Organization",
+      name: "Binyan Adam",
+      logo: { "@type": "ImageObject", url: "https://bacbs.com/lovable-uploads/binyan-adam-logo.png" },
+    },
+    mainEntityOfPage: `https://bacbs.com/insights/${post.slug}`,
+  };
+
   return (
     <div className="min-h-screen bg-background">
+      <Seo
+        title={`${post.title} — Binyan Adam Insights`.slice(0, 60)}
+        description={description}
+        path={`/insights/${post.slug}`}
+        type="article"
+        jsonLd={articleJsonLd}
+      />
       <Header />
 
       {/* Breadcrumb */}
