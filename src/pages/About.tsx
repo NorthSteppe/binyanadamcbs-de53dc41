@@ -42,6 +42,17 @@ const About = () => {
         title="About Binyan Adam — Our Mission and Team"
         description="Meet the team behind Binyan Adam and learn how our constructional clinical behaviour approach builds capability with individuals, families, and organisations."
         path="/about"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "Binyan Adam",
+          alternateName: "Binyan Adam Clinical Behaviour Services",
+          url: "https://bacbs.com/",
+          logo: "https://bacbs.com/lovable-uploads/binyan-adam-logo.png",
+          email: "adamdayan@bacbs.com",
+          address: { "@type": "PostalAddress", addressLocality: "Manchester", addressCountry: "GB" },
+          areaServed: "GB",
+        }}
       />
       <Header />
 

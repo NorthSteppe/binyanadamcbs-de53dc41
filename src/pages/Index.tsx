@@ -38,7 +38,7 @@ const Index = () => {
     <div className="min-h-screen bg-background flex flex-col">
       <Seo
         title="Binyan Adam — Constructional Clinical Behaviour Services"
-        description="Therapy, supervision, and training rooted in compassionate, constructional behaviour science. Serving individuals, families, schools, and organisations in Manchester and across the UK."
+        description="Therapy, supervision and training rooted in constructional behaviour science — for individuals, families, schools and organisations across the UK."
         path="/"
         jsonLd={{
           "@context": "https://schema.org",
