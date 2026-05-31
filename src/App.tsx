@@ -48,6 +48,8 @@ import PortalSupportPathway from "./pages/portal/SupportPathway";
 import SupportAgreement from "./pages/portal/SupportAgreement";
 import BetweenSessions from "./pages/portal/BetweenSessions";
 import PathwayTemplateManager from "./pages/admin/PathwayTemplateManager";
+import PathwayQuizManager from "./pages/admin/PathwayQuizManager";
+
 // Admin portal
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminCalendar from "./pages/admin/AdminCalendar";
