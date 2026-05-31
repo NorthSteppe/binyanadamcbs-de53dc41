@@ -72,10 +72,10 @@ const Index = () => {
             <div className={`mb-8 transition-opacity duration-500 ${showBigLogo ? "opacity-100" : "opacity-0"}`}>
               <EditableImage
                 contentKey="landing.logo"
-                defaultSrc="/lovable-uploads/ed0abcc5-2b9d-4294-a3b6-3d6945c02959.png"
+                defaultSrc="/lovable-uploads/binyan-adam-logo.png"
                 alt="Binyan Adam"
-                className="h-12 md:h-14 w-auto inline-block"
-                imgClassName="h-12 md:h-14 w-auto mix-blend-multiply dark:mix-blend-screen dark:invert"
+                className="mb-2 w-full max-w-[240px] sm:max-w-[300px] md:max-w-[380px]"
+                imgClassName="h-auto w-full max-h-28 sm:max-h-32 md:max-h-40 object-contain object-left drop-shadow-[0_8px_24px_hsl(var(--background)/0.45)] dark:invert"
               />
             </div>
 
