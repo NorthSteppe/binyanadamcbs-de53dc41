@@ -77,7 +77,7 @@ const Header = ({ hidelogo = false }: { hidelogo?: boolean }) => {
             decoding="async"
             width={320}
             height={320}
-            className={`transition-all duration-500 dark:invert [image-rendering:auto] ${hidelogo ? "opacity-0 scale-90" : "opacity-100 scale-100"} ${scrolled ? "h-16 md:h-20" : "h-20 md:h-28"} w-auto`}
+            className={`transition-all duration-500 [image-rendering:auto] ${hidelogo ? "opacity-0 scale-90" : "opacity-100 scale-100"} ${scrolled ? "h-16 md:h-20" : "h-20 md:h-28"} w-auto`}
             src="/lovable-uploads/binyan-adam-logo.png"
           />
         </Link>

@@ -75,7 +75,7 @@ const Index = () => {
                 defaultSrc="/lovable-uploads/binyan-adam-logo.png"
                 alt="Binyan Adam"
                 className="mb-2 w-fit rounded-full bg-background/25 p-2.5 shadow-apple-lg backdrop-blur-[2px]"
-                imgClassName="h-36 w-auto object-contain sm:h-40 md:h-48 lg:h-56 drop-shadow-[0_12px_30px_hsl(var(--background)/0.75)] dark:invert"
+                imgClassName="h-36 w-auto object-contain sm:h-40 md:h-48 lg:h-56 drop-shadow-[0_12px_30px_hsl(var(--background)/0.75)]"
               />
             </div>
 
