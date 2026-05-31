@@ -189,7 +189,9 @@ const Index = () => {
       </section>
 
       <Footer />
+      <PathwayQuiz open={quizOpen} onOpenChange={setQuizOpen} />
     </div>
+
   );
 };
 
