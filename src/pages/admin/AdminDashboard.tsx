@@ -61,6 +61,7 @@ const categories = [
     tools: [
       { label: "Hero Images", path: "/admin/hero-images", icon: ImageIcon, description: "Manage the landing page slideshow images, quotes, and timing" },
       { label: "Site Content", path: "/admin/site-content", icon: FileEdit, description: "Edit page images, quotes, and text across all service pages" },
+      { label: "Pathway Quiz", path: "/admin/pathway-quiz", icon: Sparkles, description: "Edit the 'Find your way in' welcome slides that route visitors to the right pages" },
       { label: "Therapist Profiles", path: "/admin/team-members", icon: Users, description: "Add, edit, or remove therapist bios shown on the About page" },
       { label: "Blog Manager", path: "/admin/blog", icon: BookOpen, description: "Create, schedule, and manage Insights articles and authors" },
       { label: "Partner Badges", path: "/admin/badges", icon: Shield, description: "Manage accreditation logos, add links to external sites" },
