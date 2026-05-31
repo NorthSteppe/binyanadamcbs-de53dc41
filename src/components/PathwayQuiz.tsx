@@ -79,8 +79,7 @@ export const PathwayQuiz = ({ open, onOpenChange }: PathwayQuizProps) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="max-w-2xl border-white/20 bg-background/80 p-0 backdrop-blur-2xl sm:rounded-3xl"
-        hideClose
+        className="max-w-2xl border-white/20 bg-background/80 p-0 backdrop-blur-2xl sm:rounded-3xl [&>button]:hidden"
       >
         <button
           onClick={() => onOpenChange(false)}
@@ -89,6 +88,8 @@ export const PathwayQuiz = ({ open, onOpenChange }: PathwayQuizProps) => {
         >
           <X size={18} />
         </button>
+
+
 
         <div className="relative overflow-hidden px-6 py-10 sm:px-12 sm:py-14">
           {/* gradient orb backdrop */}
