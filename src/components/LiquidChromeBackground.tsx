@@ -162,8 +162,8 @@ export default function LiquidChromeBackground() {
     let raf = 0;
     const tick = () => {
       // ease toward cursor for fluid lag
-      mouse.x += (targetMouse.x - mouse.x) * 0.08;
-      mouse.y += (targetMouse.y - mouse.y) * 0.08;
+      mouse.x += (targetMouse.x - mouse.x) * 0.18;
+      mouse.y += (targetMouse.y - mouse.y) * 0.18;
       const isDark = document.documentElement.classList.contains("dark") ? 1 : 0;
       gl.uniform2f(uRes, canvas.width, canvas.height);
       gl.uniform1f(uTime, (performance.now() - start) / 1000);
