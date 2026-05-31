@@ -12,6 +12,7 @@ import BadgeMarquee from "@/components/BadgeMarquee";
 import LandingCalendarWidget from "@/components/LandingCalendarWidget";
 import EditableText from "@/components/editable/EditableText";
 import EditableImage from "@/components/editable/EditableImage";
+import PathwayQuiz from "@/components/PathwayQuiz";
 import { motion } from "framer-motion";
 import { BookOpen } from "lucide-react";
 
@@ -19,7 +20,9 @@ const Index = () => {
   const { t } = useLanguage();
   const { user, isAdmin, isTeamMember } = useAuth();
   const [showBigLogo, setShowBigLogo] = useState(true);
+  const [quizOpen, setQuizOpen] = useState(false);
   const [quote, setQuote] = useState({ text: "", author: "" });
+
 
   const handleQuoteChange = useCallback((q: { text: string; author: string }) => {
     setQuote(q);
