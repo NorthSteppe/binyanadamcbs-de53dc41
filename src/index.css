@@ -180,20 +180,23 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply text-foreground font-sans antialiased;
+    /* Let the WebGL liquid chrome show through; keep a fallback color. */
+    background: transparent;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+  html { background: hsl(var(--background)); }
 
   h1, h2, h3, h4 {
-    font-family: 'Cormorant Garamond', 'DM Sans', 'Inter', Georgia, serif;
+    font-family: 'Space Grotesk', 'Inter', system-ui, -apple-system, sans-serif;
     font-weight: 500;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.02em;
   }
 
   h1 {
-    letter-spacing: -0.018em;
-    font-weight: 500;
+    letter-spacing: -0.03em;
+    font-weight: 600;
   }
 
   /* Hebrew keeps the geometric DM Sans — Cormorant has no Hebrew glyphs */

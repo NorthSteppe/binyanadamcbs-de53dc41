@@ -15,8 +15,9 @@ export default {
     extend: {
       fontFamily: {
         sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
-        serif: ["Cormorant Garamond", "DM Sans", "Georgia", "serif"],
-        display: ["Cormorant Garamond", "DM Sans", "Georgia", "serif"],
+        serif: ["Space Grotesk", "Inter", "system-ui", "sans-serif"],
+        display: ["Space Grotesk", "Inter", "system-ui", "sans-serif"],
+        mono: ["JetBrains Mono", "ui-monospace", "monospace"],
       },
       colors: {
         border: "hsl(var(--border))",
