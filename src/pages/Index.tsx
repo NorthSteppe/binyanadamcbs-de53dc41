@@ -97,11 +97,10 @@ const Index = () => {
             />
 
             <div className="flex flex-col sm:flex-row gap-3">
-              <Button size="lg" asChild className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-8 h-12 text-[14px] font-medium shadow-apple-lg">
-                <Link to="/services" className="inline-flex items-center gap-3">
-                  <EditableText contentKey="landing.exploreBtn" defaultValue={t.landing.exploreServices} as="span" /> <ArrowRight size={16} />
-                </Link>
+              <Button size="lg" onClick={() => setQuizOpen(true)} className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-8 h-12 text-[14px] font-medium shadow-apple-lg inline-flex items-center gap-3">
+                <EditableText contentKey="landing.exploreBtn" defaultValue={t.landing.exploreServices} as="span" /> <ArrowRight size={16} />
               </Button>
+
 
               {user ? (
                 <Button size="lg" variant="outline" asChild className="border-border text-foreground hover:bg-accent rounded-full px-8 h-12 text-[14px] font-medium">
