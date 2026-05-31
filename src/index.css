@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,171 +6,172 @@
 
 @layer base {
   :root {
-    /* Warm, holistic palette — sand, cream, deep indigo, terracotta */
-    --background: 36 38% 96%;        /* warm cream */
-    --foreground: 230 32% 18%;       /* deep indigo ink */
+    /* Liquid Chrome — futuristic OS, silver/mercury with cool holo tint.
+       Surfaces are intentionally translucent so the WebGL chrome shows through. */
+    --background: 220 14% 92%;        /* polished silver light */
+    --foreground: 222 30% 10%;        /* deep graphite ink */
 
-    --card: 36 42% 98%;
-    --card-foreground: 230 32% 18%;
-    --card-border: 32 22% 86%;
-    --card-shadow: 0 2px 18px -6px hsla(28, 30%, 30%, 0.10),
-                   0 10px 36px -12px hsla(28, 30%, 30%, 0.08),
-                   inset 0 1px 0 0 hsla(40, 60%, 100%, 0.55);
+    --card: 220 22% 99% / 0.62;       /* frosted chrome panel */
+    --card-foreground: 222 30% 10%;
+    --card-border: 220 18% 80% / 0.7;
+    --card-shadow: 0 1px 0 0 hsla(0, 0%, 100%, 0.85) inset,
+                   0 -1px 0 0 hsla(222, 30%, 20%, 0.08) inset,
+                   0 8px 32px -10px hsla(222, 40%, 18%, 0.22),
+                   0 24px 60px -28px hsla(222, 40%, 18%, 0.18);
 
-    --popover: 36 42% 98%;
-    --popover-foreground: 230 32% 18%;
+    --popover: 220 22% 99%;
+    --popover-foreground: 222 30% 10%;
 
-    --primary: 230 36% 22%;          /* deep indigo */
-    --primary-foreground: 36 42% 97%;
+    --primary: 222 32% 14%;           /* graphite */
+    --primary-foreground: 220 30% 98%;
 
-    --secondary: 32 30% 90%;         /* warm sand */
-    --secondary-foreground: 230 32% 22%;
+    --secondary: 220 16% 88%;         /* brushed steel */
+    --secondary-foreground: 222 30% 14%;
 
-    --muted: 34 26% 92%;
-    --muted-foreground: 28 14% 38%;
+    --muted: 220 14% 90%;
+    --muted-foreground: 222 14% 38%;
 
-    --accent: 18 52% 56%;            /* terracotta */
-    --accent-foreground: 36 42% 98%;
+    --accent: 200 90% 56%;            /* electric cyan-chrome highlight */
+    --accent-foreground: 222 40% 10%;
 
-    --destructive: 0 62% 48%;
-    --destructive-foreground: 36 42% 98%;
+    --destructive: 350 70% 52%;
+    --destructive-foreground: 220 30% 98%;
 
-    --border: 32 22% 86%;
-    --input: 32 22% 86%;
-    --ring: 230 36% 28%;
+    --border: 220 16% 82% / 0.8;
+    --input: 220 16% 82%;
+    --ring: 200 90% 56%;
 
     --radius: 1rem;
 
-    /* Holistic gradients & textures */
-    --gradient-warm: linear-gradient(135deg, hsl(36 50% 94%) 0%, hsl(28 38% 88%) 100%);
-    --gradient-sand: linear-gradient(180deg, hsl(36 42% 96%) 0%, hsl(32 32% 90%) 100%);
-    --gradient-dusk: linear-gradient(135deg, hsl(230 36% 22%) 0%, hsl(18 52% 56%) 100%);
-    --shadow-soft: 0 1px 2px hsla(28, 30%, 30%, 0.04),
-                   0 8px 28px -8px hsla(28, 30%, 30%, 0.10);
+    /* Chrome gradients */
+    --gradient-warm: linear-gradient(135deg, hsl(220 20% 97%) 0%, hsl(220 14% 84%) 100%);
+    --gradient-sand: linear-gradient(180deg, hsl(220 18% 96%) 0%, hsl(220 14% 86%) 100%);
+    --gradient-dusk: linear-gradient(135deg, hsl(222 32% 14%) 0%, hsl(200 90% 56%) 100%);
+    --shadow-soft: 0 1px 2px hsla(222, 40%, 14%, 0.06),
+                   0 8px 28px -8px hsla(222, 40%, 14%, 0.14);
 
-    /* Glass tokens — used only by .glass utility, NOT cards */
-    --glass-bg: 36 42% 98% / 0.72;
-    --glass-border: 36 42% 100% / 0.55;
-    --glass-border-inner: 36 42% 100% / 0.65;
-    --glass-blur: 24px;
-    --glass-shadow: 0 2px 24px -4px hsla(0, 0%, 0%, 0.08),
-                    0 8px 40px -8px hsla(0, 0%, 0%, 0.06),
-                    inset 0 1px 0 0 hsla(0, 0%, 100%, 0.5);
-    --glass-shadow-lg: 0 4px 32px -6px hsla(0, 0%, 0%, 0.12),
-                       0 12px 48px -12px hsla(0, 0%, 0%, 0.1),
-                       inset 0 1px 0 0 hsla(0, 0%, 100%, 0.6);
+    /* Glass tokens — glassmorphism over the chrome backdrop */
+    --glass-bg: 220 22% 99% / 0.42;
+    --glass-border: 0 0% 100% / 0.55;
+    --glass-border-inner: 0 0% 100% / 0.7;
+    --glass-blur: 28px;
+    --glass-shadow: 0 1px 0 0 hsla(0, 0%, 100%, 0.7) inset,
+                    0 2px 24px -4px hsla(222, 40%, 14%, 0.14),
+                    0 12px 48px -12px hsla(222, 40%, 14%, 0.18);
+    --glass-shadow-lg: 0 1px 0 0 hsla(0, 0%, 100%, 0.75) inset,
+                       0 4px 32px -6px hsla(222, 40%, 14%, 0.2),
+                       0 16px 64px -16px hsla(222, 40%, 14%, 0.22);
 
-    /* Service mode tokens */
-    --education: 220 65% 54%;
+    /* Service modes — tuned toward the cool chrome family */
+    --education: 210 90% 56%;
     --education-foreground: 0 0% 100%;
-    --education-light: 220 65% 97%;
+    --education-light: 210 60% 96%;
 
-    --therapy: 142 50% 42%;
+    --therapy: 170 70% 44%;
     --therapy-foreground: 0 0% 100%;
-    --therapy-light: 142 40% 96%;
+    --therapy-light: 170 50% 95%;
 
-    --family: 32 85% 55%;
+    --family: 280 70% 60%;
     --family-foreground: 0 0% 100%;
-    --family-light: 32 70% 96%;
+    --family-light: 280 50% 96%;
 
-    --business: 260 50% 55%;
+    --business: 240 70% 60%;
     --business-foreground: 0 0% 100%;
-    --business-light: 260 40% 97%;
+    --business-light: 240 50% 96%;
 
-    --supervision: 190 60% 42%;
+    --supervision: 190 80% 48%;
     --supervision-foreground: 0 0% 100%;
-    --supervision-light: 190 50% 96%;
+    --supervision-light: 190 60% 95%;
 
-    --sidebar-background: 36 40% 95%;
-    --sidebar-foreground: 230 32% 18%;
-    --sidebar-primary: 230 36% 22%;
-    --sidebar-primary-foreground: 36 42% 97%;
-    --sidebar-accent: 32 30% 90%;
-    --sidebar-accent-foreground: 230 32% 22%;
-    --sidebar-border: 32 22% 86%;
-    --sidebar-ring: 230 36% 28%;
+    --sidebar-background: 220 18% 95% / 0.7;
+    --sidebar-foreground: 222 30% 14%;
+    --sidebar-primary: 222 32% 14%;
+    --sidebar-primary-foreground: 220 30% 98%;
+    --sidebar-accent: 220 16% 88%;
+    --sidebar-accent-foreground: 222 30% 14%;
+    --sidebar-border: 220 16% 82%;
+    --sidebar-ring: 200 90% 56%;
   }
 
   .dark {
-    /* Warm holistic dark — deep indigo night with cream ink, terracotta preserved */
-    --background: 230 28% 9%;          /* deep indigo night */
-    --foreground: 36 30% 92%;          /* warm cream ink */
+    /* Liquid Chrome night — gunmetal & mercury */
+    --background: 222 24% 8%;
+    --foreground: 220 20% 94%;
 
-    --card: 230 24% 12%;
-    --card-foreground: 36 30% 92%;
-    --card-border: 230 18% 20%;
-    --card-shadow: 0 2px 20px -4px hsla(230, 40%, 2%, 0.5),
-                   0 8px 36px -8px hsla(230, 40%, 2%, 0.4),
-                   inset 0 1px 0 0 hsla(36, 40%, 92%, 0.05);
+    --card: 222 22% 12% / 0.62;
+    --card-foreground: 220 20% 94%;
+    --card-border: 220 14% 28% / 0.7;
+    --card-shadow: 0 1px 0 0 hsla(220, 30%, 80%, 0.08) inset,
+                   0 -1px 0 0 hsla(222, 40%, 2%, 0.5) inset,
+                   0 8px 32px -10px hsla(222, 60%, 2%, 0.6),
+                   0 24px 60px -28px hsla(222, 60%, 2%, 0.5);
 
-    --popover: 230 24% 12%;
-    --popover-foreground: 36 30% 92%;
+    --popover: 222 22% 12%;
+    --popover-foreground: 220 20% 94%;
 
-    --primary: 36 36% 88%;             /* cream becomes primary in dark */
-    --primary-foreground: 230 32% 14%;
+    --primary: 220 20% 94%;
+    --primary-foreground: 222 30% 10%;
 
-    --secondary: 230 20% 16%;
-    --secondary-foreground: 36 28% 88%;
+    --secondary: 222 18% 16%;
+    --secondary-foreground: 220 20% 92%;
 
-    --muted: 230 18% 15%;
-    --muted-foreground: 32 14% 68%;
+    --muted: 222 18% 15%;
+    --muted-foreground: 220 12% 68%;
 
-    --accent: 18 58% 60%;              /* terracotta preserved, slightly lifted */
-    --accent-foreground: 36 42% 98%;
+    --accent: 195 100% 62%;
+    --accent-foreground: 222 40% 8%;
 
-    --destructive: 0 62% 52%;
-    --destructive-foreground: 36 42% 98%;
+    --destructive: 350 70% 56%;
+    --destructive-foreground: 220 20% 96%;
 
-    --border: 230 18% 20%;
-    --input: 230 18% 20%;
-    --ring: 18 58% 60%;
+    --border: 220 14% 24% / 0.8;
+    --input: 220 14% 24%;
+    --ring: 195 100% 62%;
 
-    --gradient-warm: linear-gradient(135deg, hsl(230 28% 10%) 0%, hsl(230 22% 14%) 100%);
-    --gradient-sand: linear-gradient(180deg, hsl(230 28% 9%) 0%, hsl(230 24% 13%) 100%);
-    --gradient-dusk: linear-gradient(135deg, hsl(230 36% 18%) 0%, hsl(18 52% 50%) 100%);
-    --shadow-soft: 0 1px 2px hsla(230, 40%, 2%, 0.3),
-                   0 8px 28px -8px hsla(230, 40%, 2%, 0.4);
+    --gradient-warm: linear-gradient(135deg, hsl(222 26% 9%) 0%, hsl(222 22% 14%) 100%);
+    --gradient-sand: linear-gradient(180deg, hsl(222 24% 8%) 0%, hsl(222 22% 13%) 100%);
+    --gradient-dusk: linear-gradient(135deg, hsl(222 32% 14%) 0%, hsl(195 100% 50%) 100%);
+    --shadow-soft: 0 1px 2px hsla(222, 60%, 2%, 0.4),
+                   0 8px 28px -8px hsla(222, 60%, 2%, 0.5);
 
-    --glass-bg: 230 24% 14% / 0.7;
-    --glass-border: 36 30% 92% / 0.10;
-    --glass-border-inner: 36 30% 92% / 0.06;
-    --glass-shadow: 0 2px 24px -4px hsla(230, 40%, 2%, 0.4),
-                    0 8px 40px -8px hsla(230, 40%, 2%, 0.3),
-                    inset 0 1px 0 0 hsla(36, 40%, 92%, 0.06);
-    --glass-shadow-lg: 0 4px 32px -6px hsla(230, 40%, 2%, 0.5),
-                       0 12px 48px -12px hsla(230, 40%, 2%, 0.4),
-                       inset 0 1px 0 0 hsla(36, 40%, 92%, 0.08);
+    --glass-bg: 222 22% 12% / 0.5;
+    --glass-border: 220 30% 80% / 0.14;
+    --glass-border-inner: 220 30% 80% / 0.08;
+    --glass-shadow: 0 1px 0 0 hsla(220, 30%, 80%, 0.08) inset,
+                    0 2px 24px -4px hsla(222, 60%, 2%, 0.5),
+                    0 12px 48px -12px hsla(222, 60%, 2%, 0.45);
+    --glass-shadow-lg: 0 1px 0 0 hsla(220, 30%, 80%, 0.1) inset,
+                       0 4px 32px -6px hsla(222, 60%, 2%, 0.6),
+                       0 16px 64px -16px hsla(222, 60%, 2%, 0.55);
 
-    --education: 220 60% 66%;
-    --education-light: 220 30% 14%;
+    --education: 210 90% 68%;
+    --education-light: 210 30% 14%;
 
-    --therapy: 142 42% 56%;
-    --therapy-light: 142 22% 13%;
+    --therapy: 170 60% 60%;
+    --therapy-light: 170 25% 13%;
 
-    --family: 32 78% 64%;
-    --family-light: 32 30% 13%;
+    --family: 280 60% 70%;
+    --family-light: 280 25% 14%;
 
-    --business: 260 46% 68%;
-    --business-light: 260 22% 14%;
+    --business: 240 60% 72%;
+    --business-light: 240 25% 14%;
 
-    --supervision: 190 54% 56%;
-    --supervision-light: 190 26% 13%;
+    --supervision: 190 80% 60%;
+    --supervision-light: 190 28% 13%;
 
-    --sidebar-background: 230 30% 8%;
-    --sidebar-foreground: 36 30% 92%;
-    --sidebar-primary: 36 36% 88%;
-    --sidebar-primary-foreground: 230 32% 14%;
-    --sidebar-accent: 230 20% 16%;
-    --sidebar-accent-foreground: 36 28% 88%;
-    --sidebar-border: 230 18% 20%;
-    --sidebar-ring: 18 58% 60%;
+    --sidebar-background: 222 26% 9% / 0.75;
+    --sidebar-foreground: 220 20% 94%;
+    --sidebar-primary: 220 20% 94%;
+    --sidebar-primary-foreground: 222 30% 10%;
+    --sidebar-accent: 222 18% 16%;
+    --sidebar-accent-foreground: 220 20% 92%;
+    --sidebar-border: 220 14% 24%;
+    --sidebar-ring: 195 100% 62%;
   }
 
-  /* Paper grain overlay reads as harsh contrast in dark — soften & invert blend */
-  .dark .texture-paper::before {
-    opacity: 0.18;
-    mix-blend-mode: screen;
-  }
+  /* Soften the legacy paper grain over the chrome backdrop */
+  .texture-paper::before { opacity: 0.08; mix-blend-mode: overlay; }
+  .dark .texture-paper::before { opacity: 0.08; mix-blend-mode: screen; }
 }
 
 @layer base {
@@ -179,20 +180,23 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply text-foreground font-sans antialiased;
+    /* Let the WebGL liquid chrome show through; keep a fallback color. */
+    background: transparent;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+  html { background: hsl(var(--background)); }
 
   h1, h2, h3, h4 {
-    font-family: 'Cormorant Garamond', 'DM Sans', 'Inter', Georgia, serif;
+    font-family: 'Space Grotesk', 'Inter', system-ui, -apple-system, sans-serif;
     font-weight: 500;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.02em;
   }
 
   h1 {
-    letter-spacing: -0.018em;
-    font-weight: 500;
+    letter-spacing: -0.03em;
+    font-weight: 600;
   }
 
   /* Hebrew keeps the geometric DM Sans — Cormorant has no Hebrew glyphs */
@@ -308,11 +312,11 @@
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='24' viewBox='0 0 180 24'><path d='M2 12 Q 22 2, 42 12 T 82 12 T 122 12 T 162 12' fill='none' stroke='%23b08a5e' stroke-width='1.2' stroke-linecap='round' opacity='0.55'/></svg>");
   }
 
-  /* Editorial serif display utility */
+  /* Display utility — futuristic geometric */
   .font-editorial {
-    font-family: 'Cormorant Garamond', 'DM Sans', Georgia, serif;
-    font-weight: 400;
-    letter-spacing: -0.005em;
+    font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+    font-weight: 500;
+    letter-spacing: -0.02em;
   }
 }
 
