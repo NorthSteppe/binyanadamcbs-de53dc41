@@ -221,6 +221,7 @@ const App = () => (
                   <Route path="/admin/fba-report" element={<AdminRoute><FBAReportTool /></AdminRoute>} />
                   <Route path="/admin/story-engine" element={<AdminRoute><StoryEngine /></AdminRoute>} />
                   <Route path="/admin/pathway-templates" element={<AdminRoute><PathwayTemplateManager /></AdminRoute>} />
+                  <Route path="/admin/pathway-quiz" element={<AdminRoute><PathwayQuizManager /></AdminRoute>} />
                   <Route path="/admin/supervision" element={<AdminRoute><SupervisionTrackerAdmin /></AdminRoute>} />
 
                   {/* Staff/Therapist portal */}
