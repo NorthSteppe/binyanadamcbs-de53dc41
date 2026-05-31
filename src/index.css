@@ -312,11 +312,11 @@
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='24' viewBox='0 0 180 24'><path d='M2 12 Q 22 2, 42 12 T 82 12 T 122 12 T 162 12' fill='none' stroke='%23b08a5e' stroke-width='1.2' stroke-linecap='round' opacity='0.55'/></svg>");
   }
 
-  /* Editorial serif display utility */
+  /* Display utility — futuristic geometric */
   .font-editorial {
-    font-family: 'Cormorant Garamond', 'DM Sans', Georgia, serif;
-    font-weight: 400;
-    letter-spacing: -0.005em;
+    font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+    font-weight: 500;
+    letter-spacing: -0.02em;
   }
 }
 
