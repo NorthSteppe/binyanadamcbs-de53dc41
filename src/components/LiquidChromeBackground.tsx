@@ -50,11 +50,14 @@ void main(){
   vec2 uv = (gl_FragCoord.xy - 0.5 * u_res) / min(u_res.x, u_res.y);
   vec2 mouse = (u_mouse - 0.5 * u_res) / min(u_res.x, u_res.y);
 
-  // pointer ripple — gaussian bulge that warps the domain toward the cursor
+  // pointer ripple — strong gaussian bulge that warps the domain toward the cursor
   vec2 toM = uv - mouse;
   float d  = length(toM);
-  float bulge = exp(-d * 3.5) * 0.55;
+  float bulge = exp(-d * 2.2) * 1.35;
   vec2 warp = normalize(toM + 1e-5) * bulge;
+
+  // concentric ripple rings emanating from the cursor
+  float rings = sin(d * 28.0 - u_time * 3.2) * exp(-d * 2.0);
 
   // domain-warped fbm — slow, liquid
   float t = u_time * 0.08;
@@ -69,11 +72,16 @@ void main(){
   float bands = 0.5 + 0.5 * sin(12.0 * n + 4.0 * length(r) - t * 2.0);
   bands = pow(bands, 2.2);
 
-  // rim highlight at the bulge edge
-  float rim = smoothstep(0.55, 0.0, d) * smoothstep(0.0, 0.25, d);
+  // bright rim halo around the cursor
+  float halo = exp(-d * 4.0) * 0.9;
+  float rim  = smoothstep(0.6, 0.15, d) * smoothstep(0.0, 0.2, d) * 0.8;
 
-  float lum = clamp(0.35 * n + 0.65 * bands + 0.35 * rim, 0.0, 1.0);
+  float lum = clamp(0.30 * n + 0.55 * bands + 0.45 * rim + 0.35 * halo + 0.20 * rings, 0.0, 1.0);
   vec3 col = chromePalette(lum, u_dark);
+
+  // electric cyan tint at the cursor core for a visible reactive glow
+  vec3 cyan = vec3(0.30, 0.85, 1.0);
+  col = mix(col, cyan, halo * 0.55);
 
   // soft vignette to seat content
   float vig = smoothstep(1.2, 0.2, length(uv));
