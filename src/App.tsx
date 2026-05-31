@@ -48,6 +48,8 @@ import PortalSupportPathway from "./pages/portal/SupportPathway";
 import SupportAgreement from "./pages/portal/SupportAgreement";
 import BetweenSessions from "./pages/portal/BetweenSessions";
 import PathwayTemplateManager from "./pages/admin/PathwayTemplateManager";
+import PathwayQuizManager from "./pages/admin/PathwayQuizManager";
+
 // Admin portal
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminCalendar from "./pages/admin/AdminCalendar";
@@ -219,6 +221,7 @@ const App = () => (
                   <Route path="/admin/fba-report" element={<AdminRoute><FBAReportTool /></AdminRoute>} />
                   <Route path="/admin/story-engine" element={<AdminRoute><StoryEngine /></AdminRoute>} />
                   <Route path="/admin/pathway-templates" element={<AdminRoute><PathwayTemplateManager /></AdminRoute>} />
+                  <Route path="/admin/pathway-quiz" element={<AdminRoute><PathwayQuizManager /></AdminRoute>} />
                   <Route path="/admin/supervision" element={<AdminRoute><SupervisionTrackerAdmin /></AdminRoute>} />
 
                   {/* Staff/Therapist portal */}

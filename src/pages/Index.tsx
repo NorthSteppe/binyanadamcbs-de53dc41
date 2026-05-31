@@ -12,6 +12,7 @@ import BadgeMarquee from "@/components/BadgeMarquee";
 import LandingCalendarWidget from "@/components/LandingCalendarWidget";
 import EditableText from "@/components/editable/EditableText";
 import EditableImage from "@/components/editable/EditableImage";
+import PathwayQuiz from "@/components/PathwayQuiz";
 import { motion } from "framer-motion";
 import { BookOpen } from "lucide-react";
 
@@ -19,7 +20,9 @@ const Index = () => {
   const { t } = useLanguage();
   const { user, isAdmin, isTeamMember } = useAuth();
   const [showBigLogo, setShowBigLogo] = useState(true);
+  const [quizOpen, setQuizOpen] = useState(false);
   const [quote, setQuote] = useState({ text: "", author: "" });
+
 
   const handleQuoteChange = useCallback((q: { text: string; author: string }) => {
     setQuote(q);
@@ -94,11 +97,10 @@ const Index = () => {
             />
 
             <div className="flex flex-col sm:flex-row gap-3">
-              <Button size="lg" asChild className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-8 h-12 text-[14px] font-medium shadow-apple-lg">
-                <Link to="/services" className="inline-flex items-center gap-3">
-                  <EditableText contentKey="landing.exploreBtn" defaultValue={t.landing.exploreServices} as="span" /> <ArrowRight size={16} />
-                </Link>
+              <Button size="lg" onClick={() => setQuizOpen(true)} className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-8 h-12 text-[14px] font-medium shadow-apple-lg inline-flex items-center gap-3">
+                <EditableText contentKey="landing.exploreBtn" defaultValue={t.landing.exploreServices} as="span" /> <ArrowRight size={16} />
               </Button>
+
 
               {user ? (
                 <Button size="lg" variant="outline" asChild className="border-border text-foreground hover:bg-accent rounded-full px-8 h-12 text-[14px] font-medium">
@@ -187,7 +189,9 @@ const Index = () => {
       </section>
 
       <Footer />
+      <PathwayQuiz open={quizOpen} onOpenChange={setQuizOpen} />
     </div>
+
   );
 };
 

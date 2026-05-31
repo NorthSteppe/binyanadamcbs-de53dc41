@@ -1546,6 +1546,42 @@ export type Database = {
         }
         Relationships: []
       }
+      pathway_quiz_slides: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          is_start: boolean
+          options: Json
+          order_index: number
+          question: string
+          subtitle: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          is_start?: boolean
+          options?: Json
+          order_index?: number
+          question: string
+          subtitle?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          is_start?: boolean
+          options?: Json
+          order_index?: number
+          question?: string
+          subtitle?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       pathway_step_templates: {
         Row: {
           created_at: string
