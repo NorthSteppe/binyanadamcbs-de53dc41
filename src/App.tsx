@@ -9,6 +9,7 @@ import { EditModeProvider } from "@/hooks/useEditMode";
 import { PreferencesProvider } from "@/hooks/usePreferences";
 
 import EditModeToggle from "@/components/editable/EditModeToggle";
+import LiquidChromeBackground from "@/components/LiquidChromeBackground";
 import { RouteErrorBoundary } from "@/components/ErrorBoundary";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import AdminRoute from "@/components/AdminRoute";
@@ -145,6 +146,7 @@ const App = () => (
             <Toaster />
             <Sonner />
             <BrowserRouter>
+              <LiquidChromeBackground />
               <AppLoader>
                 <ScrollToTop />
                 <RouteErrorBoundary>
