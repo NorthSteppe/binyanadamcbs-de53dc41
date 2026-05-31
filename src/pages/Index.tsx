@@ -74,8 +74,8 @@ const Index = () => {
                 contentKey="landing.logo"
                 defaultSrc="/lovable-uploads/binyan-adam-logo.png"
                 alt="Binyan Adam"
-                className="mb-2 w-fit rounded-full bg-background/25 p-2.5 shadow-apple-lg backdrop-blur-[2px]"
-                imgClassName="h-36 w-auto object-contain sm:h-40 md:h-48 lg:h-56 drop-shadow-[0_12px_30px_hsl(var(--background)/0.75)]"
+                className="mb-2 w-fit rounded-full bg-card/90 p-3 shadow-apple-lg ring-1 ring-border/60 backdrop-blur-sm dark:bg-primary/95 dark:ring-primary/20"
+                imgClassName="h-36 w-auto object-contain sm:h-40 md:h-48 lg:h-56 drop-shadow-[0_12px_30px_hsl(var(--background)/0.55)]"
               />
             </div>
 

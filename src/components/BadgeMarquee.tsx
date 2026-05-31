@@ -17,7 +17,7 @@ const BadgeMarquee = () => {
               key={`${badge.id}-${i}`}
               src={badge.image_url}
               alt={badge.name}
-              className="h-10 md:h-12 w-auto object-contain opacity-80 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
+              className="h-10 md:h-12 w-auto object-contain opacity-85 hover:opacity-100 transition-opacity duration-300"
               loading="lazy"
             />
           );

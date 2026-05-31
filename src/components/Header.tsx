@@ -70,7 +70,7 @@ const Header = ({ hidelogo = false }: { hidelogo?: boolean }) => {
         : "bg-background/60 backdrop-blur-md"
     }`}>
       <div className={`container flex items-center justify-between transition-all duration-500 ${scrolled ? "h-20 md:h-24" : "h-24 md:h-32"}`}>
-        <Link to="/" className="flex items-center gap-3">
+        <Link to="/" className="flex items-center gap-3 rounded-full bg-card/85 p-1.5 shadow-soft ring-1 ring-border/50 backdrop-blur-sm transition-colors duration-500 dark:bg-primary/95 dark:ring-primary/20">
           <img
             alt="Binyan Adam"
             loading="eager"
