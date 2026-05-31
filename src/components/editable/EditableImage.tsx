@@ -33,10 +33,10 @@ const EditableImage = ({
     imgStyle.align === "right" ? "justify-end" : "justify-start";
 
   const styleObject: React.CSSProperties = {
-    width: imgStyle.width ? `${imgStyle.width}%` : "100%",
+    ...(imgStyle.width ? { width: `${imgStyle.width}%` } : {}),
     transform: `translate(${imgStyle.offsetX ?? 0}px, ${imgStyle.offsetY ?? 0}px) rotate(${imgStyle.rotation ?? 0}deg)`,
     opacity: imgStyle.opacity ?? 1,
-    objectFit: imgStyle.objectFit ?? "cover",
+    ...(imgStyle.objectFit ? { objectFit: imgStyle.objectFit } : {}),
   };
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
