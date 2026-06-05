@@ -3,7 +3,7 @@
 
 export const DEFAULT_SUPPORT_AGREEMENT_TEMPLATE = `SUPPORT AGREEMENT
 
-This Support Agreement ("Agreement") is entered into between Binyan Adam ("the Practice")
+This Support Agreement ("Agreement") is entered into between Binyan ("the Practice")
 and {{parent_name}} ("the Family"), in respect of support provided for {{child_name}}
 (date of birth: {{date_of_birth}}; diagnosis: {{diagnosis}}).
 

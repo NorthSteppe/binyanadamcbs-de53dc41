@@ -75,7 +75,7 @@ const Unsubscribe = () => {
                   <MailX className="mx-auto h-10 w-10 text-destructive" />
                   <h1 className="text-xl font-display font-bold text-foreground">Unsubscribe from emails</h1>
                   <p className="text-sm text-muted-foreground">
-                    You'll stop receiving notification emails from Binyan Adam CBS. In-app notifications won't be affected.
+                    You'll stop receiving notification emails from Binyan CBS. In-app notifications won't be affected.
                   </p>
                   <Button onClick={handleConfirm} variant="destructive" className="mt-4">
                     Confirm Unsubscribe

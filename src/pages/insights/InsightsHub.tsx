@@ -56,7 +56,7 @@ const InsightsHub = () => {
   return (
     <div className="min-h-screen bg-background">
       <Seo
-        title="Insights — Clinical Articles by Binyan Adam"
+        title="Insights — Clinical Articles by Binyan"
         description="Practitioner notes, case reflections, and clinical articles on constructional behaviour analysis, therapy, supervision, and family practice."
         path="/insights"
       />

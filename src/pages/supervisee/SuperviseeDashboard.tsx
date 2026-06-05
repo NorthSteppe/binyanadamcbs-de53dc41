@@ -116,7 +116,7 @@ const SuperviseeDashboard = () => {
           transition={{ duration: 0.6, delay: 0.42 }}
           className="pb-4"
           style={{ color: "rgba(255,255,255,0.35)", fontSize: "11px" }}
-        >{portalT.portalFooter || "Supervisee Portal · Binyan Adam CBS"}</motion.div>
+        >{portalT.portalFooter || "Supervisee Portal · Binyan CBS"}</motion.div>
       </div>
 
       <Footer />

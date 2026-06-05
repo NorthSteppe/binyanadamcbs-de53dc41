@@ -54,8 +54,8 @@ const Contact = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Seo
-        title="Contact Binyan Adam — Get in Touch"
-        description="Reach out to Binyan Adam about therapy, supervision, family or school support. We respond to enquiries from Manchester and across the UK."
+        title="Contact Binyan — Get in Touch"
+        description="Reach out to Binyan about therapy, supervision, family or school support. We respond to enquiries from Manchester and across the UK."
         path="/contact"
       />
       <Header />

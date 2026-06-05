@@ -13,7 +13,7 @@ const Footer = () => {
       <div className="container py-20">
         <div className="grid md:grid-cols-4 gap-12">
           <ScrollReveal direction="up" className="md:col-span-2">
-            <EditableText contentKey="footer.brand" defaultValue="Binyan Adam" as="h3" className="text-2xl font-display mb-4 text-foreground tracking-tight" />
+            <EditableText contentKey="footer.brand" defaultValue="Binyan" as="h3" className="text-2xl font-display mb-4 text-foreground tracking-tight" />
             <EditableText contentKey="footer.description" defaultValue={t.footer.description} as="p" className="text-muted-foreground max-w-md text-sm leading-relaxed" />
             <div className="mt-8 flex flex-wrap gap-4 text-xs text-muted-foreground/50 tracking-wide">
               <EditableText contentKey="footer.cred1" defaultValue="UKBA (Cert)" as="span" />

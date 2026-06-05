@@ -79,7 +79,7 @@ const Header = ({ hidelogo = false }: { hidelogo?: boolean }) => {
           }`}
         >
           <img
-            alt="Binyan Adam"
+            alt="Binyan"
             loading="eager"
             decoding="async"
             width={320}

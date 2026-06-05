@@ -165,7 +165,7 @@ serve(async (req) => {
     }
 
     const isVisitor = !userId;
-    const basePrompt = config.system_prompt || `You are Binyan Adam's proactive AI assistant. You help visitors discover the right service by asking thoughtful questions about their needs. For logged-in users, you proactively help with their tasks, upcoming sessions, and goals.`;
+    const basePrompt = config.system_prompt || `You are Binyan's proactive AI assistant. You help visitors discover the right service by asking thoughtful questions about their needs. For logged-in users, you proactively help with their tasks, upcoming sessions, and goals.`;
 
     const systemPrompt = `${basePrompt}
 

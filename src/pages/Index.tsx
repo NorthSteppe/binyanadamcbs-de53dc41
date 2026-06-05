@@ -37,13 +37,13 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Seo
-        title="Binyan Adam — Constructional Clinical Behaviour Services"
+        title="Binyan — Constructional Clinical Behaviour Services"
         description="Therapy, supervision and training rooted in constructional behaviour science — for individuals, families, schools and organisations across the UK."
         path="/"
         jsonLd={{
           "@context": "https://schema.org",
           "@type": "WebSite",
-          name: "Binyan Adam",
+          name: "Binyan",
           url: "https://bacbs.com/",
           potentialAction: {
             "@type": "SearchAction",
@@ -76,7 +76,7 @@ const Index = () => {
               <EditableImage
                 contentKey="landing.logo"
                 defaultSrc="/lovable-uploads/binyan-adam-logo.png"
-                alt="Binyan Adam"
+                alt="Binyan"
                 className="mb-2 w-fit rounded-full bg-card/90 p-3 shadow-apple-lg ring-1 ring-border/60 backdrop-blur-sm dark:bg-primary/95 dark:ring-primary/20"
                 imgClassName="h-36 w-auto object-contain sm:h-40 md:h-48 lg:h-56 drop-shadow-[0_12px_30px_hsl(var(--background)/0.55)]"
               />
