@@ -97,7 +97,7 @@ serve(async (req) => {
           Please use the secure link below to complete payment for your upcoming session: <strong>${serviceName}</strong>${session.session_date ? ` on ${new Date(session.session_date).toLocaleString("en-GB")}` : ""}.
         </p>
         <p style="margin:24px 0;"><a href="${paymentUrl}" style="display:inline-block;background-color:hsl(174,42%,32%);color:#fff;font-size:15px;border-radius:12px;padding:14px 24px;text-decoration:none;">Pay securely</a></p>
-        <p style="font-size:12px;color:#999;margin-top:32px;">— Binyan Adam CBS</p>
+        <p style="font-size:12px;color:#999;margin-top:32px;">— Binyan CBS</p>
       </div></body></html>`;
 
     await admin.rpc("enqueue_email", {
@@ -105,11 +105,11 @@ serve(async (req) => {
       payload: {
         message_id: crypto.randomUUID(),
         to: clientEmail,
-        from: "Binyan Adam CBS <noreply@bacbs.com>",
+        from: "Binyan CBS <noreply@bacbs.com>",
         sender_domain: "notify.bacbs.com",
         subject,
         html,
-        text: `Hi ${clientName || "there"},\n\nPlease pay for ${serviceName} via this secure link:\n${paymentUrl}\n\n— Binyan Adam CBS`,
+        text: `Hi ${clientName || "there"},\n\nPlease pay for ${serviceName} via this secure link:\n${paymentUrl}\n\n— Binyan CBS`,
         purpose: "transactional",
         label: "payment_link",
         idempotency_key: `payment-link-${session_id}-${Date.now()}`,

@@ -72,7 +72,7 @@ const Login = () => {
         >
           <div className="bg-card border border-border rounded-2xl p-10 shadow-apple">
             <div className="flex justify-center mb-8">
-              <img src="/lovable-uploads/ed0abcc5-2b9d-4294-a3b6-3d6945c02959.png" alt="Binyan Adam" className="h-12" />
+              <img src="/lovable-uploads/ed0abcc5-2b9d-4294-a3b6-3d6945c02959.png" alt="Binyan" className="h-12" />
             </div>
             <h1 className="text-3xl font-display mb-2 text-center tracking-tight">{t.login.title}</h1>
             <p className="text-muted-foreground text-center mb-8 text-sm">{t.login.subtitle}</p>

@@ -1016,7 +1016,7 @@ const PersonalCalendar = ({ isFullscreen = false, onToggleFullscreen }: Personal
           </DialogHeader>
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">
-              Subscribe to your Binyan Adam CBS sessions directly in Google Calendar, Apple Calendar, or Outlook. Your calendar app will automatically stay in sync.
+              Subscribe to your Binyan CBS sessions directly in Google Calendar, Apple Calendar, or Outlook. Your calendar app will automatically stay in sync.
             </p>
             {feedUrl ? (
               <>

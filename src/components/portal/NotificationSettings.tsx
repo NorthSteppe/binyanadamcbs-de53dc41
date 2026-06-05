@@ -68,7 +68,7 @@ const NotificationSettings = () => {
         body: {
           user_id: user.id,
           title: "Test Notification",
-          message: "This is a test notification from Binyan Adam CBS. If you see this, Telegram notifications are working! 🎉",
+          message: "This is a test notification from Binyan CBS. If you see this, Telegram notifications are working! 🎉",
           link: "/portal",
         },
       });

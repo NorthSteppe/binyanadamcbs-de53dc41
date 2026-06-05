@@ -111,11 +111,11 @@ Deno.serve(async (req) => {
   });
 
   // Assemble the full iCal file
-  const calName = `Binyan Adam CBS — ${profile.full_name || "My Calendar"}`;
+  const calName = `Binyan CBS — ${profile.full_name || "My Calendar"}`;
   const ical = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//Binyan Adam CBS//Calendar Feed//EN",
+    "PRODID:-//Binyan CBS//Calendar Feed//EN",
     `X-WR-CALNAME:${icalEscape(calName)}`,
     "X-WR-TIMEZONE:UTC",
     "CALSCALE:GREGORIAN",

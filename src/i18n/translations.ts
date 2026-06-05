@@ -16,7 +16,7 @@ export const translations = {
     // Landing page
     landing: {
       title: "A quiet space to make sense of behaviour — and what's underneath it.",
-      subtitle: "Binyan Adam is a constructional practice for individuals, families, schools and organisations. We start with what's happened, not what's wrong — and we build from there, together.",
+      subtitle: "Binyan is a constructional practice for individuals, families, schools and organisations. We start with what's happened, not what's wrong — and we build from there, together.",
       exploreServices: "Find your way in",
       logIn: "Log In",
       signUp: "Sign Up",
@@ -327,7 +327,7 @@ export const translations = {
     // Login page
     login: {
       title: "Log In",
-      subtitle: "Welcome back to Binyan Adam",
+      subtitle: "Welcome back to Binyan",
       emailLabel: "Email",
       passwordLabel: "Password",
       button: "Log In",
@@ -341,7 +341,7 @@ export const translations = {
     // Signup page
     signup: {
       title: "Sign Up",
-      subtitle: "Create your Binyan Adam account",
+      subtitle: "Create your Binyan account",
       nameLabel: "Full Name",
       emailLabel: "Email",
       passwordLabel: "Password",
@@ -359,7 +359,7 @@ export const translations = {
       description: "Constructional Behaviour Services. Building capability and well-being through collaborative, ethical, and evidence-based practice.\n\n\nWe do not remove behaviour. We build capability.",
       servicesTitle: "Services",
       contactTitle: "Contact",
-      copyright: "Binyan Adam Clinical Behaviour Services. All rights reserved.",
+      copyright: "Binyan Clinical Behaviour Services. All rights reserved.",
       links: {
         education: "PBS in Education",
         therapy: "Therapy",
@@ -1522,7 +1522,7 @@ export const translations = {
     // About page
     about: {
       tagline: "About Us",
-      title: "Binyan Adam Clinical Behaviour Services",
+      title: "Binyan Clinical Behaviour Services",
       subtitle: "Constructional Behaviour Analysis for Education, Families, Therapy, and Organisations. Grounded in ethics. Driven by evidence. Built to last.",
       missionTitle: "Our Mission",
       missionText: "Binyan's mission is to support individuals, families, schools, and organisations to build capability through constructional, ethical, and evidence-based behavioural practice. We aim to utilise our skills and passion for working with people to encourage and help them discover their motivation to achieve their highest potential.",
@@ -1965,7 +1965,7 @@ export const translations = {
       yourTools: "Your Tools",
       everythingInOnePlace: "Everything in one place",
       notificationSettings: "Notification Settings",
-      portalFooter: "Supervisee Portal · Binyan Adam CBS",
+      portalFooter: "Supervisee Portal · Binyan CBS",
       
       newLog: "New Log",
       noLogs: "No case logs yet. Start logging your client sessions.",
@@ -2069,7 +2069,7 @@ export const translations = {
       due: "Due",
       practiceTasks: "Practice Tasks",
       practiceTasksSub: "Team task board",
-      portalFooter: "Therapist Portal · Binyan Adam CBS",
+      portalFooter: "Therapist Portal · Binyan CBS",
     },
     
     staffFunctional: {

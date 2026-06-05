@@ -213,7 +213,7 @@ async function dispatch(cmd: string, chatId: number | string, userId: string, to
 async function cmdStart(chatId: number | string, userId: string | null, token: string, supabase: any) {
   if (!userId) {
     await send(token, chatId,
-      `👋 <b>Welcome to Binyan Adam CBS</b>\n\n` +
+      `👋 <b>Welcome to Binyan CBS</b>\n\n` +
       `To link your account:\n` +
       `1. Log in at <a href="https://bacbs.com/portal">bacbs.com/portal</a>\n` +
       `2. Go to <b>Settings → Notification Settings</b>\n` +
@@ -224,7 +224,7 @@ async function cmdStart(chatId: number | string, userId: string | null, token: s
   const { data: p } = await supabase.from("profiles").select("full_name").eq("id", userId).single();
   const name = p?.full_name?.split(" ")[0] || "there";
   await send(token, chatId,
-    `👋 <b>Hi ${esc(name)}!</b>\n\nYou're connected to Binyan Adam CBS.\n\n` +
+    `👋 <b>Hi ${esc(name)}!</b>\n\nYou're connected to Binyan CBS.\n\n` +
     `📅 /sessions — Upcoming sessions\n` +
     `✅ /tasks — Pending homework\n` +
     `💬 /messages — Unread messages\n` +

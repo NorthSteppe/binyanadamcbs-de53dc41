@@ -182,7 +182,7 @@ async function handleStart(
   if (!userId) {
     await reply(
       chatId,
-      `👋 <b>Welcome to Binyan Adam CBS</b>\n\n` +
+      `👋 <b>Welcome to Binyan CBS</b>\n\n` +
       `To link your account:\n` +
       `1. Log in at <a href="https://bacbs.com/portal">bacbs.com/portal</a>\n` +
       `2. Go to <b>Settings → Notification Settings</b>\n` +
@@ -202,7 +202,7 @@ async function handleStart(
 
   await reply(
     chatId,
-    `👋 <b>Hi ${esc(name)}!</b>\n\nYou're connected to Binyan Adam CBS.\n\n` +
+    `👋 <b>Hi ${esc(name)}!</b>\n\nYou're connected to Binyan CBS.\n\n` +
     `Here's what I can do:\n\n` +
     `📅 /sessions — Your upcoming sessions\n` +
     `✅ /tasks — Pending homework & tasks\n` +
