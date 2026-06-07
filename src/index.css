@@ -161,12 +161,12 @@
 
     --sidebar-background: 222 26% 9% / 0.75;
     --sidebar-foreground: 220 20% 94%;
-    --sidebar-primary: 220 20% 94%;
+    --sidebar-primary: 213 70% 62%;
     --sidebar-primary-foreground: 222 30% 10%;
     --sidebar-accent: 222 18% 16%;
     --sidebar-accent-foreground: 220 20% 92%;
     --sidebar-border: 220 14% 24%;
-    --sidebar-ring: 195 100% 62%;
+    --sidebar-ring: 27 92% 58%;
   }
 
   /* Soften the legacy paper grain over the chrome backdrop */
