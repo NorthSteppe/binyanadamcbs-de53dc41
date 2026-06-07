@@ -22,24 +22,24 @@
     --popover: 220 22% 99%;
     --popover-foreground: 222 30% 10%;
 
-    --primary: 222 32% 14%;           /* graphite */
+    --primary: 213 64% 24%;           /* Blueprint navy */
     --primary-foreground: 220 30% 98%;
 
     --secondary: 220 16% 88%;         /* brushed steel */
-    --secondary-foreground: 222 30% 14%;
+    --secondary-foreground: 213 64% 24%;
 
     --muted: 220 14% 90%;
     --muted-foreground: 222 14% 38%;
 
-    --accent: 200 90% 56%;            /* electric cyan-chrome highlight */
-    --accent-foreground: 222 40% 10%;
+    --accent: 27 92% 53%;             /* Blueprint orange */
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 350 70% 52%;
     --destructive-foreground: 220 30% 98%;
 
     --border: 220 16% 82% / 0.8;
     --input: 220 16% 82%;
-    --ring: 200 90% 56%;
+    --ring: 27 92% 53%;
 
     --radius: 1rem;
 
