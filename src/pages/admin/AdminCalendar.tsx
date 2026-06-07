@@ -700,7 +700,10 @@ const AdminCalendar = () => {
   return (
     <div className={containerClass}>
       {!isFullscreen && <Header />}
-      <section className={isFullscreen ? "" : "pt-28 pb-20"}>
+      <section
+        className={isFullscreen ? "" : "pb-20"}
+        style={isFullscreen ? undefined : { paddingTop: "var(--header-height)" }}
+      >
         <div className={isFullscreen ? "max-w-full" : "container max-w-6xl"}>
           {/* Header Bar */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
