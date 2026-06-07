@@ -46,8 +46,10 @@ Deno.serve(async (req) => {
     // Build line items + identify contact
     let contactName = "";
     let contactEmail: string | null = null;
+    let linkProfileId: string | null = null;
     const lineItems: any[] = [];
     let description = "";
+
 
     if (sessionIds.length) {
       const { data: sessions } = await admin
