@@ -191,16 +191,20 @@ const BusinessDashboard = () => {
                   <p className="text-muted-foreground font-light">Financial overview, manual logging & business planning</p>
                 </div>
               </div>
-              <Select value={timeRange} onValueChange={setTimeRange}>
-                <SelectTrigger className="w-[160px]"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="3months">Last 3 months</SelectItem>
-                  <SelectItem value="6months">Last 6 months</SelectItem>
-                  <SelectItem value="12months">Last 12 months</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </motion.div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <Button variant="outline" onClick={() => (window.location.href = "/admin/finance")} className="gap-1.5">
+                  <Receipt size={14}/> Finance & Clients (Xero)
+                </Button>
+                <Select value={timeRange} onValueChange={setTimeRange}>
+                  <SelectTrigger className="w-[160px]"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="3months">Last 3 months</SelectItem>
+                    <SelectItem value="6months">Last 6 months</SelectItem>
+                    <SelectItem value="12months">Last 12 months</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
 
           {/* KPI Cards */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
