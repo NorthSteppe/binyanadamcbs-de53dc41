@@ -1522,7 +1522,7 @@ export const translations = {
     // About page
     about: {
       tagline: "About Us",
-      title: "Blueprint Clinical Behaviour Services",
+      title: "Blueprint Applied, Constructional, Behavioural Services",
       subtitle: "Constructional Behaviour Analysis for Education, Families, Therapy, and Organisations. Grounded in ethics. Driven by evidence. Built to last.",
       missionTitle: "Our Mission",
       missionText: "Blueprint's mission is to support individuals, families, schools, and organisations to build capability through constructional, ethical, and evidence-based behavioural practice. We aim to utilise our skills and passion for working with people to encourage and help them discover their motivation to achieve their highest potential.",

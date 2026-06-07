@@ -46,7 +46,7 @@ const About = () => {
           "@context": "https://schema.org",
           "@type": "Organization",
           name: "Blueprint",
-          alternateName: "Blueprint Clinical Behaviour Services",
+          alternateName: "Blueprint Applied, Constructional, Behavioural Services",
           url: "https://bacbs.com/",
           logo: "https://bacbs.com/lovable-uploads/blueprint-logo.png",
           email: "adamdayan@bacbs.com",
