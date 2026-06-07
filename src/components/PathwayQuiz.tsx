@@ -114,7 +114,7 @@ export const PathwayQuiz = ({ open, onOpenChange }: PathwayQuizProps) => {
               >
                 <div className="mb-6 flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
                   <Sparkles size={12} />
-                  Find your way in
+                  Let's Explore Together
                   <span className="ml-auto">
                     Step {history.length}{slides.length ? ` / ${slides.length}` : ""}
                   </span>
