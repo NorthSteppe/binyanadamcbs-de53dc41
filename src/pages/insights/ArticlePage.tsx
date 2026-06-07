@@ -90,7 +90,7 @@ const ArticlePage = () => {
     publisher: {
       "@type": "Organization",
       name: "Blueprint",
-      logo: { "@type": "ImageObject", url: "https://bacbs.com/lovable-uploads/blueprint-adam-logo.png" },
+      logo: { "@type": "ImageObject", url: "https://bacbs.com/lovable-uploads/blueprint-logo.png" },
     },
     mainEntityOfPage: `https://bacbs.com/insights/${post.slug}`,
   };

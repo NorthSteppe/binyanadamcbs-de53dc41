@@ -85,7 +85,7 @@ const Header = ({ hidelogo = false }: { hidelogo?: boolean }) => {
             width={320}
             height={320}
             className={`transition-all duration-500 [image-rendering:auto] ${hidelogo ? "opacity-0 scale-90" : "opacity-100 scale-100"} ${scrolled ? "h-16 md:h-20" : "h-20 md:h-28"} w-auto`}
-            src="/lovable-uploads/blueprint-adam-logo.png"
+            src="/lovable-uploads/blueprint-logo.png"
           />
         </Link>
 

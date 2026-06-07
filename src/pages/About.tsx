@@ -48,7 +48,7 @@ const About = () => {
           name: "Blueprint",
           alternateName: "Blueprint Clinical Behaviour Services",
           url: "https://bacbs.com/",
-          logo: "https://bacbs.com/lovable-uploads/blueprint-adam-logo.png",
+          logo: "https://bacbs.com/lovable-uploads/blueprint-logo.png",
           email: "adamdayan@bacbs.com",
           address: { "@type": "PostalAddress", addressLocality: "Manchester", addressCountry: "GB" },
           areaServed: "GB",
