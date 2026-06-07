@@ -1088,7 +1088,6 @@ export type Database = {
           long_description: string
           price_cents: number
           slug: string
-          stripe_price_id: string | null
           thumbnail_url: string | null
           title: string
           updated_at: string
@@ -1104,7 +1103,6 @@ export type Database = {
           long_description?: string
           price_cents?: number
           slug: string
-          stripe_price_id?: string | null
           thumbnail_url?: string | null
           title: string
           updated_at?: string
@@ -1120,7 +1118,6 @@ export type Database = {
           long_description?: string
           price_cents?: number
           slug?: string
-          stripe_price_id?: string | null
           thumbnail_url?: string | null
           title?: string
           updated_at?: string
