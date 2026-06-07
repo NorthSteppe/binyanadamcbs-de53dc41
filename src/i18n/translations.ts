@@ -359,7 +359,7 @@ export const translations = {
       description: "Constructional Behaviour Services. Building capability and well-being through collaborative, ethical, and evidence-based practice.\n\n\nWe do not remove behaviour. We build capability.",
       servicesTitle: "Services",
       contactTitle: "Contact",
-      copyright: "Blueprint Clinical Behaviour Services. All rights reserved.",
+      copyright: "Blueprint Applied, Constructional, Behavioural Services. All rights reserved.",
       links: {
         education: "PBS in Education",
         therapy: "Therapy",
