@@ -17,7 +17,7 @@ export const translations = {
     landing: {
       title: "A quiet space to make sense of behaviour — and what's underneath it.",
       subtitle: "Blueprint is a constructional practice for individuals, families, schools and organisations. We start with what's happened, not what's wrong — and we build from there, together.",
-      exploreServices: "Find your way in",
+      exploreServices: "Let's Explore Together",
       logIn: "Log In",
       signUp: "Sign Up",
       quote: "We do not remove behaviour. We build capability — slowly, attentively, and in your own time.",
