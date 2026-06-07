@@ -47,7 +47,7 @@ const Index = () => {
           >
             <EditableImage
               contentKey="landing.logo"
-              defaultSrc="/lovable-uploads/blueprint-adam-logo.png"
+              defaultSrc="/lovable-uploads/blueprint-logo.png"
               alt="Blueprint"
               className="mb-10"
               imgClassName="h-28 w-auto object-contain md:h-36"
