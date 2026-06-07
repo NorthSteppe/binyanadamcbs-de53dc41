@@ -142,6 +142,6 @@ Deno.serve(async (req) => {
     });
   } catch (e) {
     console.error("xero-sync", e);
-    return new Response(JSON.stringify({ error: (e as Error).message }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    return new Response(JSON.stringify({ error: (e as Error).message, fallback: true }), { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });
