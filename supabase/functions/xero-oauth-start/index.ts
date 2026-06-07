@@ -6,11 +6,14 @@ const corsHeaders = {
 };
 
 const SCOPES = [
+  "openid",
+  "profile",
+  "email",
   "offline_access",
   "accounting.transactions",
-  "accounting.reports.read",
   "accounting.contacts",
-  "accounting.settings.read",
+  "accounting.reports.read",
+  "accounting.settings",
 ].join(" ");
 
 Deno.serve(async (req) => {
