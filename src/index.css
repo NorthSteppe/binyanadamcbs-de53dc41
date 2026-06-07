@@ -177,6 +177,11 @@
   }
   html { background: hsl(var(--background)); }
 
+  body:has(> #root header.fixed) #root > div.min-h-screen > section:first-of-type:not([style*="padding-top"]),
+  body:has(> #root header.fixed) #root > div.min-h-screen > main:first-of-type:not([style*="padding-top"]) {
+    padding-top: var(--header-height);
+  }
+
   h1, h2, h3, h4 {
     font-family: 'Space Grotesk', 'Inter', system-ui, -apple-system, sans-serif;
     font-weight: 600;
