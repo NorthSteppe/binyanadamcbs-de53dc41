@@ -64,6 +64,8 @@ import UnifiedUserManagement from "./pages/admin/UnifiedUserManagement";
 import AuthSettings from "./pages/admin/AuthSettings";
 import SecurityDashboard from "./pages/admin/SecurityDashboard";
 import BusinessDashboard from "./pages/admin/BusinessDashboard";
+import FinanceHub from "./pages/admin/FinanceHub";
+
 import TherapistPayouts from "./pages/admin/TherapistPayouts";
 // Staff portal
 import StaffDashboard from "./pages/staff/StaffDashboard";
