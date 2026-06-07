@@ -64,10 +64,12 @@ Deno.serve(async (req) => {
       }
 
       const clientId = sessions[0].client_id;
-      const { data: prof } = await admin.from("profiles").select("full_name").eq("id", clientId).single();
+      const { data: prof } = await admin.from("profiles").select("full_name, xero_contact_id").eq("id", clientId).single();
       const { data: u } = await admin.auth.admin.getUserById(clientId);
       contactName = prof?.full_name || u?.user?.email || "Client";
       contactEmail = u?.user?.email ?? null;
+      linkProfileId = clientId;
+
 
       for (const s of sessions) {
         if (!s.price_cents || s.price_cents <= 0) continue;
