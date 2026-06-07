@@ -25,18 +25,18 @@ export const MagicLinkEmail = ({
 }: MagicLinkEmailProps) => (
   <Html lang="en" dir="ltr">
     <Head />
-    <Preview>Your Binyan login link</Preview>
+    <Preview>Your Blueprint login link</Preview>
     <Body style={main}>
       <Container style={container}>
         <Img
-          src="https://wcqjmjceelcainyyqjmi.supabase.co/storage/v1/object/public/email-assets/binyan-logo.png?v=1"
-          alt="Binyan"
+          src="https://wcqjmjceelcainyyqjmi.supabase.co/storage/v1/object/public/email-assets/blueprint-logo.png?v=1"
+          alt="Blueprint"
           width="120"
           style={{ marginBottom: '24px' }}
         />
         <Heading style={h1}>Your login link</Heading>
         <Text style={text}>
-          Click the button below to log in to Binyan. This link will expire
+          Click the button below to log in to Blueprint. This link will expire
           shortly.
         </Text>
         <Button style={button} href={confirmationUrl}>

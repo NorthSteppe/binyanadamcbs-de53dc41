@@ -84,12 +84,12 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: `You are Binyan's AI assistant — a knowledgeable, warm, and professional helper for clients of Binyan Clinical Behaviour Services. 
+            content: `You are Blueprint's AI assistant — a knowledgeable, warm, and professional helper for clients of Blueprint Clinical Behaviour Services. 
 
 You help with:
 - Questions about Positive Behaviour Support (PBS), Acceptance and Commitment Therapy (ACT), and constructional approaches
 - General guidance about behavioural science concepts
-- Information about Binyan's services (Education, Therapy, Family Support, Organisations, Supervision)
+- Information about Blueprint's services (Education, Therapy, Family Support, Organisations, Supervision)
 - Practical behavioural strategies for families and professionals
 
 You do NOT:

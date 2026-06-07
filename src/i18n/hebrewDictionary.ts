@@ -5,7 +5,7 @@
 
 export const hebrewDictionary: Record<string, string> = {
   // ====== Brand & Tagline ======
-  "Binyan": "בניין",
+  "Blueprint": "בניין",
   "Building People": "בניין",
   "Therapy & Supervision": "טיפול והדרכה",
   "Loading...": "טוען...",

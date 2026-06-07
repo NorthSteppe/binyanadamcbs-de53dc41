@@ -43,7 +43,7 @@ export const generateMeetingLink = (platform: MeetingPlatform): string => {
       return "https://zoom.us/start/videomeeting";
     case "teams":
       // Teams "meet now" launcher.
-      return "https://teams.microsoft.com/l/meeting/new?subject=Binyan%20Adam%20Session";
+      return "https://teams.microsoft.com/l/meeting/new?subject=Blueprint%20Adam%20Session";
     case "google_meet":
       // meet.new instantly creates a fresh Google Meet room.
       return "https://meet.new";

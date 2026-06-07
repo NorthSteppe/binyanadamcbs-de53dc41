@@ -35,7 +35,7 @@ const TIME_SLOTS = [
 type BookingMode = "single" | "recurring" | "block";
 type RecurrencePattern = "weekly" | "biweekly" | "monthly";
 
-const PENDING_KEY = "binyan-pending-booking";
+const PENDING_KEY = "blueprint-pending-booking";
 
 const Booking = () => {
   const { user } = useAuth();

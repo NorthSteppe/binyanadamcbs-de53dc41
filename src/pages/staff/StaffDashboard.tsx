@@ -239,7 +239,7 @@ const StaffDashboard = () => {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="pb-4"
           style={{ color: "rgba(255,255,255,0.35)", fontSize: "11px" }}
-        >{portalT.portalFooter || "Therapist Portal · Binyan CBS"}</motion.div>
+        >{portalT.portalFooter || "Therapist Portal · Blueprint CBS"}</motion.div>
       </div>
 
       <Footer />

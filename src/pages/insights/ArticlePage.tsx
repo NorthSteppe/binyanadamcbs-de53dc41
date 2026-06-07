@@ -77,7 +77,7 @@ const ArticlePage = () => {
   const category = post.blog_categories as any;
 
   const rawDesc = (post.abstract || "").replace(/\s+/g, " ").trim();
-  const description = rawDesc.length > 160 ? `${rawDesc.slice(0, 157)}…` : (rawDesc || `${post.title} — Binyan Insights`);
+  const description = rawDesc.length > 160 ? `${rawDesc.slice(0, 157)}…` : (rawDesc || `${post.title} — Blueprint Insights`);
   const articleJsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -89,8 +89,8 @@ const ArticlePage = () => {
     author: author ? { "@type": "Person", name: author.name } : undefined,
     publisher: {
       "@type": "Organization",
-      name: "Binyan",
-      logo: { "@type": "ImageObject", url: "https://bacbs.com/lovable-uploads/binyan-adam-logo.png" },
+      name: "Blueprint",
+      logo: { "@type": "ImageObject", url: "https://bacbs.com/lovable-uploads/blueprint-adam-logo.png" },
     },
     mainEntityOfPage: `https://bacbs.com/insights/${post.slug}`,
   };
@@ -98,7 +98,7 @@ const ArticlePage = () => {
   return (
     <div className="min-h-screen bg-background">
       <Seo
-        title={`${post.title} — Binyan Insights`.slice(0, 60)}
+        title={`${post.title} — Blueprint Insights`.slice(0, 60)}
         description={description}
         path={`/insights/${post.slug}`}
         type="article"

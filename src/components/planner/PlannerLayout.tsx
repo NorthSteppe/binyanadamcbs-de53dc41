@@ -15,7 +15,7 @@ const PlannerLayout = () => {
       {/* Permanent Sidebar */}
       <aside className="w-64 border-r border-border bg-card flex flex-col hidden md:flex">
         <div className="p-6 border-b border-border">
-          <h2 className="text-xl font-bold tracking-tight text-primary">Binyan</h2>
+          <h2 className="text-xl font-bold tracking-tight text-primary">Blueprint</h2>
           <p className="text-sm text-muted-foreground mt-1">Business Planner</p>
         </div>
         <nav className="flex-1 p-4 space-y-2">
@@ -44,7 +44,7 @@ const PlannerLayout = () => {
         {/* Mobile Header */}
         <header className="md:hidden flex items-center justify-between p-4 border-b border-border bg-card">
           <div>
-            <h2 className="text-xl font-bold text-primary">Binyan</h2>
+            <h2 className="text-xl font-bold text-primary">Blueprint</h2>
             <p className="text-xs text-muted-foreground">Business Planner</p>
           </div>
           {/* Add a simple mobile menu or just rely on the main app's bottom nav if appropriate, 

@@ -17,14 +17,14 @@ type ResultGroup = {
 
 // Static public pages — always searchable
 const STATIC_PAGES = [
-  { title: "Home", to: "/", desc: "Welcome to Binyan" },
+  { title: "Home", to: "/", desc: "Welcome to Blueprint" },
   { title: "Services", to: "/services", desc: "Our service offerings" },
   { title: "Education", to: "/education", desc: "Education services" },
   { title: "Therapy", to: "/therapy", desc: "Therapy services" },
   { title: "Families", to: "/families", desc: "Family support" },
   { title: "Organisations", to: "/organisations", desc: "For organisations" },
   { title: "Supervision", to: "/supervision", desc: "Supervision services" },
-  { title: "About Us", to: "/about", desc: "About Binyan" },
+  { title: "About Us", to: "/about", desc: "About Blueprint" },
   { title: "Contact", to: "/contact", desc: "Get in touch" },
   { title: "Insights", to: "/insights", desc: "Articles & resources" },
   { title: "Courses", to: "/courses", desc: "Online courses" },

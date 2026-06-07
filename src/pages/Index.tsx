@@ -20,13 +20,13 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Seo
-        title="Binyan — Constructional Clinical Behaviour Services"
+        title="Blueprint — Constructional Clinical Behaviour Services"
         description="Therapy, supervision and training rooted in constructional behaviour science — for individuals, families, schools and organisations across the UK."
         path="/"
         jsonLd={{
           "@context": "https://schema.org",
           "@type": "WebSite",
-          name: "Binyan",
+          name: "Blueprint",
           url: "https://bacbs.com/",
           potentialAction: {
             "@type": "SearchAction",
@@ -47,8 +47,8 @@ const Index = () => {
           >
             <EditableImage
               contentKey="landing.logo"
-              defaultSrc="/lovable-uploads/binyan-adam-logo.png"
-              alt="Binyan"
+              defaultSrc="/lovable-uploads/blueprint-adam-logo.png"
+              alt="Blueprint"
               className="mb-10"
               imgClassName="h-28 w-auto object-contain md:h-36"
             />

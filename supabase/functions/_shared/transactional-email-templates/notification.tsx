@@ -14,8 +14,8 @@ import {
 } from 'npm:@react-email/components@0.0.22'
 import type { TemplateEntry } from './registry.ts'
 
-const SITE_NAME = 'Binyan CBS'
-const LOGO_URL = 'https://wcqjmjceelcainyyqjmi.supabase.co/storage/v1/object/public/email-assets/binyan-logo.png?v=1'
+const SITE_NAME = 'Blueprint CBS'
+const LOGO_URL = 'https://wcqjmjceelcainyyqjmi.supabase.co/storage/v1/object/public/email-assets/blueprint-logo.png?v=1'
 const SITE_URL = 'https://bacbs.com'
 
 interface NotificationEmailProps {
@@ -32,12 +32,12 @@ const NotificationEmail = ({ title, message, link }: NotificationEmailProps) => 
       <Container style={container}>
         <Img
           src={LOGO_URL}
-          alt="Binyan"
+          alt="Blueprint"
           width="120"
           style={{ marginBottom: '24px' }}
         />
         <Heading style={h1}>{title || 'New Notification'}</Heading>
-        <Text style={text}>{message || 'You have a new notification on Binyan CBS.'}</Text>
+        <Text style={text}>{message || 'You have a new notification on Blueprint CBS.'}</Text>
         {link && (
           <Button style={button} href={`${SITE_URL}${link}`}>
             View Details

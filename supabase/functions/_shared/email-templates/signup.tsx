@@ -30,16 +30,16 @@ export const SignupEmail = ({
 }: SignupEmailProps) => (
   <Html lang="en" dir="ltr">
     <Head />
-    <Preview>Welcome to Binyan — confirm your email to get started</Preview>
+    <Preview>Welcome to Blueprint — confirm your email to get started</Preview>
     <Body style={main}>
       <Container style={container}>
         <Img
-          src="https://wcqjmjceelcainyyqjmi.supabase.co/storage/v1/object/public/email-assets/binyan-logo.png?v=1"
-          alt="Binyan"
+          src="https://wcqjmjceelcainyyqjmi.supabase.co/storage/v1/object/public/email-assets/blueprint-logo.png?v=1"
+          alt="Blueprint"
           width="120"
           style={{ marginBottom: '24px' }}
         />
-        <Heading style={h1}>Welcome to Binyan</Heading>
+        <Heading style={h1}>Welcome to Blueprint</Heading>
         <Text style={text}>
           Thanks for signing up! We're glad you're here. Please confirm your
           email address (

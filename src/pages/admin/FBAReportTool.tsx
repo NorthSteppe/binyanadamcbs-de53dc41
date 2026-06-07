@@ -449,9 +449,9 @@ function generateStyledHTML(d: FBAData, assessor: AssessorInfo | null, t: any, i
 
 <!-- ═══ HEADER ═══════════════════════════════════════════════════════ -->
 <div class="report-header">
-  <img class="logo" id="report-logo" src="${logoUrl}" alt="Binyan CBS" onerror="this.style.display='none'">
+  <img class="logo" id="report-logo" src="${logoUrl}" alt="Blueprint CBS" onerror="this.style.display='none'">
   <div class="report-header-right">
-    <strong>BINYAN ADAM CBS</strong><br>
+    <strong>BLUEPRINT ADAM CBS</strong><br>
     Constructional Behaviour Support<br>
     ${aWeb ? aWeb : "bacbs.com"} &nbsp;·&nbsp; adamdayan@bacbs.com
   </div>

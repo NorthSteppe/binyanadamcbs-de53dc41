@@ -165,7 +165,7 @@ serve(async (req) => {
     }
 
     const isVisitor = !userId;
-    const basePrompt = config.system_prompt || `You are Binyan's proactive AI assistant. You help visitors discover the right service by asking thoughtful questions about their needs. For logged-in users, you proactively help with their tasks, upcoming sessions, and goals.`;
+    const basePrompt = config.system_prompt || `You are Blueprint's proactive AI assistant. You help visitors discover the right service by asking thoughtful questions about their needs. For logged-in users, you proactively help with their tasks, upcoming sessions, and goals.`;
 
     const systemPrompt = `${basePrompt}
 
@@ -175,7 +175,7 @@ ${isVisitor ? `
 ## Visitor Mode
 The user is a website visitor (not logged in). Your goal is to:
 1. Understand their needs by asking thoughtful questions
-2. Recommend the right Binyan service (Education, Therapy, Family Support, Organisations, Supervision)
+2. Recommend the right Blueprint service (Education, Therapy, Family Support, Organisations, Supervision)
 3. Collect relevant information naturally during the conversation (name, concern area, who needs support)
 4. Guide them toward booking a consultation
 5. Be warm and approachable — not salesy

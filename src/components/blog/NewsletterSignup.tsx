@@ -21,7 +21,7 @@ const NewsletterSignup = ({ variant = "default" }: { variant?: "default" | "inli
           templateData: {
             subject: "New Newsletter Subscriber",
             title: "New Newsletter Signup",
-            message: `${email} has subscribed to the Binyan CBS newsletter.`,
+            message: `${email} has subscribed to the Blueprint CBS newsletter.`,
           },
         },
       });

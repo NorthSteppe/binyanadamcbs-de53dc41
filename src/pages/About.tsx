@@ -39,16 +39,16 @@ const About = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Seo
-        title="About Binyan — Our Mission and Team"
-        description="Meet the team behind Binyan and learn how our constructional clinical behaviour approach builds capability with individuals, families, and organisations."
+        title="About Blueprint — Our Mission and Team"
+        description="Meet the team behind Blueprint and learn how our constructional clinical behaviour approach builds capability with individuals, families, and organisations."
         path="/about"
         jsonLd={{
           "@context": "https://schema.org",
           "@type": "Organization",
-          name: "Binyan",
-          alternateName: "Binyan Clinical Behaviour Services",
+          name: "Blueprint",
+          alternateName: "Blueprint Clinical Behaviour Services",
           url: "https://bacbs.com/",
-          logo: "https://bacbs.com/lovable-uploads/binyan-adam-logo.png",
+          logo: "https://bacbs.com/lovable-uploads/blueprint-adam-logo.png",
           email: "adamdayan@bacbs.com",
           address: { "@type": "PostalAddress", addressLocality: "Manchester", addressCountry: "GB" },
           areaServed: "GB",
@@ -62,7 +62,7 @@ const About = () => {
         <EditableImage
           contentKey="about.hero"
           defaultSrc={(content?.image_url && content.image_url.length > 0) ? content.image_url : "/lovable-uploads/93c59eae-410f-4380-a222-312d8d41af41.jpg"}
-          alt={content?.alt_text || "Binyan"}
+          alt={content?.alt_text || "Blueprint"}
           className="absolute inset-0"
           imgClassName="w-full h-full object-cover"
         />

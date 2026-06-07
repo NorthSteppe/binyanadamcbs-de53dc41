@@ -1,4 +1,4 @@
-# Binyan
+# Blueprint
 
 > Constructional clinical behaviour services for individuals, families, schools, and organisations in Manchester and across the UK. We build capability through compassionate, evidence-based therapy, supervision, and training.
 
