@@ -37,3 +37,6 @@ project_id = "wcqjmjceelcainyyqjmi"
     verify_jwt = false
   [functions.oauth-zoom-callback]
     verify_jwt = false
+  [functions.xero-oauth-callback]
+    verify_jwt = false
+
