@@ -61,7 +61,7 @@ const Contact = () => {
       <Header />
 
 
-      <section className="pt-40 pb-24">
+      <section className="pt-48 md:pt-56 pb-24">
         <div className="container">
           <div className="grid lg:grid-cols-2 gap-20">
             <ScrollReveal direction="left">
