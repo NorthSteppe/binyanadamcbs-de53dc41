@@ -7,7 +7,7 @@
 @layer base {
   :root {
     /* Global layout — reserved space for the fixed site header */
-    --header-height: 7rem;
+    --header-height: 9rem;
     /* Blueprint — Navy + Orange. Clean, solid surfaces. No chrome / no glass. */
     --background: 0 0% 100%;
     --foreground: 213 64% 14%;
@@ -177,9 +177,9 @@
   }
   html { background: hsl(var(--background)); }
 
-  body:has(> #root header.fixed) #root > div.min-h-screen > section:first-of-type:not([style*="padding-top"]),
-  body:has(> #root header.fixed) #root > div.min-h-screen > main:first-of-type:not([style*="padding-top"]) {
-    padding-top: var(--header-height);
+  body:has(header.fixed) #root > div.min-h-screen > section:first-of-type:not([style*="padding-top"]),
+  body:has(header.fixed) #root > div.min-h-screen > main:first-of-type:not([style*="padding-top"]) {
+    padding-top: calc(var(--header-height) + 1rem);
   }
 
   h1, h2, h3, h4 {
@@ -308,6 +308,6 @@ body.lang-he .font-serif {
 /* Larger header on md+ screens */
 @media (min-width: 768px) {
   :root {
-    --header-height: 9rem;
+    --header-height: 10.5rem;
   }
 }
