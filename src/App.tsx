@@ -107,6 +107,7 @@ import ManualClients from "./pages/admin/ManualClients";
 import AssistantManager from "./pages/admin/AssistantManager";
 import FBAReportTool from "./pages/admin/FBAReportTool";
 import StoryEngine from "./pages/admin/StoryEngine";
+import FeatureFlags from "./pages/admin/FeatureFlags";
 
 // Business Planner
 import PlannerLayout from "./components/planner/PlannerLayout";
@@ -223,6 +224,7 @@ const App = () => (
                   <Route path="/admin/pathway-templates" element={<AdminRoute><PathwayTemplateManager /></AdminRoute>} />
                   <Route path="/admin/pathway-quiz" element={<AdminRoute><PathwayQuizManager /></AdminRoute>} />
                   <Route path="/admin/supervision" element={<AdminRoute><SupervisionTrackerAdmin /></AdminRoute>} />
+                  <Route path="/admin/features" element={<AdminRoute><FeatureFlags /></AdminRoute>} />
 
                   {/* Staff/Therapist portal */}
                   <Route path="/staff" element={<StaffRoute><StaffDashboard /></StaffRoute>} />
