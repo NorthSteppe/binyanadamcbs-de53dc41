@@ -32,7 +32,7 @@ const StaffDashboard = () => {
     supabase
       .from("sessions")
       .select("id", { count: "exact", head: true })
-      .or(`therapist_id.eq.${user.id},attendee_ids.cs.{${user.id}}`)
+      .eq("therapist_id", user.id)
       .gte("session_date", start.toISOString())
       .lte("session_date", end.toISOString())
       .then(({ count }) => setTodayCount(count ?? 0));
