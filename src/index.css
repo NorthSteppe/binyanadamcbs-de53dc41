@@ -299,3 +299,10 @@ body.lang-he .font-editorial,
 body.lang-he .font-serif {
   font-family: 'DM Sans', system-ui, sans-serif !important;
 }
+
+/* Larger header on md+ screens */
+@media (min-width: 768px) {
+  :root {
+    --header-height: 9rem;
+  }
+}
