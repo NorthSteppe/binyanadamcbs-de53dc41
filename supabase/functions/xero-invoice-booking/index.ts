@@ -95,10 +95,12 @@ Deno.serve(async (req) => {
       const { data: course } = await admin.from("courses").select("title, price_cents").eq("id", purchase.course_id).single();
       if (!course?.price_cents) throw new Error("Course has no price");
 
-      const { data: prof } = await admin.from("profiles").select("full_name").eq("id", purchase.user_id).single();
+      const { data: prof } = await admin.from("profiles").select("full_name, xero_contact_id").eq("id", purchase.user_id).single();
       const { data: u } = await admin.auth.admin.getUserById(purchase.user_id);
       contactName = prof?.full_name || u?.user?.email || "Client";
       contactEmail = u?.user?.email ?? null;
+      linkProfileId = purchase.user_id;
+
 
       lineItems.push({
         Description: `Course access: ${course.title}`.slice(0, 500),
