@@ -23,7 +23,6 @@ interface Course {
   long_description: string;
   thumbnail_url: string | null;
   price_cents: number;
-  stripe_price_id: string | null;
   is_subscription_included: boolean;
   is_active: boolean;
   is_featured: boolean;
@@ -38,7 +37,6 @@ const emptyCourse = {
   long_description: "",
   thumbnail_url: "",
   price_cents: 0,
-  stripe_price_id: "",
   is_subscription_included: false,
   is_active: false,
   is_featured: false,
@@ -86,7 +84,6 @@ const CourseManager = () => {
         long_description: values.long_description,
         thumbnail_url: thumbnailUrl || null,
         price_cents: values.price_cents,
-        stripe_price_id: values.stripe_price_id || null,
         is_subscription_included: values.is_subscription_included,
         is_active: values.is_active,
         is_featured: values.is_featured,
