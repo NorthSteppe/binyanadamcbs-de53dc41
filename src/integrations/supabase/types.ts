@@ -1309,6 +1309,36 @@ export type Database = {
           },
         ]
       }
+      feature_flags: {
+        Row: {
+          category: string
+          created_at: string
+          description: string
+          display_order: number
+          is_system: boolean
+          key: string
+          label: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description?: string
+          display_order?: number
+          is_system?: boolean
+          key: string
+          label: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string
+          display_order?: number
+          is_system?: boolean
+          key?: string
+          label?: string
+        }
+        Relationships: []
+      }
       focus_blocks: {
         Row: {
           created_at: string
@@ -1704,6 +1734,38 @@ export type Database = {
           title?: string
         }
         Relationships: []
+      }
+      role_feature_access: {
+        Row: {
+          enabled: boolean
+          feature_key: string
+          role: Database["public"]["Enums"]["app_role"]
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          enabled?: boolean
+          feature_key: string
+          role: Database["public"]["Enums"]["app_role"]
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          enabled?: boolean
+          feature_key?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "role_feature_access_feature_key_fkey"
+            columns: ["feature_key"]
+            isOneToOne: false
+            referencedRelation: "feature_flags"
+            referencedColumns: ["key"]
+          },
+        ]
       }
       service_options: {
         Row: {

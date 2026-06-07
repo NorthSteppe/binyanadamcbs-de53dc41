@@ -6,6 +6,8 @@
 
 @layer base {
   :root {
+    /* Global layout — reserved space for the fixed site header */
+    --header-height: 7rem;
     /* Blueprint — Navy + Orange. Clean, solid surfaces. No chrome / no glass. */
     --background: 0 0% 100%;
     --foreground: 213 64% 14%;
@@ -296,4 +298,11 @@ body.lang-he textarea {
 body.lang-he .font-editorial,
 body.lang-he .font-serif {
   font-family: 'DM Sans', system-ui, sans-serif !important;
+}
+
+/* Larger header on md+ screens */
+@media (min-width: 768px) {
+  :root {
+    --header-height: 9rem;
+  }
 }
