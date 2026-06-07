@@ -204,6 +204,10 @@ const BusinessDashboard = () => {
                   </SelectContent>
                 </Select>
               </div>
+            </div>
+          </motion.div>
+
+
 
 
           {/* KPI Cards */}
