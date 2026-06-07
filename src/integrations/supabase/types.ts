@@ -2729,6 +2729,150 @@ export type Database = {
           },
         ]
       }
+      xero_connection: {
+        Row: {
+          access_token: string
+          connected_by: string | null
+          created_at: string
+          expires_at: string
+          id: string
+          last_synced_at: string | null
+          refresh_token: string
+          scope: string | null
+          tenant_id: string
+          tenant_name: string | null
+          updated_at: string
+        }
+        Insert: {
+          access_token: string
+          connected_by?: string | null
+          created_at?: string
+          expires_at: string
+          id?: string
+          last_synced_at?: string | null
+          refresh_token: string
+          scope?: string | null
+          tenant_id: string
+          tenant_name?: string | null
+          updated_at?: string
+        }
+        Update: {
+          access_token?: string
+          connected_by?: string | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          last_synced_at?: string | null
+          refresh_token?: string
+          scope?: string | null
+          tenant_id?: string
+          tenant_name?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      xero_invoices: {
+        Row: {
+          amount_due: number | null
+          amount_paid: number | null
+          contact_name: string | null
+          created_at: string
+          currency_code: string | null
+          due_date: string | null
+          fully_paid_on_date: string | null
+          id: string
+          invoice_number: string | null
+          issue_date: string | null
+          raw: Json | null
+          status: string | null
+          sub_total: number | null
+          synced_at: string
+          total: number | null
+          total_tax: number | null
+          type: string | null
+          updated_at: string
+          xero_invoice_id: string
+        }
+        Insert: {
+          amount_due?: number | null
+          amount_paid?: number | null
+          contact_name?: string | null
+          created_at?: string
+          currency_code?: string | null
+          due_date?: string | null
+          fully_paid_on_date?: string | null
+          id?: string
+          invoice_number?: string | null
+          issue_date?: string | null
+          raw?: Json | null
+          status?: string | null
+          sub_total?: number | null
+          synced_at?: string
+          total?: number | null
+          total_tax?: number | null
+          type?: string | null
+          updated_at?: string
+          xero_invoice_id: string
+        }
+        Update: {
+          amount_due?: number | null
+          amount_paid?: number | null
+          contact_name?: string | null
+          created_at?: string
+          currency_code?: string | null
+          due_date?: string | null
+          fully_paid_on_date?: string | null
+          id?: string
+          invoice_number?: string | null
+          issue_date?: string | null
+          raw?: Json | null
+          status?: string | null
+          sub_total?: number | null
+          synced_at?: string
+          total?: number | null
+          total_tax?: number | null
+          type?: string | null
+          updated_at?: string
+          xero_invoice_id?: string
+        }
+        Relationships: []
+      }
+      xero_pnl_monthly: {
+        Row: {
+          created_at: string
+          currency_code: string | null
+          expenses: number | null
+          id: string
+          month_start: string
+          net_profit: number | null
+          revenue: number | null
+          synced_at: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          currency_code?: string | null
+          expenses?: number | null
+          id?: string
+          month_start: string
+          net_profit?: number | null
+          revenue?: number | null
+          synced_at?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          currency_code?: string | null
+          expenses?: number | null
+          id?: string
+          month_start?: string
+          net_profit?: number | null
+          revenue?: number | null
+          synced_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       team_members_public: {
