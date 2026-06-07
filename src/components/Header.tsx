@@ -72,10 +72,10 @@ const Header = ({ hidelogo = false }: { hidelogo?: boolean }) => {
       <div className={`container flex items-center justify-between transition-all duration-500 ${scrolled ? "h-20 md:h-24" : "h-24 md:h-32"}`}>
         <Link
           to="/"
-          className={`flex items-center gap-3 rounded-full transition-all duration-500 ${
+          className={`flex items-center gap-3 transition-all duration-500 ${
             hidelogo
-              ? "pointer-events-none scale-90 bg-transparent p-0 opacity-0 shadow-none ring-0"
-              : "bg-card/85 p-1.5 opacity-100 shadow-soft ring-1 ring-border/50 backdrop-blur-sm dark:bg-primary/95 dark:ring-primary/20"
+              ? "pointer-events-none scale-90 opacity-0"
+              : "opacity-100"
           }`}
         >
           <img
