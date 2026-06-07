@@ -325,7 +325,7 @@ const ClientFinancialTab = ({ clientId, manualClientId, isManual }: Props) => {
                           <SelectValue placeholder={savingId === s.id ? "Saving..." : "Mark paid via"} />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="stripe">Stripe</SelectItem>
+                          <SelectItem value="xero">Xero invoice</SelectItem>
                           <SelectItem value="bank_transfer">Bank transfer</SelectItem>
                           <SelectItem value="cash">Cash</SelectItem>
                           <SelectItem value="cheque">Cheque</SelectItem>

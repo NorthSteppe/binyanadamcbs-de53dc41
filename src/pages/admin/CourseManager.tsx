@@ -130,7 +130,7 @@ const CourseManager = () => {
       long_description: course.long_description,
       thumbnail_url: course.thumbnail_url || "",
       price_cents: course.price_cents,
-      stripe_price_id: course.stripe_price_id || "",
+      
       is_subscription_included: course.is_subscription_included,
       is_active: course.is_active,
       is_featured: course.is_featured,
@@ -265,15 +265,10 @@ const CourseManager = () => {
                     <img src={form.thumbnail_url} alt="Current thumbnail" className="mt-2 h-20 rounded object-cover" />
                   )}
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label>Price (pence)</Label>
-                    <Input type="number" value={form.price_cents} onChange={(e) => setForm({ ...form, price_cents: parseInt(e.target.value) || 0 })} />
-                  </div>
-                  <div>
-                    <Label>Stripe Price ID</Label>
-                    <Input value={form.stripe_price_id} onChange={(e) => setForm({ ...form, stripe_price_id: e.target.value })} placeholder="price_..." />
-                  </div>
+                <div>
+                  <Label>Price (pence)</Label>
+                  <Input type="number" value={form.price_cents} onChange={(e) => setForm({ ...form, price_cents: parseInt(e.target.value) || 0 })} />
+                  <p className="text-xs text-muted-foreground mt-1">Set above zero to bill via Xero invoice on enrolment.</p>
                 </div>
                 <div>
                   <Label>Display Order</Label>
