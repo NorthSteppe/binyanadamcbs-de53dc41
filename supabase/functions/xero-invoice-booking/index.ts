@@ -46,8 +46,10 @@ Deno.serve(async (req) => {
     // Build line items + identify contact
     let contactName = "";
     let contactEmail: string | null = null;
+    let linkProfileId: string | null = null;
     const lineItems: any[] = [];
     let description = "";
+
 
     if (sessionIds.length) {
       const { data: sessions } = await admin
@@ -62,10 +64,12 @@ Deno.serve(async (req) => {
       }
 
       const clientId = sessions[0].client_id;
-      const { data: prof } = await admin.from("profiles").select("full_name").eq("id", clientId).single();
+      const { data: prof } = await admin.from("profiles").select("full_name, xero_contact_id").eq("id", clientId).single();
       const { data: u } = await admin.auth.admin.getUserById(clientId);
       contactName = prof?.full_name || u?.user?.email || "Client";
       contactEmail = u?.user?.email ?? null;
+      linkProfileId = clientId;
+
 
       for (const s of sessions) {
         if (!s.price_cents || s.price_cents <= 0) continue;
@@ -91,10 +95,12 @@ Deno.serve(async (req) => {
       const { data: course } = await admin.from("courses").select("title, price_cents").eq("id", purchase.course_id).single();
       if (!course?.price_cents) throw new Error("Course has no price");
 
-      const { data: prof } = await admin.from("profiles").select("full_name").eq("id", purchase.user_id).single();
+      const { data: prof } = await admin.from("profiles").select("full_name, xero_contact_id").eq("id", purchase.user_id).single();
       const { data: u } = await admin.auth.admin.getUserById(purchase.user_id);
       contactName = prof?.full_name || u?.user?.email || "Client";
       contactEmail = u?.user?.email ?? null;
+      linkProfileId = purchase.user_id;
+
 
       lineItems.push({
         Description: `Course access: ${course.title}`.slice(0, 500),
@@ -152,9 +158,16 @@ Deno.serve(async (req) => {
       });
     }
 
-    return new Response(JSON.stringify({ ok: true, invoice: json.Invoices?.[0] ?? null }), {
+    const createdInvoice = json.Invoices?.[0] ?? null;
+    const xeroContactId = createdInvoice?.Contact?.ContactID ?? null;
+    if (linkProfileId && xeroContactId) {
+      await admin.from("profiles").update({ xero_contact_id: xeroContactId }).eq("id", linkProfileId).is("xero_contact_id", null);
+    }
+
+    return new Response(JSON.stringify({ ok: true, invoice: createdInvoice, xero_contact_id: xeroContactId }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
+
   } catch (e) {
     console.error("xero-invoice-booking error", e);
     return new Response(JSON.stringify({ ok: false, error: (e as Error).message }), {
