@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Plus, Trash2, Save, Settings, DollarSign } from "lucide-react";
+import { Plus, Trash2, Save, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,14 +19,12 @@ interface ServiceOption {
   is_active: boolean;
   display_order: number;
   price_cents: number;
-  stripe_price_id: string | null;
 }
 
 const ServiceOptionsManager = () => {
   const { toast } = useToast();
   const [services, setServices] = useState<ServiceOption[]>([]);
   const [loading, setLoading] = useState(true);
-  const [syncing, setSyncing] = useState<string | null>(null);
 
   const fetchServices = async () => {
     const { data } = await supabase.from("service_options").select("*").order("display_order");
@@ -44,26 +42,10 @@ const ServiceOptionsManager = () => {
   const updateService = async (svc: ServiceOption) => {
     const { error } = await supabase.from("service_options").update({
       name: svc.name, description: svc.description, duration_minutes: svc.duration_minutes,
-      is_active: svc.is_active, display_order: svc.display_order,
+      is_active: svc.is_active, display_order: svc.display_order, price_cents: svc.price_cents,
     } as any).eq("id", svc.id);
     if (!error) toast({ title: "Updated" });
     else toast({ title: "Error", description: error.message, variant: "destructive" });
-  };
-
-  const syncPrice = async (svc: ServiceOption) => {
-    setSyncing(svc.id);
-    try {
-      const { data, error } = await supabase.functions.invoke("sync-stripe-price", {
-        body: { service_option_id: svc.id, name: svc.name, price_cents: svc.price_cents },
-      });
-      if (error) throw error;
-      toast({ title: "Price synced to Stripe" });
-      fetchServices();
-    } catch (e: any) {
-      toast({ title: "Sync failed", description: e.message, variant: "destructive" });
-    } finally {
-      setSyncing(null);
-    }
   };
 
   const deleteService = async (id: string) => {
@@ -83,7 +65,9 @@ const ServiceOptionsManager = () => {
         <div className="container max-w-3xl">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <h1 className="text-3xl mb-2 flex items-center gap-3"><Settings size={28} className="text-primary" /> Service Options</h1>
-            <p className="text-muted-foreground mb-8">Manage booking options and pricing available to clients.</p>
+            <p className="text-muted-foreground mb-8">
+              Manage booking options and pricing. Paid bookings raise a draft invoice in Xero automatically — review and send it from Xero.
+            </p>
           </motion.div>
 
           <Button onClick={addService} className="rounded-full gap-2 mb-6"><Plus size={16} /> Add Service</Button>
@@ -120,16 +104,10 @@ const ServiceOptionsManager = () => {
                       />
                     </div>
                     <div className="ms-auto flex gap-2 flex-wrap">
-                      <Button size="sm" variant="outline" className="rounded-full gap-1" onClick={() => syncPrice(svc)} disabled={syncing === svc.id}>
-                        <DollarSign size={14} /> {syncing === svc.id ? "Syncing..." : "Sync Price"}
-                      </Button>
                       <Button size="sm" variant="outline" className="rounded-full gap-1" onClick={() => updateService(svc)}><Save size={14} /> Save</Button>
                       <Button size="sm" variant="destructive" className="rounded-full gap-1" onClick={() => deleteService(svc.id)}><Trash2 size={14} /></Button>
                     </div>
                   </div>
-                  {svc.stripe_price_id && (
-                    <p className="text-xs text-muted-foreground">Stripe Price: {svc.stripe_price_id}</p>
-                  )}
                 </div>
               ))}
             </div>

@@ -23,7 +23,6 @@ interface ServiceOption {
   description: string;
   duration_minutes: number;
   price_cents: number;
-  stripe_price_id: string | null;
 }
 
 const TIME_SLOTS = [
@@ -35,7 +34,7 @@ const TIME_SLOTS = [
 type BookingMode = "single" | "recurring" | "block";
 type RecurrencePattern = "weekly" | "biweekly" | "monthly";
 
-const PENDING_KEY = "blueprint-pending-booking";
+
 
 const Booking = () => {
   const { user } = useAuth();
@@ -61,15 +60,8 @@ const Booking = () => {
   const [recurrenceCount, setRecurrenceCount] = useState(4);
 
   useEffect(() => {
-    if (searchParams.get("success") === "true") {
-      setSuccess(true);
-      // Finalize pending paid booking sessions, if any
-      finalizePendingPaidBooking();
-    }
-    if (searchParams.get("canceled") === "true") {
-      setCanceled(true);
-      try { localStorage.removeItem(PENDING_KEY); } catch {}
-    }
+    if (searchParams.get("success") === "true") setSuccess(true);
+    if (searchParams.get("canceled") === "true") setCanceled(true);
   }, [searchParams]);
 
   useEffect(() => {
@@ -114,70 +106,9 @@ const Booking = () => {
   const sessionCount = sessionDates.length;
   const totalPriceCents = (selectedService?.price_cents || 0) * sessionCount;
 
-  const finalizePendingPaidBooking = async () => {
-    try {
-      const raw = localStorage.getItem(PENDING_KEY);
-      if (!raw) return;
-      const pending = JSON.parse(raw) as {
-        user_id: string;
-        service: ServiceOption;
-        dates: string[]; // ISO
-        platform: MeetingPlatform;
-        meeting_url: string | null;
-        description: string;
-      };
-      const { data: u } = await supabase.auth.getUser();
-      if (!u?.user || u.user.id !== pending.user_id) {
-        localStorage.removeItem(PENDING_KEY);
-        return;
-      }
-      const sorted = pending.dates.map((d) => new Date(d)).sort((a, b) => a.getTime() - b.getTime());
-      const first = sorted[0];
-
-      const baseRow = {
-        client_id: pending.user_id,
-        title: pending.service.name,
-        description: pending.description || null,
-        duration_minutes: pending.service.duration_minutes,
-        meeting_platform: pending.platform === "in_person" ? null : pending.platform,
-        meeting_url: pending.meeting_url || null,
-        is_paid: true,
-        price_cents: pending.service.price_cents,
-        service_option_id: pending.service.id,
-      };
-
-      const { data: firstInserted, error: firstErr } = await supabase
-        .from("sessions")
-        .insert({ ...baseRow, session_date: first.toISOString() })
-        .select("id")
-        .single();
-
-      if (firstErr || !firstInserted) {
-        console.error("Failed to insert paid session", firstErr);
-        return;
-      }
-
-      if (sorted.length > 1) {
-        const extra = sorted.slice(1).map((d) => ({
-          ...baseRow,
-          session_date: d.toISOString(),
-          recurrence_parent_id: firstInserted.id,
-        }));
-        const { error: extraErr } = await supabase.from("sessions").insert(extra);
-        if (extraErr) console.error("Failed to insert extra paid sessions", extraErr);
-      }
-
-      localStorage.removeItem(PENDING_KEY);
-    } catch (e) {
-      console.warn("finalizePendingPaidBooking failed", e);
-    }
-  };
-
   const handleBook = async () => {
     if (!user || !selectedService || sessionCount === 0) return;
     setLoading(true);
-
-    const isPaid = selectedService.price_cents > 0 && !!selectedService.stripe_price_id;
 
     // Resolve a meeting URL once and reuse for all sessions in the block.
     let meetingUrl: string | null = generateMeetingLink(platform);
@@ -209,41 +140,8 @@ const Booking = () => {
       }
     }
 
-    if (isPaid) {
-      // Stash the planned sessions; finalize after Stripe success redirect.
-      try {
-        localStorage.setItem(PENDING_KEY, JSON.stringify({
-          user_id: user.id,
-          service: selectedService,
-          dates: sessionDates.map((d) => d.toISOString()),
-          platform,
-          meeting_url: meetingUrl,
-          description,
-        }));
-      } catch {}
+    const isPaid = selectedService.price_cents > 0;
 
-      const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: {
-          service_option_id: selectedService.id,
-          quantity: sessionCount,
-          date: sessionDates[0].toISOString(),
-          time: selectedTime,
-          description,
-          meeting_platform: platform === "in_person" ? null : platform,
-          meeting_url: meetingUrl,
-        },
-      });
-
-      setLoading(false);
-      if (error || data?.error) {
-        toast({ title: "Payment failed", description: data?.error || error?.message, variant: "destructive" });
-      } else if (data?.url) {
-        window.open(data.url, "_blank");
-      }
-      return;
-    }
-
-    // Free service — insert all sessions directly
     const baseRow = {
       client_id: user.id,
       title: selectedService.name,
@@ -251,6 +149,8 @@ const Booking = () => {
       duration_minutes: selectedService.duration_minutes,
       meeting_platform: platform === "in_person" ? null : platform,
       meeting_url: meetingUrl,
+      service_option_id: selectedService.id,
+      price_cents: selectedService.price_cents,
     };
 
     const { data: firstInserted, error: firstErr } = await supabase
@@ -265,16 +165,26 @@ const Booking = () => {
       return;
     }
 
+    const allIds: string[] = [firstInserted.id];
+
     if (sessionDates.length > 1) {
       const extra = sessionDates.slice(1).map((d) => ({
         ...baseRow,
         session_date: d.toISOString(),
         recurrence_parent_id: firstInserted.id,
       }));
-      const { error: extraErr } = await supabase.from("sessions").insert(extra);
+      const { data: extraInserted, error: extraErr } = await supabase.from("sessions").insert(extra).select("id");
       if (extraErr) {
         toast({ title: "Some sessions failed", description: extraErr.message, variant: "destructive" });
+      } else if (extraInserted) {
+        for (const r of extraInserted) allIds.push(r.id);
       }
+    }
+
+    // Fire-and-forget Xero invoice for paid services
+    if (isPaid) {
+      supabase.functions.invoke("xero-invoice-booking", { body: { session_ids: allIds } })
+        .catch((e) => console.warn("Xero invoice failed", e));
     }
 
     setLoading(false);
@@ -283,6 +193,7 @@ const Booking = () => {
       title: sessionCount > 1
         ? `${sessionCount} sessions booked`
         : (portalT.bookingSuccess || "Session booked!"),
+      description: isPaid ? "An invoice will be emailed to you shortly." : undefined,
     });
   };
 

@@ -5,10 +5,6 @@ project_id = "wcqjmjceelcainyyqjmi"
     verify_jwt = false
   [functions.chat]
     verify_jwt = false
-  [functions.create-checkout]
-    verify_jwt = false
-  [functions.sync-stripe-price]
-    verify_jwt = false
   [functions.ai-schedule]
     verify_jwt = false
   [functions.ai-suggest-tasks]

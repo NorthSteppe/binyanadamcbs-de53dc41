@@ -174,7 +174,7 @@ const AdminCalendar = () => {
   const { data: serviceOptions = [] } = useQuery({
     queryKey: ["service_options_active"],
     queryFn: async () => {
-      const { data } = await supabase.from("service_options").select("id,name,duration_minutes,price_cents,stripe_price_id").eq("is_active", true).order("display_order");
+      const { data } = await supabase.from("service_options").select("id,name,duration_minutes,price_cents").eq("is_active", true).order("display_order");
       return data || [];
     },
   });
@@ -441,19 +441,19 @@ const AdminCalendar = () => {
     }
     toast.success(dates.length > 1 ? `${dates.length} recurring sessions created` : "Session created");
 
-    // Optionally email a Stripe payment link to the client for the first session
+    // Optionally raise a Xero invoice for the first session
     if (newSession.send_payment_link && firstSession?.id) {
       try {
-        const { data: linkData, error: linkErr } = await supabase.functions.invoke("send-payment-link", {
-          body: { session_id: firstSession.id },
+        const { data: linkData, error: linkErr } = await supabase.functions.invoke("xero-invoice-booking", {
+          body: { session_ids: [firstSession.id] },
         });
         if (linkErr || (linkData as any)?.error) {
-          toast.error(`Payment link: ${(linkData as any)?.error || linkErr?.message || "failed"}`);
+          toast.error(`Xero invoice: ${(linkData as any)?.error || linkErr?.message || "failed"}`);
         } else {
-          toast.success(`Payment link emailed to ${(linkData as any)?.sent_to || "client"}`);
+          toast.success("Draft invoice raised in Xero");
         }
       } catch (e: any) {
-        toast.error(`Payment link failed: ${e.message}`);
+        toast.error(`Xero invoice failed: ${e.message}`);
       }
     }
 
@@ -1174,8 +1174,8 @@ const AdminCalendar = () => {
                   </Select>
                   <label className="flex items-center justify-between gap-2 pt-1.5 border-t border-border/50">
                     <span className="text-[11px] text-muted-foreground leading-tight">
-                      Email Stripe payment link to client
-                      <span className="block text-[10px] opacity-70">Requires service with Stripe price, or a custom amount.</span>
+                      Raise Xero invoice for client
+                      <span className="block text-[10px] opacity-70">Creates a draft invoice in Xero for the first session.</span>
                     </span>
                     <Switch
                       checked={newSession.send_payment_link}
@@ -1200,7 +1200,7 @@ const AdminCalendar = () => {
                         <SelectContent>
                           <SelectItem value="cash">Cash</SelectItem>
                           <SelectItem value="bank_transfer">Bank transfer</SelectItem>
-                          <SelectItem value="stripe">Stripe</SelectItem>
+                          <SelectItem value="xero">Xero invoice</SelectItem>
                           <SelectItem value="card">Card</SelectItem>
                           <SelectItem value="other">Other</SelectItem>
                         </SelectContent>

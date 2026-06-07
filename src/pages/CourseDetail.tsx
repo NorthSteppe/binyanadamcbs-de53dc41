@@ -98,16 +98,29 @@ const CourseDetail = () => {
       return;
     }
 
-    // Paid course — go through Stripe
+    // Paid course — grant access immediately and raise a Xero invoice
     setPurchasing(true);
     try {
-      const { data, error } = await supabase.functions.invoke("create-course-checkout", {
-        body: { course_id: course!.id },
-      });
-      if (error) throw error;
-      if (data?.url) window.open(data.url, "_blank");
+      const { data: inserted, error } = await supabase
+        .from("course_purchases")
+        .insert({ user_id: user.id, course_id: course!.id })
+        .select("id")
+        .single();
+      if (error) {
+        if (error.code === "23505") {
+          toast.info("You already have access to this course");
+          return;
+        }
+        throw error;
+      }
+      // Fire-and-forget Xero invoice
+      supabase.functions
+        .invoke("xero-invoice-booking", { body: { course_purchase_id: inserted!.id } })
+        .catch((e) => console.warn("Xero invoice failed", e));
+      toast.success("Course unlocked! An invoice will be emailed to you shortly.");
+      window.location.reload();
     } catch (e: any) {
-      toast.error(e.message || "Failed to start checkout");
+      toast.error(e.message || "Failed to unlock course");
     } finally {
       setPurchasing(false);
     }

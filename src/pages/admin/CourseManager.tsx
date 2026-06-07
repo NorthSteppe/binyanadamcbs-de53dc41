@@ -23,7 +23,6 @@ interface Course {
   long_description: string;
   thumbnail_url: string | null;
   price_cents: number;
-  stripe_price_id: string | null;
   is_subscription_included: boolean;
   is_active: boolean;
   is_featured: boolean;
@@ -38,7 +37,6 @@ const emptyCourse = {
   long_description: "",
   thumbnail_url: "",
   price_cents: 0,
-  stripe_price_id: "",
   is_subscription_included: false,
   is_active: false,
   is_featured: false,
@@ -86,7 +84,6 @@ const CourseManager = () => {
         long_description: values.long_description,
         thumbnail_url: thumbnailUrl || null,
         price_cents: values.price_cents,
-        stripe_price_id: values.stripe_price_id || null,
         is_subscription_included: values.is_subscription_included,
         is_active: values.is_active,
         is_featured: values.is_featured,
@@ -133,7 +130,7 @@ const CourseManager = () => {
       long_description: course.long_description,
       thumbnail_url: course.thumbnail_url || "",
       price_cents: course.price_cents,
-      stripe_price_id: course.stripe_price_id || "",
+      
       is_subscription_included: course.is_subscription_included,
       is_active: course.is_active,
       is_featured: course.is_featured,
@@ -268,15 +265,10 @@ const CourseManager = () => {
                     <img src={form.thumbnail_url} alt="Current thumbnail" className="mt-2 h-20 rounded object-cover" />
                   )}
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label>Price (pence)</Label>
-                    <Input type="number" value={form.price_cents} onChange={(e) => setForm({ ...form, price_cents: parseInt(e.target.value) || 0 })} />
-                  </div>
-                  <div>
-                    <Label>Stripe Price ID</Label>
-                    <Input value={form.stripe_price_id} onChange={(e) => setForm({ ...form, stripe_price_id: e.target.value })} placeholder="price_..." />
-                  </div>
+                <div>
+                  <Label>Price (pence)</Label>
+                  <Input type="number" value={form.price_cents} onChange={(e) => setForm({ ...form, price_cents: parseInt(e.target.value) || 0 })} />
+                  <p className="text-xs text-muted-foreground mt-1">Set above zero to bill via Xero invoice on enrolment.</p>
                 </div>
                 <div>
                   <Label>Display Order</Label>
