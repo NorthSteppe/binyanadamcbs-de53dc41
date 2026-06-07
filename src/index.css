@@ -109,7 +109,7 @@
     --popover: 222 22% 12%;
     --popover-foreground: 220 20% 94%;
 
-    --primary: 220 20% 94%;
+    --primary: 213 70% 62%;            /* Blueprint navy, lifted for dark */
     --primary-foreground: 222 30% 10%;
 
     --secondary: 222 18% 16%;
@@ -118,19 +118,19 @@
     --muted: 222 18% 15%;
     --muted-foreground: 220 12% 68%;
 
-    --accent: 195 100% 62%;
-    --accent-foreground: 222 40% 8%;
+    --accent: 27 92% 58%;              /* Blueprint orange */
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 350 70% 56%;
     --destructive-foreground: 220 20% 96%;
 
     --border: 220 14% 24% / 0.8;
     --input: 220 14% 24%;
-    --ring: 195 100% 62%;
+    --ring: 27 92% 58%;
 
     --gradient-warm: linear-gradient(135deg, hsl(222 26% 9%) 0%, hsl(222 22% 14%) 100%);
     --gradient-sand: linear-gradient(180deg, hsl(222 24% 8%) 0%, hsl(222 22% 13%) 100%);
-    --gradient-dusk: linear-gradient(135deg, hsl(222 32% 14%) 0%, hsl(195 100% 50%) 100%);
+    --gradient-dusk: linear-gradient(135deg, hsl(213 64% 18%) 0%, hsl(27 92% 55%) 100%);
     --shadow-soft: 0 1px 2px hsla(222, 60%, 2%, 0.4),
                    0 8px 28px -8px hsla(222, 60%, 2%, 0.5);
 
