@@ -1,0 +1,1 @@
+DELETE FROM public.content_overrides WHERE content_key = 'landing.logo';
