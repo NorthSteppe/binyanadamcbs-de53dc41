@@ -25,18 +25,18 @@ export const RecoveryEmail = ({
 }: RecoveryEmailProps) => (
   <Html lang="en" dir="ltr">
     <Head />
-    <Preview>Reset your Binyan password</Preview>
+    <Preview>Reset your Blueprint password</Preview>
     <Body style={main}>
       <Container style={container}>
         <Img
-          src="https://wcqjmjceelcainyyqjmi.supabase.co/storage/v1/object/public/email-assets/binyan-logo.png?v=1"
-          alt="Binyan"
+          src="https://wcqjmjceelcainyyqjmi.supabase.co/storage/v1/object/public/email-assets/blueprint-logo.png?v=1"
+          alt="Blueprint"
           width="120"
           style={{ marginBottom: '24px' }}
         />
         <Heading style={h1}>Reset your password</Heading>
         <Text style={text}>
-          We received a request to reset your password for Binyan. Click the
+          We received a request to reset your password for Blueprint. Click the
           button below to choose a new one.
         </Text>
         <Button style={button} href={confirmationUrl}>

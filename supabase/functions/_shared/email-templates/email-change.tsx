@@ -30,18 +30,18 @@ export const EmailChangeEmail = ({
 }: EmailChangeEmailProps) => (
   <Html lang="en" dir="ltr">
     <Head />
-    <Preview>Confirm your email change for Binyan</Preview>
+    <Preview>Confirm your email change for Blueprint</Preview>
     <Body style={main}>
       <Container style={container}>
         <Img
-          src="https://wcqjmjceelcainyyqjmi.supabase.co/storage/v1/object/public/email-assets/binyan-logo.png?v=1"
-          alt="Binyan"
+          src="https://wcqjmjceelcainyyqjmi.supabase.co/storage/v1/object/public/email-assets/blueprint-logo.png?v=1"
+          alt="Blueprint"
           width="120"
           style={{ marginBottom: '24px' }}
         />
         <Heading style={h1}>Confirm your email change</Heading>
         <Text style={text}>
-          You requested to change your email address for Binyan from{' '}
+          You requested to change your email address for Blueprint from{' '}
           <Link href={`mailto:${email}`} style={link}>
             {email}
           </Link>{' '}

@@ -70,7 +70,7 @@ const ServicePageLayout = ({
   return (
     <div className="min-h-screen bg-background">
       <Seo
-        title={`${title} — Binyan`}
+        title={`${title} — Blueprint`}
         description={subtitle || tagline}
         path={basePath}
         jsonLd={{
@@ -78,7 +78,7 @@ const ServicePageLayout = ({
           "@type": "Service",
           name: title,
           description: subtitle || tagline,
-          provider: { "@type": "Organization", name: "Binyan", url: "https://bacbs.com/" },
+          provider: { "@type": "Organization", name: "Blueprint", url: "https://bacbs.com/" },
           areaServed: "GB",
           url: `https://bacbs.com${basePath}`,
         }}

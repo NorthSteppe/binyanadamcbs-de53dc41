@@ -1016,7 +1016,7 @@ const PersonalCalendar = ({ isFullscreen = false, onToggleFullscreen }: Personal
           </DialogHeader>
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">
-              Subscribe to your Binyan CBS sessions directly in Google Calendar, Apple Calendar, or Outlook. Your calendar app will automatically stay in sync.
+              Subscribe to your Blueprint CBS sessions directly in Google Calendar, Apple Calendar, or Outlook. Your calendar app will automatically stay in sync.
             </p>
             {feedUrl ? (
               <>
@@ -1050,7 +1050,7 @@ const PersonalCalendar = ({ isFullscreen = false, onToggleFullscreen }: Personal
                       <span>📧</span> Add to Outlook (Desktop)
                     </Button>
                   </a>
-                  <a href={feedUrl!} download="binyan-adam-calendar.ics">
+                  <a href={feedUrl!} download="blueprint-adam-calendar.ics">
                     <Button variant="outline" className="w-full gap-2 text-sm justify-start">
                       <span>⬇️</span> Download .ics File
                     </Button>

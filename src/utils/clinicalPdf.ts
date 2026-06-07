@@ -99,7 +99,7 @@ export function generateClinicalPdf({
     doc.setPage(i);
     doc.setFontSize(8);
     doc.setTextColor(160);
-    doc.text(`Binyan CBS — ${toolTitle} — Page ${i}/${totalPages}`, margin, 290);
+    doc.text(`Blueprint CBS — ${toolTitle} — Page ${i}/${totalPages}`, margin, 290);
   }
 
   return doc;

@@ -15,7 +15,7 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [language, setLanguageState] = useState<Language>(() => {
-    const saved = localStorage.getItem("binyan-lang");
+    const saved = localStorage.getItem("blueprint-lang");
     return (saved === "he" ? "he" : "en") as Language;
   });
 
@@ -23,7 +23,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const isRTL = language === "he";
 
   useEffect(() => {
-    localStorage.setItem("binyan-lang", language);
+    localStorage.setItem("blueprint-lang", language);
     document.documentElement.dir = isRTL ? "rtl" : "ltr";
     document.documentElement.lang = language;
     if (typeof document !== "undefined" && document.body) {

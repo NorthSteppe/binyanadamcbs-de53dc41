@@ -98,7 +98,7 @@ Deno.serve(async (req) => {
 
     const lines = [
       "BEGIN:VEVENT",
-      foldLine(`UID:session-${s.id}@binyanadamcbs`),
+      foldLine(`UID:session-${s.id}@blueprintadamcbs`),
       foldLine(`DTSTART:${start}`),
       foldLine(`DTEND:${end}`),
       foldLine(`SUMMARY:${icalEscape(s.title || "Session")}`),
@@ -111,11 +111,11 @@ Deno.serve(async (req) => {
   });
 
   // Assemble the full iCal file
-  const calName = `Binyan CBS — ${profile.full_name || "My Calendar"}`;
+  const calName = `Blueprint CBS — ${profile.full_name || "My Calendar"}`;
   const ical = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//Binyan CBS//Calendar Feed//EN",
+    "PRODID:-//Blueprint CBS//Calendar Feed//EN",
     `X-WR-CALNAME:${icalEscape(calName)}`,
     "X-WR-TIMEZONE:UTC",
     "CALSCALE:GREGORIAN",
@@ -128,7 +128,7 @@ Deno.serve(async (req) => {
     status: 200,
     headers: {
       "Content-Type": "text/calendar; charset=utf-8",
-      "Content-Disposition": `attachment; filename="binyan-adam-calendar.ics"`,
+      "Content-Disposition": `attachment; filename="blueprint-adam-calendar.ics"`,
       "Cache-Control": "no-cache, no-store",
       "Access-Control-Allow-Origin": "*",
     },

@@ -204,7 +204,7 @@ const AdminDashboard = () => {
           className="pb-4"
           style={{ color: "rgba(255,255,255,0.35)", fontSize: "11px" }}
         >
-          Admin Portal · Binyan CBS
+          Admin Portal · Blueprint CBS
         </motion.div>
       </div>
 

@@ -20,12 +20,12 @@ interface ReauthenticationEmailProps {
 export const ReauthenticationEmail = ({ token }: ReauthenticationEmailProps) => (
   <Html lang="en" dir="ltr">
     <Head />
-    <Preview>Your Binyan verification code</Preview>
+    <Preview>Your Blueprint verification code</Preview>
     <Body style={main}>
       <Container style={container}>
         <Img
-          src="https://wcqjmjceelcainyyqjmi.supabase.co/storage/v1/object/public/email-assets/binyan-logo.png?v=1"
-          alt="Binyan"
+          src="https://wcqjmjceelcainyyqjmi.supabase.co/storage/v1/object/public/email-assets/blueprint-logo.png?v=1"
+          alt="Blueprint"
           width="120"
           style={{ marginBottom: '24px' }}
         />

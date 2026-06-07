@@ -13,10 +13,10 @@ import { useQuery } from "@tanstack/react-query";
 type Msg = { role: "user" | "assistant"; content: string };
 
 const ASSISTANT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/assistant`;
-const STORAGE_KEY = "binyan_assistant_dismissed";
+const STORAGE_KEY = "blueprint_assistant_dismissed";
 
 // ─── Pixar-style friendly character ──────────────────────────────────────────
-const BinyanCharacter = ({ size = 40 }: { size?: number }) => (
+const BlueprintCharacter = ({ size = 40 }: { size?: number }) => (
   <svg viewBox="0 0 120 130" width={size} height={size} xmlns="http://www.w3.org/2000/svg">
     {/* Collar / shirt hint */}
     <ellipse cx="60" cy="124" rx="42" ry="20" fill="#5B8DEF" />
@@ -424,7 +424,7 @@ const ProactiveAssistant = () => {
             onClick={() => { setOpen(true); setShowBubble(false); }}
             className="fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full bg-white shadow-apple-lg hover:shadow-apple-xl transition-shadow flex items-center justify-center border border-border/30"
           >
-            <BinyanCharacter size={52} />
+            <BlueprintCharacter size={52} />
             {showBubble && (
               <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-white" />
             )}
@@ -446,10 +446,10 @@ const ProactiveAssistant = () => {
             <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-gradient-to-r from-blue-50/60 to-indigo-50/40 dark:from-blue-950/20 dark:to-indigo-950/10">
               <div className="flex items-center gap-3">
                 <div className="w-11 h-11 rounded-full bg-white flex items-center justify-center shadow-apple border border-border/20 overflow-hidden">
-                  <BinyanCharacter size={44} />
+                  <BlueprintCharacter size={44} />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-foreground">Binyan Assistant</p>
+                  <p className="text-sm font-semibold text-foreground">Blueprint Assistant</p>
                   <p className="text-[10px] text-muted-foreground flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block" />
                     Here to support you
@@ -472,7 +472,7 @@ const ProactiveAssistant = () => {
                 >
                   {msg.role === "assistant" && (
                     <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0 mt-0.5 shadow-apple border border-border/20 overflow-hidden">
-                      <BinyanCharacter size={32} />
+                      <BlueprintCharacter size={32} />
                     </div>
                   )}
                   <div className={`max-w-[80%] rounded-2xl px-3.5 py-2.5 text-sm ${msg.role === "user"
@@ -520,7 +520,7 @@ const ProactiveAssistant = () => {
               {isLoading && messages[messages.length - 1]?.role !== "assistant" && (
                 <div className="flex gap-2">
                   <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0 shadow-apple border border-border/20 overflow-hidden">
-                    <BinyanCharacter size={32} />
+                    <BlueprintCharacter size={32} />
                   </div>
                   <div className="bg-muted rounded-2xl rounded-bl-sm px-3.5 py-3">
                     <div className="flex gap-1 items-center">

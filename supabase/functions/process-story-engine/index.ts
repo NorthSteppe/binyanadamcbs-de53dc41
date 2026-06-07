@@ -31,7 +31,7 @@ async function readFileText(supabase: any, path: string): Promise<string> {
 }
 
 async function generateBlogPost(rawText: string, voice: string) {
-  const systemPrompt = `You are a clinical writer for "Binyan CBS", a constructional behavioural practice. Take a real source story and FULLY FICTIONALISE it: change names, ages, locations, identifying details, and any specific dates. Preserve only the clinical/behavioural pattern and the constructional insight. Avoid ABA jargon like "compliance" or "extinction" — use capability-building language.
+  const systemPrompt = `You are a clinical writer for "Blueprint CBS", a constructional behavioural practice. Take a real source story and FULLY FICTIONALISE it: change names, ages, locations, identifying details, and any specific dates. Preserve only the clinical/behavioural pattern and the constructional insight. Avoid ABA jargon like "compliance" or "extinction" — use capability-building language.
 
 Voice for this piece: ${voice}.
 

@@ -91,13 +91,13 @@ serve(async (req) => {
     const subject = `Payment link for ${serviceName}`;
     const html = `<!DOCTYPE html><html><body style="font-family:DM Sans,Arial,sans-serif;background:#fff;padding:0;margin:0;">
       <div style="max-width:600px;margin:0 auto;padding:32px 28px;">
-        <img src="https://wcqjmjceelcainyyqjmi.supabase.co/storage/v1/object/public/email-assets/binyan-logo.png?v=1" alt="Binyan" width="120" style="margin-bottom:24px;" />
+        <img src="https://wcqjmjceelcainyyqjmi.supabase.co/storage/v1/object/public/email-assets/blueprint-logo.png?v=1" alt="Blueprint" width="120" style="margin-bottom:24px;" />
         <h1 style="font-size:22px;color:hsl(192,35%,18%);margin:0 0 16px;">Hi ${clientName || "there"},</h1>
         <p style="font-size:15px;color:hsl(192,15%,46%);line-height:1.6;margin:0 0 24px;">
           Please use the secure link below to complete payment for your upcoming session: <strong>${serviceName}</strong>${session.session_date ? ` on ${new Date(session.session_date).toLocaleString("en-GB")}` : ""}.
         </p>
         <p style="margin:24px 0;"><a href="${paymentUrl}" style="display:inline-block;background-color:hsl(174,42%,32%);color:#fff;font-size:15px;border-radius:12px;padding:14px 24px;text-decoration:none;">Pay securely</a></p>
-        <p style="font-size:12px;color:#999;margin-top:32px;">— Binyan CBS</p>
+        <p style="font-size:12px;color:#999;margin-top:32px;">— Blueprint CBS</p>
       </div></body></html>`;
 
     await admin.rpc("enqueue_email", {
@@ -105,11 +105,11 @@ serve(async (req) => {
       payload: {
         message_id: crypto.randomUUID(),
         to: clientEmail,
-        from: "Binyan CBS <noreply@bacbs.com>",
+        from: "Blueprint CBS <noreply@bacbs.com>",
         sender_domain: "notify.bacbs.com",
         subject,
         html,
-        text: `Hi ${clientName || "there"},\n\nPlease pay for ${serviceName} via this secure link:\n${paymentUrl}\n\n— Binyan CBS`,
+        text: `Hi ${clientName || "there"},\n\nPlease pay for ${serviceName} via this secure link:\n${paymentUrl}\n\n— Blueprint CBS`,
         purpose: "transactional",
         label: "payment_link",
         idempotency_key: `payment-link-${session_id}-${Date.now()}`,

@@ -40,8 +40,8 @@ const Courses = () => {
   return (
     <div className="min-h-screen bg-background">
       <Seo
-        title="Courses — Binyan Continuing Education"
-        description="Online courses and continuing-education programmes from Binyan, covering constructional behaviour analysis, supervision, and applied clinical practice."
+        title="Courses — Blueprint Continuing Education"
+        description="Online courses and continuing-education programmes from Blueprint, covering constructional behaviour analysis, supervision, and applied clinical practice."
         path="/courses"
       />
       <Header />
