@@ -27,6 +27,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip,
   ResponsiveContainer, LineChart, Line, PieChart as RechartsPie, Pie, Cell, Area, AreaChart,
 } from "recharts";
+import XeroPanel from "@/components/admin/XeroPanel";
 
 // ─── Types ──────────────────────────────────────────
 interface Session { id: string; client_id: string; title: string; session_date: string; duration_minutes: number; status: string; description: string | null; created_at: string; }
@@ -209,7 +210,7 @@ const BusinessDashboard = () => {
             <KPICard title="Sessions This Week" value={thisWeekSessions.length.toString()} subtitle={`${sessions.filter((s) => s.status === "scheduled").length} upcoming`} icon={Calendar} delay={0.15} />
           </div>
 
-          <Tabs defaultValue="overview" className="space-y-6">
+          <Tabs defaultValue={new URLSearchParams(window.location.search).get("tab") || "overview"} className="space-y-6">
             <TabsList className="bg-muted/50 flex-wrap h-auto gap-1">
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="entries">Manual Entries</TabsTrigger>
@@ -218,7 +219,12 @@ const BusinessDashboard = () => {
               <TabsTrigger value="expenses">Expenses</TabsTrigger>
               <TabsTrigger value="plans">Business Plans</TabsTrigger>
               <TabsTrigger value="activity">Activity</TabsTrigger>
+              <TabsTrigger value="xero">Xero</TabsTrigger>
             </TabsList>
+
+            <TabsContent value="xero" className="space-y-6">
+              <XeroPanel />
+            </TabsContent>
 
             {/* OVERVIEW */}
             <TabsContent value="overview" className="space-y-6">
