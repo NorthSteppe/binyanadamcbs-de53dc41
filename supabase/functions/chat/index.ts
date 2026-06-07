@@ -84,7 +84,7 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: `You are Blueprint's AI assistant — a knowledgeable, warm, and professional helper for clients of Blueprint Clinical Behaviour Services. 
+            content: `You are Blueprint's AI assistant — a knowledgeable, warm, and professional helper for clients of Blueprint Applied, Constructional, Behavioural Services. 
 
 You help with:
 - Questions about Positive Behaviour Support (PBS), Acceptance and Commitment Therapy (ACT), and constructional approaches
