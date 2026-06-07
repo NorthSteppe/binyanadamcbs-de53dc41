@@ -148,7 +148,7 @@ const App = () => (
             <Toaster />
             <Sonner />
             <BrowserRouter>
-              <LiquidChromeBackground />
+              
               <AppLoader>
                 <ScrollToTop />
                 <RouteErrorBoundary>
