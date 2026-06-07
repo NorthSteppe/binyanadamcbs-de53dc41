@@ -166,7 +166,7 @@ const PathwayQuizManager = () => {
             </Button>
             <h1 className="font-display text-3xl font-light">Pathway Quiz</h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              Slides shown when visitors click <em>Find your way in</em>. They flow in order — each option either routes the visitor to a page or moves them to the next slide.
+              Slides shown when visitors click <em>Let's Explore Together</em>. They flow in order — each option either routes the visitor to a page or moves them to the next slide.
             </p>
           </div>
           <div className="flex gap-2">
