@@ -6,172 +6,161 @@
 
 @layer base {
   :root {
-    /* Liquid Chrome — futuristic OS, silver/mercury with cool holo tint.
-       Surfaces are intentionally translucent so the WebGL chrome shows through. */
-    --background: 220 14% 92%;        /* polished silver light */
-    --foreground: 222 30% 10%;        /* deep graphite ink */
+    /* Blueprint — Navy + Orange. Clean, solid surfaces. No chrome / no glass. */
+    --background: 0 0% 100%;
+    --foreground: 213 64% 14%;
 
-    --card: 220 22% 99% / 0.62;       /* frosted chrome panel */
-    --card-foreground: 222 30% 10%;
-    --card-border: 220 18% 80% / 0.7;
-    --card-shadow: 0 1px 0 0 hsla(0, 0%, 100%, 0.85) inset,
-                   0 -1px 0 0 hsla(222, 30%, 20%, 0.08) inset,
-                   0 8px 32px -10px hsla(222, 40%, 18%, 0.22),
-                   0 24px 60px -28px hsla(222, 40%, 18%, 0.18);
+    --card: 0 0% 100%;
+    --card-foreground: 213 64% 14%;
+    --card-border: 213 24% 88%;
+    --card-shadow: 0 1px 2px hsla(213, 40%, 14%, 0.06),
+                   0 8px 24px -10px hsla(213, 40%, 14%, 0.10);
 
-    --popover: 220 22% 99%;
-    --popover-foreground: 222 30% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 213 64% 14%;
 
-    --primary: 213 64% 24%;           /* Blueprint navy */
-    --primary-foreground: 220 30% 98%;
+    --primary: 213 64% 24%;            /* Blueprint navy */
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 16% 88%;         /* brushed steel */
+    --secondary: 213 30% 95%;
     --secondary-foreground: 213 64% 24%;
 
-    --muted: 220 14% 90%;
-    --muted-foreground: 222 14% 38%;
+    --muted: 213 20% 96%;
+    --muted-foreground: 213 16% 40%;
 
-    --accent: 27 92% 53%;             /* Blueprint orange */
+    --accent: 27 92% 53%;              /* Blueprint orange */
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 350 70% 52%;
-    --destructive-foreground: 220 30% 98%;
+    --destructive: 0 72% 50%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 220 16% 82% / 0.8;
-    --input: 220 16% 82%;
+    --border: 213 24% 88%;
+    --input: 213 24% 88%;
     --ring: 27 92% 53%;
 
-    --radius: 1rem;
+    --radius: 0.75rem;
 
-    /* Chrome gradients */
-    --gradient-warm: linear-gradient(135deg, hsl(220 20% 97%) 0%, hsl(220 14% 84%) 100%);
-    --gradient-sand: linear-gradient(180deg, hsl(220 18% 96%) 0%, hsl(220 14% 86%) 100%);
-    --gradient-dusk: linear-gradient(135deg, hsl(213 64% 18%) 0%, hsl(27 92% 53%) 100%);
-    --shadow-soft: 0 1px 2px hsla(222, 40%, 14%, 0.06),
-                   0 8px 28px -8px hsla(222, 40%, 14%, 0.14);
+    /* Brand gradients — strictly navy ↔ orange */
+    --gradient-warm: linear-gradient(135deg, hsl(213 64% 24%) 0%, hsl(213 64% 32%) 100%);
+    --gradient-sand: linear-gradient(180deg, hsl(213 30% 98%) 0%, hsl(213 24% 94%) 100%);
+    --gradient-dusk: linear-gradient(135deg, hsl(213 64% 24%) 0%, hsl(27 92% 53%) 100%);
+    --shadow-soft: 0 1px 2px hsla(213, 40%, 14%, 0.06),
+                   0 8px 28px -8px hsla(213, 40%, 14%, 0.12);
 
-    /* Glass tokens — glassmorphism over the chrome backdrop */
-    --glass-bg: 220 22% 99% / 0.42;
-    --glass-border: 0 0% 100% / 0.55;
-    --glass-border-inner: 0 0% 100% / 0.7;
-    --glass-blur: 28px;
-    --glass-shadow: 0 1px 0 0 hsla(0, 0%, 100%, 0.7) inset,
-                    0 2px 24px -4px hsla(222, 40%, 14%, 0.14),
-                    0 12px 48px -12px hsla(222, 40%, 14%, 0.18);
-    --glass-shadow-lg: 0 1px 0 0 hsla(0, 0%, 100%, 0.75) inset,
-                       0 4px 32px -6px hsla(222, 40%, 14%, 0.2),
-                       0 16px 64px -16px hsla(222, 40%, 14%, 0.22);
+    /* Glass tokens kept for compat, now opaque navy-tinted surfaces */
+    --glass-bg: 0 0% 100%;
+    --glass-border: 213 24% 88%;
+    --glass-border-inner: 213 24% 92%;
+    --glass-blur: 0px;
+    --glass-shadow: 0 1px 2px hsla(213, 40%, 14%, 0.06),
+                    0 8px 24px -10px hsla(213, 40%, 14%, 0.10);
+    --glass-shadow-lg: 0 4px 12px hsla(213, 40%, 14%, 0.08),
+                       0 16px 48px -16px hsla(213, 40%, 14%, 0.16);
 
-    /* Service modes — tuned toward the cool chrome family */
-    --education: 210 90% 56%;
+    /* Service modes — all derived from navy/orange family */
+    --education: 213 64% 32%;
     --education-foreground: 0 0% 100%;
-    --education-light: 210 60% 96%;
+    --education-light: 213 30% 95%;
 
-    --therapy: 170 70% 44%;
+    --therapy: 213 64% 24%;
     --therapy-foreground: 0 0% 100%;
-    --therapy-light: 170 50% 95%;
+    --therapy-light: 213 30% 95%;
 
-    --family: 280 70% 60%;
+    --family: 27 92% 53%;
     --family-foreground: 0 0% 100%;
-    --family-light: 280 50% 96%;
+    --family-light: 27 80% 95%;
 
-    --business: 240 70% 60%;
+    --business: 213 64% 18%;
     --business-foreground: 0 0% 100%;
-    --business-light: 240 50% 96%;
+    --business-light: 213 30% 95%;
 
-    --supervision: 190 80% 48%;
+    --supervision: 27 80% 45%;
     --supervision-foreground: 0 0% 100%;
-    --supervision-light: 190 60% 95%;
+    --supervision-light: 27 80% 95%;
 
-    --sidebar-background: 220 18% 95% / 0.7;
-    --sidebar-foreground: 222 30% 14%;
-    --sidebar-primary: 222 32% 14%;
-    --sidebar-primary-foreground: 220 30% 98%;
-    --sidebar-accent: 220 16% 88%;
-    --sidebar-accent-foreground: 222 30% 14%;
-    --sidebar-border: 220 16% 82%;
+    --sidebar-background: 213 64% 24%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 27 92% 53%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 213 64% 30%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 213 60% 18%;
     --sidebar-ring: 27 92% 53%;
   }
 
   .dark {
-    /* Liquid Chrome night — gunmetal & mercury */
-    --background: 222 24% 8%;
-    --foreground: 220 20% 94%;
+    --background: 213 64% 8%;
+    --foreground: 213 20% 96%;
 
-    --card: 222 22% 12% / 0.62;
-    --card-foreground: 220 20% 94%;
-    --card-border: 220 14% 28% / 0.7;
-    --card-shadow: 0 1px 0 0 hsla(220, 30%, 80%, 0.08) inset,
-                   0 -1px 0 0 hsla(222, 40%, 2%, 0.5) inset,
-                   0 8px 32px -10px hsla(222, 60%, 2%, 0.6),
-                   0 24px 60px -28px hsla(222, 60%, 2%, 0.5);
+    --card: 213 50% 12%;
+    --card-foreground: 213 20% 96%;
+    --card-border: 213 40% 20%;
+    --card-shadow: 0 1px 2px hsla(0, 0%, 0%, 0.4),
+                   0 8px 28px -10px hsla(0, 0%, 0%, 0.5);
 
-    --popover: 222 22% 12%;
-    --popover-foreground: 220 20% 94%;
+    --popover: 213 50% 12%;
+    --popover-foreground: 213 20% 96%;
 
-    --primary: 213 70% 62%;            /* Blueprint navy, lifted for dark */
-    --primary-foreground: 222 30% 10%;
+    --primary: 27 92% 58%;             /* Orange leads in dark */
+    --primary-foreground: 213 64% 10%;
 
-    --secondary: 222 18% 16%;
-    --secondary-foreground: 220 20% 92%;
+    --secondary: 213 40% 16%;
+    --secondary-foreground: 213 20% 96%;
 
-    --muted: 222 18% 15%;
-    --muted-foreground: 220 12% 68%;
+    --muted: 213 40% 14%;
+    --muted-foreground: 213 16% 70%;
 
-    --accent: 27 92% 58%;              /* Blueprint orange */
-    --accent-foreground: 0 0% 100%;
+    --accent: 27 92% 58%;
+    --accent-foreground: 213 64% 10%;
 
-    --destructive: 350 70% 56%;
-    --destructive-foreground: 220 20% 96%;
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 220 14% 24% / 0.8;
-    --input: 220 14% 24%;
+    --border: 213 40% 20%;
+    --input: 213 40% 20%;
     --ring: 27 92% 58%;
 
-    --gradient-warm: linear-gradient(135deg, hsl(222 26% 9%) 0%, hsl(222 22% 14%) 100%);
-    --gradient-sand: linear-gradient(180deg, hsl(222 24% 8%) 0%, hsl(222 22% 13%) 100%);
+    --gradient-warm: linear-gradient(135deg, hsl(213 64% 12%) 0%, hsl(213 64% 18%) 100%);
+    --gradient-sand: linear-gradient(180deg, hsl(213 64% 10%) 0%, hsl(213 50% 14%) 100%);
     --gradient-dusk: linear-gradient(135deg, hsl(213 64% 18%) 0%, hsl(27 92% 55%) 100%);
-    --shadow-soft: 0 1px 2px hsla(222, 60%, 2%, 0.4),
-                   0 8px 28px -8px hsla(222, 60%, 2%, 0.5);
+    --shadow-soft: 0 1px 2px hsla(0, 0%, 0%, 0.4),
+                   0 8px 28px -8px hsla(0, 0%, 0%, 0.5);
 
-    --glass-bg: 222 22% 12% / 0.5;
-    --glass-border: 220 30% 80% / 0.14;
-    --glass-border-inner: 220 30% 80% / 0.08;
-    --glass-shadow: 0 1px 0 0 hsla(220, 30%, 80%, 0.08) inset,
-                    0 2px 24px -4px hsla(222, 60%, 2%, 0.5),
-                    0 12px 48px -12px hsla(222, 60%, 2%, 0.45);
-    --glass-shadow-lg: 0 1px 0 0 hsla(220, 30%, 80%, 0.1) inset,
-                       0 4px 32px -6px hsla(222, 60%, 2%, 0.6),
-                       0 16px 64px -16px hsla(222, 60%, 2%, 0.55);
+    --glass-bg: 213 50% 12%;
+    --glass-border: 213 40% 20%;
+    --glass-border-inner: 213 40% 24%;
+    --glass-shadow: 0 1px 2px hsla(0, 0%, 0%, 0.4),
+                    0 8px 28px -10px hsla(0, 0%, 0%, 0.5);
+    --glass-shadow-lg: 0 4px 16px hsla(0, 0%, 0%, 0.5),
+                       0 16px 48px -16px hsla(0, 0%, 0%, 0.6);
 
-    --education: 210 90% 68%;
-    --education-light: 210 30% 14%;
+    --education: 213 60% 60%;
+    --education-light: 213 50% 18%;
 
-    --therapy: 170 60% 60%;
-    --therapy-light: 170 25% 13%;
+    --therapy: 213 60% 55%;
+    --therapy-light: 213 50% 18%;
 
-    --family: 280 60% 70%;
-    --family-light: 280 25% 14%;
+    --family: 27 92% 60%;
+    --family-light: 27 50% 18%;
 
-    --business: 240 60% 72%;
-    --business-light: 240 25% 14%;
+    --business: 213 60% 50%;
+    --business-light: 213 50% 18%;
 
-    --supervision: 190 80% 60%;
-    --supervision-light: 190 28% 13%;
+    --supervision: 27 80% 55%;
+    --supervision-light: 27 50% 18%;
 
-    --sidebar-background: 222 26% 9% / 0.75;
-    --sidebar-foreground: 220 20% 94%;
-    --sidebar-primary: 213 70% 62%;
-    --sidebar-primary-foreground: 222 30% 10%;
-    --sidebar-accent: 222 18% 16%;
-    --sidebar-accent-foreground: 220 20% 92%;
-    --sidebar-border: 220 14% 24%;
+    --sidebar-background: 213 64% 10%;
+    --sidebar-foreground: 213 20% 96%;
+    --sidebar-primary: 27 92% 58%;
+    --sidebar-primary-foreground: 213 64% 10%;
+    --sidebar-accent: 213 50% 16%;
+    --sidebar-accent-foreground: 213 20% 96%;
+    --sidebar-border: 213 40% 18%;
     --sidebar-ring: 27 92% 58%;
   }
 
-  /* Soften the legacy paper grain over the chrome backdrop */
-  .texture-paper::before { opacity: 0.08; mix-blend-mode: overlay; }
-  .dark .texture-paper::before { opacity: 0.08; mix-blend-mode: screen; }
+  /* Legacy texture overlay disabled — Blueprint is flat */
+  .texture-paper::before { display: none; }
 }
 
 @layer base {
@@ -180,9 +169,7 @@
   }
 
   body {
-    @apply text-foreground font-sans antialiased;
-    /* Let the WebGL liquid chrome show through; keep a fallback color. */
-    background: transparent;
+    @apply bg-background text-foreground font-sans antialiased;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -190,16 +177,16 @@
 
   h1, h2, h3, h4 {
     font-family: 'Space Grotesk', 'Inter', system-ui, -apple-system, sans-serif;
-    font-weight: 500;
+    font-weight: 600;
     letter-spacing: -0.02em;
+    color: hsl(var(--primary));
   }
 
   h1 {
     letter-spacing: -0.03em;
-    font-weight: 600;
+    font-weight: 700;
   }
 
-  /* Hebrew keeps the geometric DM Sans — Cormorant has no Hebrew glyphs */
   [dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3, [dir="rtl"] h4 {
     font-family: 'DM Sans', 'Inter', system-ui, -apple-system, sans-serif;
     font-weight: 600;
@@ -207,9 +194,7 @@
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+  .text-balance { text-wrap: balance; }
 
   .no-select {
     -webkit-touch-callout: none;
@@ -222,111 +207,70 @@
     overscroll-behavior-y: contain;
   }
 
-  /* Apple-style glass effect */
+  /* "Glass" kept as a class name for compat — now solid card surface */
   .glass {
-    background: hsl(var(--glass-bg));
-    backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
-    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
-    border: 1px solid hsl(var(--glass-border));
-    box-shadow: var(--glass-shadow);
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    box-shadow: var(--shadow-soft);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
   }
 
   .glass-lg {
-    background: hsl(var(--glass-bg));
-    backdrop-filter: blur(32px) saturate(1.8);
-    -webkit-backdrop-filter: blur(32px) saturate(1.8);
-    border: 1px solid hsl(var(--glass-border));
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
     box-shadow: var(--glass-shadow-lg);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
   }
 
-  /* Glass title text effect */
-  .text-glass {
-    background: linear-gradient(
-      135deg,
-      hsl(var(--foreground)) 0%,
-      hsl(var(--foreground) / 0.7) 40%,
-      hsl(var(--foreground) / 0.5) 60%,
-      hsl(var(--foreground) / 0.8) 100%
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
+  /* Solid text — no chrome gradient fill */
+  .text-glass,
   .text-glass-hero {
-    background: linear-gradient(
-      145deg,
-      hsl(var(--foreground)) 0%,
-      hsl(var(--foreground) / 0.55) 50%,
-      hsl(var(--foreground) / 0.85) 100%
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    background: none;
+    -webkit-background-clip: initial;
+    background-clip: initial;
+    -webkit-text-fill-color: currentColor;
+    color: hsl(var(--primary));
   }
 
-  /* Subtle card hover lift */
   .card-hover {
     @apply transition-all duration-300;
   }
   .card-hover:hover {
-    transform: translateY(-3px) scale(1.005);
+    transform: translateY(-2px);
     box-shadow: var(--glass-shadow-lg);
   }
 
-  /* Consistent eyebrow/tagline label style */
   .label-eyebrow {
-    @apply text-[11px] font-sans font-medium uppercase tracking-[0.22em] text-accent;
+    @apply text-[11px] font-sans font-semibold uppercase tracking-[0.22em] text-accent;
   }
 
-  /* Soft paper / sand grain texture overlay for warm sections */
-  .texture-paper {
-    position: relative;
-  }
-  .texture-paper::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    opacity: 0.5;
-    mix-blend-mode: multiply;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='4'/><feColorMatrix values='0 0 0 0 0.32  0 0 0 0 0.22  0 0 0 0 0.12  0 0 0 0.08 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
-  }
+  /* Paper texture disabled — kept selector for compat */
+  .texture-paper { position: relative; }
 
-  /* Warm holistic gradient backgrounds */
-  .bg-warm {
-    background: var(--gradient-warm);
-  }
-  .bg-sand {
-    background: var(--gradient-sand);
-  }
-  .bg-dusk {
-    background: var(--gradient-dusk);
-  }
+  .bg-warm { background: var(--gradient-warm); }
+  .bg-sand { background: var(--gradient-sand); }
+  .bg-dusk { background: var(--gradient-dusk); }
 
-  /* Hand-drawn divider — wavy, organic */
   .divider-organic {
-    height: 24px;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='24' viewBox='0 0 180 24'><path d='M2 12 Q 22 2, 42 12 T 82 12 T 122 12 T 162 12' fill='none' stroke='%23b08a5e' stroke-width='1.2' stroke-linecap='round' opacity='0.55'/></svg>");
+    height: 2px;
+    background: hsl(var(--accent));
+    opacity: 0.6;
   }
 
-  /* Display utility — futuristic geometric */
   .font-editorial {
     font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
-    font-weight: 500;
+    font-weight: 600;
     letter-spacing: -0.02em;
   }
 }
 
-/* Safe area support for bottom nav */
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
   .pb-safe {
     padding-bottom: env(safe-area-inset-bottom);
   }
 }
-
 
 /* ===== Hebrew / RTL global enforcement ===== */
 html[dir="rtl"],
@@ -339,10 +283,8 @@ body.lang-he {
   font-family: 'DM Sans', 'Inter', system-ui, sans-serif;
 }
 
-/* Flip flex rows that visually depend on order in RTL */
 body.lang-he .flex-row { flex-direction: row-reverse; }
 
-/* Make sure form text input aligns to start in RTL */
 body.lang-he input[type="text"],
 body.lang-he input[type="email"],
 body.lang-he input[type="search"],
@@ -351,7 +293,6 @@ body.lang-he textarea {
   text-align: right;
 }
 
-/* Editorial serif looks awkward in Hebrew — use DM Sans */
 body.lang-he .font-editorial,
 body.lang-he .font-serif {
   font-family: 'DM Sans', system-ui, sans-serif !important;
