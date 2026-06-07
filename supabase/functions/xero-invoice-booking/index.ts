@@ -158,9 +158,16 @@ Deno.serve(async (req) => {
       });
     }
 
-    return new Response(JSON.stringify({ ok: true, invoice: json.Invoices?.[0] ?? null }), {
+    const createdInvoice = json.Invoices?.[0] ?? null;
+    const xeroContactId = createdInvoice?.Contact?.ContactID ?? null;
+    if (linkProfileId && xeroContactId) {
+      await admin.from("profiles").update({ xero_contact_id: xeroContactId }).eq("id", linkProfileId).is("xero_contact_id", null);
+    }
+
+    return new Response(JSON.stringify({ ok: true, invoice: createdInvoice, xero_contact_id: xeroContactId }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
+
   } catch (e) {
     console.error("xero-invoice-booking error", e);
     return new Response(JSON.stringify({ ok: false, error: (e as Error).message }), {
