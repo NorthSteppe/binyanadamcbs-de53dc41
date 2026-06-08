@@ -60,15 +60,31 @@ Deno.serve(async (req) => {
     // ── Invoices (AR) ──
     const invJson = await xeroFetch(`/api.xro/2.0/Invoices?where=Type=="ACCREC"&order=Date DESC&page=1`, conn);
     const invoices = invJson.Invoices ?? [];
+    const parseXeroDate = (v: any): string | null => {
+      if (!v) return null;
+      if (typeof v === "string") {
+        // Handle "/Date(1234567890000+0000)/" format
+        const m = v.match(/\/Date\((-?\d+)/);
+        if (m) {
+          const d = new Date(Number(m[1]));
+          return isNaN(d.getTime()) ? null : d.toISOString().slice(0, 10);
+        }
+        // ISO-like string
+        if (/^\d{4}-\d{2}-\d{2}/.test(v)) return v.slice(0, 10);
+        const d = new Date(v);
+        return isNaN(d.getTime()) ? null : d.toISOString().slice(0, 10);
+      }
+      return null;
+    };
     const invRows = invoices.map((i: any) => ({
       xero_invoice_id: i.InvoiceID,
       invoice_number: i.InvoiceNumber ?? null,
       contact_name: i.Contact?.Name ?? null,
       status: i.Status ?? null,
       type: i.Type ?? null,
-      issue_date: i.DateString ? i.DateString.slice(0,10) : null,
-      due_date: i.DueDateString ? i.DueDateString.slice(0,10) : null,
-      fully_paid_on_date: i.FullyPaidOnDate ? i.FullyPaidOnDate.slice(0,10) : null,
+      issue_date: parseXeroDate(i.DateString ?? i.Date),
+      due_date: parseXeroDate(i.DueDateString ?? i.DueDate),
+      fully_paid_on_date: parseXeroDate(i.FullyPaidOnDate),
       currency_code: i.CurrencyCode ?? null,
       sub_total: i.SubTotal ?? 0,
       total_tax: i.TotalTax ?? 0,
