@@ -1315,6 +1315,7 @@ export type Database = {
           is_system: boolean
           key: string
           label: string
+          path: string | null
         }
         Insert: {
           category: string
@@ -1324,6 +1325,7 @@ export type Database = {
           is_system?: boolean
           key: string
           label: string
+          path?: string | null
         }
         Update: {
           category?: string
@@ -1333,6 +1335,7 @@ export type Database = {
           is_system?: boolean
           key?: string
           label?: string
+          path?: string | null
         }
         Relationships: []
       }
