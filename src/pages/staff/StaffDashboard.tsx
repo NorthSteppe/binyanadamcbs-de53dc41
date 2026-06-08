@@ -23,6 +23,7 @@ const StaffDashboard = () => {
   const [todayCount, setTodayCount] = useState(0);
   const [clientCount, setClientCount] = useState(0);
   const [openTasks, setOpenTasks] = useState(0);
+  const [nextSessionId, setNextSessionId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) return;
