@@ -126,6 +126,15 @@ const StaffDashboard = () => {
           accent="orange"
         />
         <BentoTile
+          feature="staff.session-room"
+          to={nextSessionId ? `/staff/session/${nextSessionId}` : "/staff/calendar"}
+          size="md"
+          icon={PlayCircle}
+          label={nextSessionId ? "Start session" : "Session room"}
+          hint={nextSessionId ? "Timer, notes & tools" : "No active session"}
+          accent="navy"
+        />
+        <BentoTile
           feature="staff.tools"
           to="/staff/clinical-tools"
           size="md"
