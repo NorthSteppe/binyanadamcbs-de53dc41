@@ -7,6 +7,7 @@ import {
   ListTodo,
   Wrench,
   CalendarDays,
+  CalendarPlus,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -101,6 +102,15 @@ const StaffDashboard = () => {
           icon={CalendarDays}
           label="Calendar"
           hint="Personal & team"
+        />
+        <BentoTile
+          feature="staff.booking"
+          to="/staff/booking"
+          size="md"
+          icon={CalendarPlus}
+          label="Book session"
+          hint="On behalf of a client"
+          accent="orange"
         />
         <BentoTile
           feature="staff.tools"

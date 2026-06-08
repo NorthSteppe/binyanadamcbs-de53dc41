@@ -8,6 +8,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAuth } from "@/hooks/useAuth";
+import { UserCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -37,11 +38,17 @@ type RecurrencePattern = "weekly" | "biweekly" | "monthly";
 
 
 const Booking = () => {
-  const { user } = useAuth();
+  const { user, isStaff, isAdmin } = useAuth();
   const { toast } = useToast();
   const { t } = useLanguage();
   const portalT = (t as any).portalBooking || {};
   const [searchParams] = useSearchParams();
+
+  // Staff/admin: book on behalf of a client
+  type ClientPick = { id: string; full_name: string; kind: "user" | "manual"; manual_id?: string };
+  const [bookableClients, setBookableClients] = useState<ClientPick[]>([]);
+  const [bookFor, setBookFor] = useState<string>(""); // "user:<id>" or "manual:<id>" or "" for self
+
 
   const [services, setServices] = useState<ServiceOption[]>([]);
   const [selectedService, setSelectedService] = useState<ServiceOption | null>(null);
@@ -68,6 +75,49 @@ const Booking = () => {
     supabase.from("service_options").select("*").eq("is_active", true).order("display_order")
       .then(({ data }) => { if (data) setServices(data as unknown as ServiceOption[]); });
   }, []);
+
+  // Load bookable clients for staff/admin (assigned clients + manual clients; admins see all)
+  useEffect(() => {
+    if (!user || !isStaff) return;
+    (async () => {
+      const list: ClientPick[] = [];
+
+      // Profiles: admins see all; therapists see assigned clients
+      if (isAdmin) {
+        const { data } = await supabase.rpc("get_safe_profiles");
+        if (data) {
+          for (const p of data as Array<{ id: string; full_name: string | null }>) {
+            list.push({ id: p.id, full_name: p.full_name || "Unnamed", kind: "user" });
+          }
+        }
+      } else {
+        const { data: assigns } = await supabase
+          .from("client_assignments")
+          .select("client_id")
+          .eq("assignee_id", user.id);
+        const ids = (assigns || []).map((a) => a.client_id);
+        if (ids.length) {
+          const { data } = await supabase.from("profiles").select("id, full_name").in("id", ids);
+          for (const p of (data || []) as Array<{ id: string; full_name: string | null }>) {
+            list.push({ id: p.id, full_name: p.full_name || "Unnamed", kind: "user" });
+          }
+        }
+      }
+
+      // Manual clients (admins see all; therapists see those without a linked user via own assignments)
+      const { data: mc } = await supabase.from("manual_clients").select("id, full_name, linked_user_id");
+      if (mc) {
+        for (const m of mc as Array<{ id: string; full_name: string; linked_user_id: string | null }>) {
+          if (m.linked_user_id) continue; // skip those already linked to a user (covered above)
+          list.push({ id: m.id, full_name: m.full_name + " (manual)", kind: "manual", manual_id: m.id });
+        }
+      }
+
+      list.sort((a, b) => a.full_name.localeCompare(b.full_name));
+      setBookableClients(list);
+    })();
+  }, [user, isStaff, isAdmin]);
+
 
   // Compute the list of session datetimes based on current selections
   const computeSessionDates = (): Date[] => {
@@ -108,6 +158,29 @@ const Booking = () => {
 
   const handleBook = async () => {
     if (!user || !selectedService || sessionCount === 0) return;
+
+    // Determine target client (self for clients; selected client for staff/admin)
+    let targetClientId: string = user.id;
+    let targetManualClientId: string | null = null;
+    let targetClientEmail: string | undefined = user.email ?? undefined;
+    if (isStaff) {
+      if (!bookFor) {
+        toast({ title: "Select a client", description: "Pick the client to book for.", variant: "destructive" });
+        return;
+      }
+      const pick = bookableClients.find((c) => (c.kind === "user" ? `user:${c.id}` : `manual:${c.id}`) === bookFor);
+      if (!pick) return;
+      if (pick.kind === "user") {
+        targetClientId = pick.id;
+        targetManualClientId = null;
+        targetClientEmail = undefined; // not required for meeting link
+      } else {
+        // Manual client: client_id NOT NULL on sessions, so use staff's own id as placeholder and set manual_client_id
+        targetClientId = user.id;
+        targetManualClientId = pick.manual_id ?? pick.id;
+      }
+    }
+
     setLoading(true);
 
     // Resolve a meeting URL once and reuse for all sessions in the block.
@@ -115,22 +188,27 @@ const Booking = () => {
     if (platform !== "in_person") {
       const providerKey = platform === "google_meet" ? "google" : platform;
       try {
-        const { data: assignment } = await supabase
-          .from("client_assignments")
-          .select("assignee_id")
-          .eq("client_id", user.id)
-          .limit(1)
-          .maybeSingle();
+        // Therapist as host when staff is booking; otherwise look up an assignee
+        let hostId: string | undefined = isStaff ? user.id : undefined;
+        if (!hostId) {
+          const { data: assignment } = await supabase
+            .from("client_assignments")
+            .select("assignee_id")
+            .eq("client_id", targetClientId)
+            .limit(1)
+            .maybeSingle();
+          hostId = assignment?.assignee_id;
+        }
 
-        if (assignment?.assignee_id) {
+        if (hostId) {
           const { data: meet, error: meetErr } = await supabase.functions.invoke("create-meeting", {
             body: {
-              host_user_id: assignment.assignee_id,
+              host_user_id: hostId,
               provider: providerKey,
               title: selectedService.name,
               start_iso: sessionDates[0].toISOString(),
               duration_minutes: selectedService.duration_minutes,
-              attendee_email: user.email,
+              attendee_email: targetClientEmail,
             },
           });
           if (!meetErr && meet?.join_url) meetingUrl = meet.join_url;
@@ -142,8 +220,8 @@ const Booking = () => {
 
     const isPaid = selectedService.price_cents > 0;
 
-    const baseRow = {
-      client_id: user.id,
+    const baseRow: Record<string, unknown> = {
+      client_id: targetClientId,
       title: selectedService.name,
       description: description || null,
       duration_minutes: selectedService.duration_minutes,
@@ -152,10 +230,13 @@ const Booking = () => {
       service_option_id: selectedService.id,
       price_cents: selectedService.price_cents,
     };
+    if (targetManualClientId) baseRow.manual_client_id = targetManualClientId;
+    if (isStaff) baseRow.therapist_id = user.id;
+
 
     const { data: firstInserted, error: firstErr } = await supabase
       .from("sessions")
-      .insert({ ...baseRow, session_date: sessionDates[0].toISOString() })
+      .insert({ ...(baseRow as any), session_date: sessionDates[0].toISOString() })
       .select("id")
       .single();
 
@@ -169,11 +250,11 @@ const Booking = () => {
 
     if (sessionDates.length > 1) {
       const extra = sessionDates.slice(1).map((d) => ({
-        ...baseRow,
+        ...(baseRow as any),
         session_date: d.toISOString(),
         recurrence_parent_id: firstInserted.id,
       }));
-      const { data: extraInserted, error: extraErr } = await supabase.from("sessions").insert(extra).select("id");
+      const { data: extraInserted, error: extraErr } = await supabase.from("sessions").insert(extra as any).select("id");
       if (extraErr) {
         toast({ title: "Some sessions failed", description: extraErr.message, variant: "destructive" });
       } else if (extraInserted) {
@@ -272,6 +353,31 @@ const Booking = () => {
             </h1>
             <p className="text-muted-foreground mb-8">{portalT.bookSubtitle}</p>
           </motion.div>
+
+          {/* Staff/admin: pick which client to book for */}
+          {isStaff && (
+            <div className="mb-8 bg-card border-2 border-primary/20 rounded-xl p-5">
+              <Label className="text-base font-semibold mb-3 flex items-center gap-2">
+                <UserCheck size={18} className="text-primary" />
+                Book on behalf of
+              </Label>
+              <Select value={bookFor} onValueChange={setBookFor}>
+                <SelectTrigger className="h-11">
+                  <SelectValue placeholder={bookableClients.length ? "Select a client…" : "No bookable clients found"} />
+                </SelectTrigger>
+                <SelectContent>
+                  {bookableClients.map((c) => {
+                    const key = c.kind === "user" ? `user:${c.id}` : `manual:${c.id}`;
+                    return <SelectItem key={key} value={key}>{c.full_name}</SelectItem>;
+                  })}
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground mt-2">
+                A draft Xero invoice will be raised automatically for paid services.
+              </p>
+            </div>
+          )}
+
 
           {/* Step 1: Service selection */}
           <div className="mb-8">
