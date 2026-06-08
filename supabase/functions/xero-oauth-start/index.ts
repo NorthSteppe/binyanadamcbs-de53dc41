@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { signState } from "../_shared/oauth-state.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -54,8 +55,9 @@ Deno.serve(async (req) => {
 
     const redirectUri = `${supabaseUrl}/functions/v1/xero-oauth-callback`;
 
-    // state encodes user id + a nonce, signed with JWT secret-ish (simple HMAC w/ service role key)
-    const state = btoa(JSON.stringify({ u: userId, n: crypto.randomUUID(), t: Date.now() }));
+    // HMAC-signed state so the callback can verify it was issued here and
+    // not forged to link an attacker's Xero tenant to another user's record.
+    const state = await signState({ user_id: userId, ts: Date.now() });
 
     const url = new URL("https://login.xero.com/identity/connect/authorize");
     url.searchParams.set("response_type", "code");
