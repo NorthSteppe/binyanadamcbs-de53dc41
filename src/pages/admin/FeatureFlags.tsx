@@ -26,14 +26,8 @@ const CATEGORY_LABEL: Record<string, string> = {
   admin: "Admin portal",
 };
 
-// Which roles a given feature applies to (avoid showing irrelevant toggles)
-const allowedRoles = (category: string): string[] => {
-  if (category === "client") return ["client"];
-  if (category === "staff") return ["team_member"];
-  if (category === "supervisee") return ["supervisee"];
-  if (category === "admin") return ["admin"];
-  return ROLES.map((r) => r.key);
-};
+// Every role can be granted any feature — admins choose the access matrix.
+const allowedRoles = (_category: string): string[] => ROLES.map((r) => r.key);
 
 const FeatureFlags = () => {
   const { data: flags, isLoading: loadingFlags } = useFeatureCatalogue();

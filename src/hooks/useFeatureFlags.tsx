@@ -10,6 +10,7 @@ export interface FeatureFlag {
   description: string;
   category: FeatureCategory;
   display_order: number;
+  path?: string | null;
 }
 
 export interface RoleAccessRow {

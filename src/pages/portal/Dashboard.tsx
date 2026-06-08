@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
+import MoreFeaturesGrid from "@/components/portal/MoreFeaturesGrid";
 import { supabase } from "@/integrations/supabase/client";
 import {
   PortalShell,
@@ -141,6 +142,10 @@ const Dashboard = () => {
           hint="ACT, mindfulness, focus"
         />
       </BentoGrid>
+      <MoreFeaturesGrid
+        category="client"
+        exclude={["client.next-session","client.messages","client.tasks","client.pathway","client.resources","client.toolkit"]}
+      />
     </PortalShell>
   );
 };
