@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { verifyState } from "../_shared/oauth-state.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -27,8 +28,8 @@ Deno.serve(async (req) => {
   if (!code || !state) return new Response(html("Missing code/state", false), { headers: { "Content-Type": "text/html" } });
 
   try {
-    const decoded = JSON.parse(atob(state));
-    const userId = decoded.u as string;
+    const payload = await verifyState(state);
+    const userId = payload.user_id;
     if (!userId) throw new Error("Invalid state");
 
     const clientId = Deno.env.get("XERO_CLIENT_ID")!;
