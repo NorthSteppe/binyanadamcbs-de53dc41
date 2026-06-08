@@ -354,6 +354,31 @@ const Booking = () => {
             <p className="text-muted-foreground mb-8">{portalT.bookSubtitle}</p>
           </motion.div>
 
+          {/* Staff/admin: pick which client to book for */}
+          {isStaff && (
+            <div className="mb-8 bg-card border-2 border-primary/20 rounded-xl p-5">
+              <Label className="text-base font-semibold mb-3 flex items-center gap-2">
+                <UserCheck size={18} className="text-primary" />
+                Book on behalf of
+              </Label>
+              <Select value={bookFor} onValueChange={setBookFor}>
+                <SelectTrigger className="h-11">
+                  <SelectValue placeholder={bookableClients.length ? "Select a client…" : "No bookable clients found"} />
+                </SelectTrigger>
+                <SelectContent>
+                  {bookableClients.map((c) => {
+                    const key = c.kind === "user" ? `user:${c.id}` : `manual:${c.id}`;
+                    return <SelectItem key={key} value={key}>{c.full_name}</SelectItem>;
+                  })}
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground mt-2">
+                A draft Xero invoice will be raised automatically for paid services.
+              </p>
+            </div>
+          )}
+
+
           {/* Step 1: Service selection */}
           <div className="mb-8">
             <Label className="text-base font-semibold mb-3 block">{portalT.step1}</Label>
