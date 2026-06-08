@@ -7,6 +7,7 @@ import {
   ListTodo,
   Wrench,
   CalendarDays,
+  CalendarPlus,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
