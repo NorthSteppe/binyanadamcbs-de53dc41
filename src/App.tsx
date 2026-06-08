@@ -85,6 +85,7 @@ import HexaflexTracker from "./pages/staff/HexaflexTracker";
 import BehaviourLog from "./pages/staff/BehaviourLog";
 import CaseFormulation from "./pages/staff/CaseFormulation";
 import FBAIntakes from "./pages/staff/FBAIntakes";
+import SessionRoom from "./pages/staff/SessionRoom";
 // Courses
 import Courses from "./pages/Courses";
 import CourseDetail from "./pages/CourseDetail";
