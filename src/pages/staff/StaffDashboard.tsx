@@ -17,6 +17,7 @@ import {
   BentoGrid,
   BentoTile,
 } from "@/components/portal/BentoShell";
+import MoreFeaturesGrid from "@/components/portal/MoreFeaturesGrid";
 
 const StaffDashboard = () => {
   const { user } = useAuth();
