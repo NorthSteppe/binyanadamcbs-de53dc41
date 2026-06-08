@@ -104,6 +104,15 @@ const StaffDashboard = () => {
           hint="Personal & team"
         />
         <BentoTile
+          feature="staff.booking"
+          to="/staff/booking"
+          size="md"
+          icon={CalendarPlus}
+          label="Book session"
+          hint="On behalf of a client"
+          accent="orange"
+        />
+        <BentoTile
           feature="staff.tools"
           to="/staff/clinical-tools"
           size="md"
