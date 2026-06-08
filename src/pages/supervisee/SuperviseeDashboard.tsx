@@ -89,6 +89,10 @@ const SuperviseeDashboard = () => {
           hint="Shared by supervisor"
         />
       </BentoGrid>
+      <MoreFeaturesGrid
+        category="supervisee"
+        exclude={["sup.next-supervision","sup.caselog","sup.competencies","sup.documents"]}
+      />
     </PortalShell>
   );
 };
