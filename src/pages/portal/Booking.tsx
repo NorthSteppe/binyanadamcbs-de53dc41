@@ -38,11 +38,17 @@ type RecurrencePattern = "weekly" | "biweekly" | "monthly";
 
 
 const Booking = () => {
-  const { user } = useAuth();
+  const { user, isStaff, isAdmin } = useAuth();
   const { toast } = useToast();
   const { t } = useLanguage();
   const portalT = (t as any).portalBooking || {};
   const [searchParams] = useSearchParams();
+
+  // Staff/admin: book on behalf of a client
+  type ClientPick = { id: string; full_name: string; kind: "user" | "manual"; manual_id?: string };
+  const [bookableClients, setBookableClients] = useState<ClientPick[]>([]);
+  const [bookFor, setBookFor] = useState<string>(""); // "user:<id>" or "manual:<id>" or "" for self
+
 
   const [services, setServices] = useState<ServiceOption[]>([]);
   const [selectedService, setSelectedService] = useState<ServiceOption | null>(null);
