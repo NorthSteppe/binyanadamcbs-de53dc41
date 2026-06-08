@@ -141,6 +141,10 @@ const Dashboard = () => {
           hint="ACT, mindfulness, focus"
         />
       </BentoGrid>
+      <MoreFeaturesGrid
+        category="client"
+        exclude={["client.next-session","client.messages","client.tasks","client.pathway","client.resources","client.toolkit"]}
+      />
     </PortalShell>
   );
 };
