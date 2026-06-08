@@ -144,6 +144,10 @@ const StaffDashboard = () => {
           hint="ACT, FBA, formulation"
         />
       </BentoGrid>
+      <MoreFeaturesGrid
+        category="staff"
+        exclude={["staff.today","staff.clients","staff.tasks","staff.notes","staff.calendar","staff.booking","staff.session-room","staff.tools"]}
+      />
     </PortalShell>
   );
 };
