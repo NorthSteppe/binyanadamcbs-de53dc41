@@ -76,6 +76,49 @@ const Booking = () => {
       .then(({ data }) => { if (data) setServices(data as unknown as ServiceOption[]); });
   }, []);
 
+  // Load bookable clients for staff/admin (assigned clients + manual clients; admins see all)
+  useEffect(() => {
+    if (!user || !isStaff) return;
+    (async () => {
+      const list: ClientPick[] = [];
+
+      // Profiles: admins see all; therapists see assigned clients
+      if (isAdmin) {
+        const { data } = await supabase.rpc("get_safe_profiles");
+        if (data) {
+          for (const p of data as Array<{ id: string; full_name: string | null }>) {
+            list.push({ id: p.id, full_name: p.full_name || "Unnamed", kind: "user" });
+          }
+        }
+      } else {
+        const { data: assigns } = await supabase
+          .from("client_assignments")
+          .select("client_id")
+          .eq("assignee_id", user.id);
+        const ids = (assigns || []).map((a) => a.client_id);
+        if (ids.length) {
+          const { data } = await supabase.from("profiles").select("id, full_name").in("id", ids);
+          for (const p of (data || []) as Array<{ id: string; full_name: string | null }>) {
+            list.push({ id: p.id, full_name: p.full_name || "Unnamed", kind: "user" });
+          }
+        }
+      }
+
+      // Manual clients (admins see all; therapists see those without a linked user via own assignments)
+      const { data: mc } = await supabase.from("manual_clients").select("id, full_name, linked_user_id");
+      if (mc) {
+        for (const m of mc as Array<{ id: string; full_name: string; linked_user_id: string | null }>) {
+          if (m.linked_user_id) continue; // skip those already linked to a user (covered above)
+          list.push({ id: m.id, full_name: m.full_name + " (manual)", kind: "manual", manual_id: m.id });
+        }
+      }
+
+      list.sort((a, b) => a.full_name.localeCompare(b.full_name));
+      setBookableClients(list);
+    })();
+  }, [user, isStaff, isAdmin]);
+
+
   // Compute the list of session datetimes based on current selections
   const computeSessionDates = (): Date[] => {
     if (!selectedTime) return [];
