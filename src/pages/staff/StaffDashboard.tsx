@@ -52,6 +52,17 @@ const StaffDashboard = () => {
       .eq("assigned_to", user.id)
       .eq("is_completed", false)
       .then(({ count }) => setOpenTasks(count ?? 0));
+
+    // Next upcoming session for this therapist (today/in-progress)
+    supabase
+      .from("sessions")
+      .select("id, session_date, status")
+      .eq("therapist_id", user.id)
+      .in("status", ["scheduled", "in_progress"])
+      .gte("session_date", new Date(Date.now() - 30 * 60_000).toISOString())
+      .order("session_date", { ascending: true })
+      .limit(1)
+      .then(({ data }) => setNextSessionId(data?.[0]?.id ?? null));
   }, [user]);
 
   return (
