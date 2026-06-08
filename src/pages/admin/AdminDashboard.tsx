@@ -72,6 +72,10 @@ const AdminDashboard = () => {
           accent="orange"
         />
       </BentoGrid>
+      <MoreFeaturesGrid
+        category="admin"
+        exclude={["admin.calendar","admin.clients","admin.team","admin.finance","admin.content","admin.features"]}
+      />
     </PortalShell>
   );
 };
