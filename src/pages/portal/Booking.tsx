@@ -236,7 +236,7 @@ const Booking = () => {
 
     const { data: firstInserted, error: firstErr } = await supabase
       .from("sessions")
-      .insert({ ...baseRow, session_date: sessionDates[0].toISOString() })
+      .insert({ ...(baseRow as any), session_date: sessionDates[0].toISOString() })
       .select("id")
       .single();
 
@@ -250,11 +250,11 @@ const Booking = () => {
 
     if (sessionDates.length > 1) {
       const extra = sessionDates.slice(1).map((d) => ({
-        ...baseRow,
+        ...(baseRow as any),
         session_date: d.toISOString(),
         recurrence_parent_id: firstInserted.id,
       }));
-      const { data: extraInserted, error: extraErr } = await supabase.from("sessions").insert(extra).select("id");
+      const { data: extraInserted, error: extraErr } = await supabase.from("sessions").insert(extra as any).select("id");
       if (extraErr) {
         toast({ title: "Some sessions failed", description: extraErr.message, variant: "destructive" });
       } else if (extraInserted) {
