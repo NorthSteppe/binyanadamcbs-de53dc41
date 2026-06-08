@@ -127,6 +127,7 @@ Deno.serve(async (req) => {
 
     const today = new Date().toISOString().slice(0, 10);
     const due = new Date(); due.setDate(due.getDate() + 14);
+    const autoSend = body?.auto_send === true && !!contactEmail;
     const payload = {
       Type: "ACCREC",
       Contact: contactEmail
@@ -135,7 +136,7 @@ Deno.serve(async (req) => {
       Date: today,
       DueDate: due.toISOString().slice(0, 10),
       LineAmountTypes: "Exclusive",
-      Status: "DRAFT",
+      Status: autoSend ? "AUTHORISED" : "DRAFT",
       Reference: description.slice(0, 200),
       LineItems: lineItems,
     };
@@ -164,9 +165,30 @@ Deno.serve(async (req) => {
       await admin.from("profiles").update({ xero_contact_id: xeroContactId }).eq("id", linkProfileId).is("xero_contact_id", null);
     }
 
-    return new Response(JSON.stringify({ ok: true, invoice: createdInvoice, xero_contact_id: xeroContactId }), {
+    // Auto-email the invoice to the client when requested
+    let emailed = false;
+    if (autoSend && createdInvoice?.InvoiceID) {
+      const emailRes = await fetch(`https://api.xero.com/api.xro/2.0/Invoices/${createdInvoice.InvoiceID}/Email`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${conn.access_token}`,
+          "Xero-Tenant-Id": conn.tenant_id,
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({}),
+      });
+      emailed = emailRes.ok;
+      if (!emailRes.ok) {
+        const errText = await emailRes.text().catch(() => "");
+        console.error("Xero invoice email failed", errText);
+      }
+    }
+
+    return new Response(JSON.stringify({ ok: true, invoice: createdInvoice, xero_contact_id: xeroContactId, emailed }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
+
 
   } catch (e) {
     console.error("xero-invoice-booking error", e);

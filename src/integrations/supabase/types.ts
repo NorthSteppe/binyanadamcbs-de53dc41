@@ -1841,13 +1841,17 @@ export type Database = {
       }
       sessions: {
         Row: {
+          actual_end_at: string | null
+          actual_start_at: string | null
           attendee_ids: string[] | null
           client_id: string
+          completed_at: string | null
           created_at: string
           description: string | null
           duration_minutes: number
           id: string
           is_paid: boolean
+          live_notes: string | null
           manual_client_id: string | null
           meeting_platform: string | null
           meeting_url: string | null
@@ -1871,13 +1875,17 @@ export type Database = {
           title: string
         }
         Insert: {
+          actual_end_at?: string | null
+          actual_start_at?: string | null
           attendee_ids?: string[] | null
           client_id: string
+          completed_at?: string | null
           created_at?: string
           description?: string | null
           duration_minutes?: number
           id?: string
           is_paid?: boolean
+          live_notes?: string | null
           manual_client_id?: string | null
           meeting_platform?: string | null
           meeting_url?: string | null
@@ -1901,13 +1909,17 @@ export type Database = {
           title: string
         }
         Update: {
+          actual_end_at?: string | null
+          actual_start_at?: string | null
           attendee_ids?: string[] | null
           client_id?: string
+          completed_at?: string | null
           created_at?: string
           description?: string | null
           duration_minutes?: number
           id?: string
           is_paid?: boolean
+          live_notes?: string | null
           manual_client_id?: string | null
           meeting_platform?: string | null
           meeting_url?: string | null

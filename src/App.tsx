@@ -85,6 +85,7 @@ import HexaflexTracker from "./pages/staff/HexaflexTracker";
 import BehaviourLog from "./pages/staff/BehaviourLog";
 import CaseFormulation from "./pages/staff/CaseFormulation";
 import FBAIntakes from "./pages/staff/FBAIntakes";
+import SessionRoom from "./pages/staff/SessionRoom";
 // Courses
 import Courses from "./pages/Courses";
 import CourseDetail from "./pages/CourseDetail";
@@ -240,6 +241,7 @@ const App = () => (
                   <Route path="/staff/resources" element={<StaffRoute><Resources /></StaffRoute>} />
                   <Route path="/staff/messages" element={<StaffRoute><Messages /></StaffRoute>} />
                   <Route path="/staff/booking" element={<StaffRoute><Booking /></StaffRoute>} />
+                  <Route path="/staff/session/:id" element={<StaffRoute><SessionRoom /></StaffRoute>} />
                   <Route path="/staff/productivity" element={<StaffRoute><Productivity /></StaffRoute>} />
                   <Route path="/staff/toolkit" element={<StaffRoute><Toolkit /></StaffRoute>} />
                   <Route path="/staff/toolkit/act-matrix" element={<StaffRoute><StaffACTMatrix /></StaffRoute>} />
