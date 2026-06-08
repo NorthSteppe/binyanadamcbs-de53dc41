@@ -158,6 +158,29 @@ const Booking = () => {
 
   const handleBook = async () => {
     if (!user || !selectedService || sessionCount === 0) return;
+
+    // Determine target client (self for clients; selected client for staff/admin)
+    let targetClientId: string = user.id;
+    let targetManualClientId: string | null = null;
+    let targetClientEmail: string | undefined = user.email ?? undefined;
+    if (isStaff) {
+      if (!bookFor) {
+        toast({ title: "Select a client", description: "Pick the client to book for.", variant: "destructive" });
+        return;
+      }
+      const pick = bookableClients.find((c) => (c.kind === "user" ? `user:${c.id}` : `manual:${c.id}`) === bookFor);
+      if (!pick) return;
+      if (pick.kind === "user") {
+        targetClientId = pick.id;
+        targetManualClientId = null;
+        targetClientEmail = undefined; // not required for meeting link
+      } else {
+        // Manual client: client_id NOT NULL on sessions, so use staff's own id as placeholder and set manual_client_id
+        targetClientId = user.id;
+        targetManualClientId = pick.manual_id ?? pick.id;
+      }
+    }
+
     setLoading(true);
 
     // Resolve a meeting URL once and reuse for all sessions in the block.
@@ -165,22 +188,27 @@ const Booking = () => {
     if (platform !== "in_person") {
       const providerKey = platform === "google_meet" ? "google" : platform;
       try {
-        const { data: assignment } = await supabase
-          .from("client_assignments")
-          .select("assignee_id")
-          .eq("client_id", user.id)
-          .limit(1)
-          .maybeSingle();
+        // Therapist as host when staff is booking; otherwise look up an assignee
+        let hostId: string | undefined = isStaff ? user.id : undefined;
+        if (!hostId) {
+          const { data: assignment } = await supabase
+            .from("client_assignments")
+            .select("assignee_id")
+            .eq("client_id", targetClientId)
+            .limit(1)
+            .maybeSingle();
+          hostId = assignment?.assignee_id;
+        }
 
-        if (assignment?.assignee_id) {
+        if (hostId) {
           const { data: meet, error: meetErr } = await supabase.functions.invoke("create-meeting", {
             body: {
-              host_user_id: assignment.assignee_id,
+              host_user_id: hostId,
               provider: providerKey,
               title: selectedService.name,
               start_iso: sessionDates[0].toISOString(),
               duration_minutes: selectedService.duration_minutes,
-              attendee_email: user.email,
+              attendee_email: targetClientEmail,
             },
           });
           if (!meetErr && meet?.join_url) meetingUrl = meet.join_url;
@@ -192,8 +220,8 @@ const Booking = () => {
 
     const isPaid = selectedService.price_cents > 0;
 
-    const baseRow = {
-      client_id: user.id,
+    const baseRow: Record<string, unknown> = {
+      client_id: targetClientId,
       title: selectedService.name,
       description: description || null,
       duration_minutes: selectedService.duration_minutes,
@@ -202,6 +230,9 @@ const Booking = () => {
       service_option_id: selectedService.id,
       price_cents: selectedService.price_cents,
     };
+    if (targetManualClientId) baseRow.manual_client_id = targetManualClientId;
+    if (isStaff) baseRow.therapist_id = user.id;
+
 
     const { data: firstInserted, error: firstErr } = await supabase
       .from("sessions")
