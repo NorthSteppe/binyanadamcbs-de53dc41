@@ -66,11 +66,17 @@ Deno.serve(async (req) => {
 
       const data = await response.json();
 
-      // For non-admin, filter to only assigned issues
+      // For non-admin, filter to only issues assigned to the authenticated
+      // user. We resolve the identity server-side (via the verified Supabase
+      // email) instead of trusting any client-supplied Linear user id, which
+      // would otherwise let any staff member view another teammate's queue.
       if (!isAdmin && data?.data?.issues?.nodes) {
-        data.data.issues.nodes = data.data.issues.nodes.filter(
-          (issue: any) => issue.assignee?.id === body.linearUserId
-        );
+        const userEmail = (user.email || "").toLowerCase();
+        data.data.issues.nodes = userEmail
+          ? data.data.issues.nodes.filter(
+              (issue: any) => (issue.assignee?.email || "").toLowerCase() === userEmail
+            )
+          : [];
       }
 
       return new Response(JSON.stringify(data), {
