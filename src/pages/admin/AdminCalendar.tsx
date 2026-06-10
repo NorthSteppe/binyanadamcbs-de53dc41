@@ -770,6 +770,15 @@ const AdminCalendar = () => {
   return (
     <div className={containerClass}>
       {!isFullscreen && <Header />}
+      {/* Floating time pill shown while dragging an event */}
+      {dragHover && draggedEvent && (
+        <div
+          className="fixed z-[100] pointer-events-none px-2.5 py-1 rounded-full text-xs font-mono font-semibold shadow-lg bg-foreground text-background"
+          style={{ left: dragHover.x + 14, top: dragHover.y + 14 }}
+        >
+          {format(dragHover.time, "EEE d MMM · HH:mm")}
+        </div>
+      )}
       <section
         className={isFullscreen ? "" : "pb-20"}
         style={isFullscreen ? undefined : { paddingTop: "var(--header-height)" }}
