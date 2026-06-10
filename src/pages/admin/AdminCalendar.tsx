@@ -174,7 +174,7 @@ const AdminCalendar = () => {
   const { data: serviceOptions = [] } = useQuery({
     queryKey: ["service_options_active"],
     queryFn: async () => {
-      const { data } = await supabase.from("service_options").select("id,name,duration_minutes,price_cents").eq("is_active", true).order("display_order");
+      const { data } = await supabase.from("service_options").select("id,name,duration_minutes,price_cents,therapist_rate_cents").eq("is_active", true).order("display_order");
       return data || [];
     },
   });
