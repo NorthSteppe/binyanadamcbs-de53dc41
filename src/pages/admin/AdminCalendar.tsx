@@ -998,8 +998,16 @@ const AdminCalendar = () => {
                       onDragLeave={handleDragLeave}
                       onDrop={(e) => handleDrop(e, currentDate, hour)}
                     >
-                      <div className="w-16 text-[11px] text-muted-foreground text-right pr-3 pt-1 flex-shrink-0">
-                        {hour.toString().padStart(2, "0")}:00
+                      <div className="w-16 relative flex-shrink-0">
+                        {hourEvents.map((ev, i) => (
+                          <div
+                            key={`${ev.id}-t-${i}`}
+                            className="absolute right-3 text-[11px] text-muted-foreground font-medium leading-none"
+                            style={{ top: `${(ev.start.getMinutes() / 60) * 64}px` }}
+                          >
+                            {format(ev.start, "HH:mm")}
+                          </div>
+                        ))}
                       </div>
                       <div className="flex-1 relative py-0.5 space-y-0.5">
                         {hourEvents.map((ev) => {
