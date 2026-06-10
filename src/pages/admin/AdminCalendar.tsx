@@ -1219,10 +1219,12 @@ const AdminCalendar = () => {
                       </SelectContent>
                     </Select>
                   </div>
-                  <div>
-                    <Label className="text-xs flex items-center gap-1"><Link2 size={10} /> Link</Label>
-                    <Input value={newSession.meeting_url} onChange={(e) => setNewSession({ ...newSession, meeting_url: e.target.value })} placeholder="https://..." className="h-8 text-sm" />
-                  </div>
+                  {["zoom", "teams", "google-meet", "other"].includes(newSession.meeting_platform) && (
+                    <div>
+                      <Label className="text-xs flex items-center gap-1"><Link2 size={10} /> Link</Label>
+                      <Input value={newSession.meeting_url} onChange={(e) => setNewSession({ ...newSession, meeting_url: e.target.value })} placeholder="https://..." className="h-8 text-sm" />
+                    </div>
+                  )}
                 </div>
 
                 {/* Service & pricing — admin only. Prices defined in Service Options. */}
