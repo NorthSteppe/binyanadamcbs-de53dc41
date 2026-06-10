@@ -1115,14 +1115,14 @@ const AdminCalendar = () => {
                   </div>
                 </div>
 
-                {/* Service & pricing */}
+                {/* Service & pricing — admin only. Prices defined in Service Options. */}
                 <div className="border border-border/50 rounded-lg p-2.5 space-y-2 bg-muted/30">
-                  <Label className="flex items-center gap-1.5 text-xs"><DollarSign size={12} /> Service & pricing</Label>
+                  <Label className="flex items-center gap-1.5 text-xs"><DollarSign size={12} /> Service & pricing <span className="text-[10px] text-muted-foreground">(admin only)</span></Label>
                   <Select
                     value={newSession.service_option_id || "custom"}
                     onValueChange={(v) => {
                       if (v === "custom") {
-                        setNewSession({ ...newSession, service_option_id: "" });
+                        setNewSession({ ...newSession, service_option_id: "", price_cents: 0, therapist_rate_cents: 0 });
                       } else {
                         const svc = serviceOptions.find((s: any) => s.id === v);
                         if (svc) {
@@ -1130,6 +1130,7 @@ const AdminCalendar = () => {
                             ...newSession,
                             service_option_id: svc.id,
                             price_cents: svc.price_cents,
+                            therapist_rate_cents: svc.therapist_rate_cents ?? 0,
                             duration_minutes: svc.duration_minutes,
                             title: newSession.title || svc.name,
                           });
@@ -1139,7 +1140,7 @@ const AdminCalendar = () => {
                   >
                     <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Select service" /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="custom">Custom (no service)</SelectItem>
+                      <SelectItem value="custom">Custom / no charge</SelectItem>
                       {serviceOptions.map((s: any) => (
                         <SelectItem key={s.id} value={s.id}>
                           {s.name} — £{(s.price_cents / 100).toFixed(2)} · {s.duration_minutes}min
@@ -1147,26 +1148,17 @@ const AdminCalendar = () => {
                       ))}
                     </SelectContent>
                   </Select>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
-                      <Label className="text-[10px] text-muted-foreground">Client price (£)</Label>
-                      <Input
-                        type="number"
-                        step="0.01"
-                        value={(newSession.price_cents / 100).toFixed(2)}
-                        onChange={(e) => setNewSession({ ...newSession, price_cents: Math.round(parseFloat(e.target.value || "0") * 100) })}
-                        className="h-7 text-xs"
-                      />
+                  <p className="text-[10px] text-muted-foreground">
+                    To change a price, edit it in <a href="/admin/services" className="underline">Service Options</a>.
+                  </p>
+                  <div className="grid grid-cols-2 gap-2 text-[11px]">
+                    <div className="bg-background/60 rounded px-2 py-1.5">
+                      <div className="text-muted-foreground text-[10px]">Client charge</div>
+                      <div className="font-semibold">£{(newSession.price_cents / 100).toFixed(2)}</div>
                     </div>
-                    <div>
-                      <Label className="text-[10px] text-muted-foreground">Therapist payout (£)</Label>
-                      <Input
-                        type="number"
-                        step="0.01"
-                        value={(newSession.therapist_rate_cents / 100).toFixed(2)}
-                        onChange={(e) => setNewSession({ ...newSession, therapist_rate_cents: Math.round(parseFloat(e.target.value || "0") * 100) })}
-                        className="h-7 text-xs"
-                      />
+                    <div className="bg-background/60 rounded px-2 py-1.5">
+                      <div className="text-muted-foreground text-[10px]">Therapist payout</div>
+                      <div className="font-semibold">£{(newSession.therapist_rate_cents / 100).toFixed(2)}</div>
                     </div>
                   </div>
                   <Select
@@ -1194,6 +1186,7 @@ const AdminCalendar = () => {
                       ))}
                     </SelectContent>
                   </Select>
+
                   <label className="flex items-center justify-between gap-2 pt-1.5 border-t border-border/50">
                     <span className="text-[11px] text-muted-foreground leading-tight">
                       Raise Xero invoice for client
