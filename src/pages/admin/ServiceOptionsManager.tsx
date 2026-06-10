@@ -11,7 +11,10 @@ import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
-interface ServiceOption {
+interface ServiceOption extends Record<string, any> {
+  __dirty?: boolean;
+}
+interface _ServiceOption {
   id: string;
   name: string;
   description: string;
