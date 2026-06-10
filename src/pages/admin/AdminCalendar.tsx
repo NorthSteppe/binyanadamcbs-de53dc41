@@ -1062,8 +1062,8 @@ const AdminCalendar = () => {
             <Button variant={createType === "task" ? "default" : "outline"} size="sm" onClick={() => setCreateType("task")} className="text-xs gap-1 h-7"><ListTodo size={12} /> Task</Button>
           </div>
 
-          <ScrollArea className="flex-1 px-6 pb-2">
-            <div className="space-y-3 pr-2">
+          <div className="flex-1 overflow-y-auto px-6 pb-2 min-h-0">
+            <div className="space-y-3">
             {createType === "session" ? (
               <>
                 <div className="grid grid-cols-2 gap-3">
