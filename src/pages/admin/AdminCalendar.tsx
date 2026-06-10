@@ -454,30 +454,10 @@ const AdminCalendar = () => {
       if (recErr) toast.error("Some recurring sessions failed to create");
     }
 
-    // Send invite notifications to attendees
-    for (const aid of newSession.attendee_ids) {
-      await supabase.rpc("create_notification", {
-        _user_id: aid, _type: "session", _title: "Session Invitation",
-        _message: `You have been invited to "${newSession.title}"`,
-        _link: "/admin/calendar",
-      });
-    }
+    // Therapist gets notified automatically via DB trigger when assigned.
     toast.success(dates.length > 1 ? `${dates.length} recurring sessions created` : "Session created");
-
-    // Optionally raise a Xero invoice for the first session
-    if (newSession.send_payment_link && firstSession?.id) {
-      try {
-        const { data: linkData, error: linkErr } = await supabase.functions.invoke("xero-invoice-booking", {
-          body: { session_ids: [firstSession.id] },
-        });
-        if (linkErr || (linkData as any)?.error) {
-          toast.error(`Xero invoice: ${(linkData as any)?.error || linkErr?.message || "failed"}`);
-        } else {
-          toast.success("Draft invoice raised in Xero");
-        }
-      } catch (e: any) {
-        toast.error(`Xero invoice failed: ${e.message}`);
-      }
+    if (newSession.send_payment_link) {
+      toast.info("Xero draft will be raised at the start of the session's week.");
     }
 
     setCreateOpen(false);
