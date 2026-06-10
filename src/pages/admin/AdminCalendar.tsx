@@ -588,8 +588,8 @@ const AdminCalendar = () => {
 
   const openEdit = async (event: CalendarEvent) => {
     if (event.type !== "session") return;
-    const { data: full } = await supabase
-      .from("sessions")
+    const { data: full } = await (supabase as any)
+      .from("staff_sessions")
       .select("service_option_id, price_cents, therapist_id, therapist_rate_cents")
       .eq("id", event.id)
       .maybeSingle();
