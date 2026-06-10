@@ -86,6 +86,7 @@ import BehaviourLog from "./pages/staff/BehaviourLog";
 import CaseFormulation from "./pages/staff/CaseFormulation";
 import FBAIntakes from "./pages/staff/FBAIntakes";
 import SessionRoom from "./pages/staff/SessionRoom";
+import MyPayouts from "./pages/staff/MyPayouts";
 // Courses
 import Courses from "./pages/Courses";
 import CourseDetail from "./pages/CourseDetail";
