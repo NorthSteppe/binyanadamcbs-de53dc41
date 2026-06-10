@@ -20,6 +20,8 @@ interface ServiceOption {
   display_order: number;
   price_cents: number;
   therapist_rate_cents: number;
+  show_duration: boolean;
+  show_price: boolean;
   __dirty?: boolean;
 }
 
@@ -46,6 +48,7 @@ const ServiceOptionsManager = () => {
       name: svc.name, description: svc.description, duration_minutes: svc.duration_minutes,
       is_active: svc.is_active, display_order: svc.display_order, price_cents: svc.price_cents,
       therapist_rate_cents: svc.therapist_rate_cents,
+      show_duration: svc.show_duration, show_price: svc.show_price,
     } as any).eq("id", svc.id);
     if (!error) {
       toast({ title: "Updated" });
@@ -121,6 +124,18 @@ const ServiceOptionsManager = () => {
                         onBlur={(e) => update(svc.id, "therapist_rate_cents", Math.round(parseFloat(e.target.value || "0") * 100))}
                         className="w-28"
                       />
+                      <div className="text-[10px] text-muted-foreground">Admin-only · never shown to clients</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-6 pt-2 border-t border-border/40">
+                    <span className="text-xs font-medium text-muted-foreground">Show to clients on booking:</span>
+                    <div className="flex items-center gap-2">
+                      <Switch checked={svc.show_duration} onCheckedChange={(v) => update(svc.id, "show_duration", v)} />
+                      <Label className="text-xs">Duration / time</Label>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Switch checked={svc.show_price} onCheckedChange={(v) => update(svc.id, "show_price", v)} />
+                      <Label className="text-xs">Price</Label>
                     </div>
 
                     <div className="ms-auto flex gap-2 flex-wrap">

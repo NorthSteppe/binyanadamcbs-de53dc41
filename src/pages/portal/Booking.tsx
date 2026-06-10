@@ -24,6 +24,8 @@ interface ServiceOption {
   description: string;
   duration_minutes: number;
   price_cents: number;
+  show_duration: boolean;
+  show_price: boolean;
 }
 
 const TIME_SLOTS = [
@@ -396,16 +398,18 @@ const Booking = () => {
                 >
                   <div className="flex justify-between items-start">
                     <p className="font-semibold text-foreground">{svc.name}</p>
-                    {svc.price_cents > 0 && (
+                    {svc.show_price !== false && svc.price_cents > 0 && (
                       <span className="text-sm font-bold text-primary">
                         £{(svc.price_cents / 100).toFixed(2)}
                       </span>
                     )}
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">{svc.description}</p>
-                  <p className="text-xs text-primary font-medium mt-2 flex items-center gap-1">
-                    <Clock size={12} /> {svc.duration_minutes} {portalT.minutes}
-                  </p>
+                  {svc.show_duration !== false && (
+                    <p className="text-xs text-primary font-medium mt-2 flex items-center gap-1">
+                      <Clock size={12} /> {svc.duration_minutes} {portalT.minutes}
+                    </p>
+                  )}
                 </button>
               ))}
             </div>
@@ -578,7 +582,7 @@ const Booking = () => {
                     <div className="text-muted-foreground text-xs mt-1 space-y-0.5 max-h-32 overflow-auto">
                       {sessionDates.slice(0, 6).map((d, i) => (
                         <p key={i}>
-                          {d.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" })} · {selectedTime} · {selectedService.duration_minutes} min
+                          {d.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" })} · {selectedTime}{selectedService.show_duration !== false ? ` · ${selectedService.duration_minutes} min` : ""}
                         </p>
                       ))}
                       {sessionDates.length > 6 && (
@@ -591,7 +595,7 @@ const Booking = () => {
                       </p>
                     )}
                   </div>
-                  {totalPriceCents > 0 && (
+                  {selectedService.show_price !== false && totalPriceCents > 0 && (
                     <div className="text-end shrink-0">
                       <p className="text-lg font-bold text-primary">£{(totalPriceCents / 100).toFixed(2)}</p>
                       {sessionCount > 1 && (
