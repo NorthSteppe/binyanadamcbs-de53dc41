@@ -19,6 +19,7 @@ interface ServiceOption {
   is_active: boolean;
   display_order: number;
   price_cents: number;
+  therapist_rate_cents: number;
 }
 
 const ServiceOptionsManager = () => {
