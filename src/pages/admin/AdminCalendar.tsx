@@ -190,7 +190,7 @@ const AdminCalendar = () => {
     queryFn: async () => {
       const [rolesRes, tmRes] = await Promise.all([
         supabase.from("user_roles").select("user_id, role").in("role", ["team_member", "admin"] as any),
-        supabase.from("team_members" as any).select("id,name,user_id,default_session_rate_cents").eq("is_active", true),
+        supabase.from("staff_team_member_rates" as any).select("id,name,user_id,default_session_rate_cents").eq("is_active", true),
       ]);
       const tmList = (tmRes.data as any[]) || [];
       const rateByUser = new Map<string, number>();
@@ -216,8 +216,8 @@ const AdminCalendar = () => {
   const { data: sessions = [] } = useQuery({
     queryKey: ["team_sessions", rangeStart.toISOString(), rangeEnd.toISOString()],
     queryFn: async () => {
-      const { data } = await supabase
-        .from("sessions").select("*")
+      const { data } = await (supabase as any)
+        .from("staff_sessions").select("*")
         .gte("session_date", rangeStart.toISOString())
         .lte("session_date", rangeEnd.toISOString())
         .order("session_date", { ascending: true });
@@ -588,8 +588,8 @@ const AdminCalendar = () => {
 
   const openEdit = async (event: CalendarEvent) => {
     if (event.type !== "session") return;
-    const { data: full } = await supabase
-      .from("sessions")
+    const { data: full } = await (supabase as any)
+      .from("staff_sessions")
       .select("service_option_id, price_cents, therapist_id, therapist_rate_cents")
       .eq("id", event.id)
       .maybeSingle();
@@ -639,8 +639,8 @@ const AdminCalendar = () => {
       const dayStart = startOfDay(currentDate).toISOString();
       const dayEnd = endOfDay(currentDate).toISOString();
 
-      const { data: daySessions } = await supabase
-        .from("sessions")
+      const { data: daySessions } = await (supabase as any)
+        .from("staff_sessions")
         .select("*")
         .gte("session_date", dayStart)
         .lte("session_date", dayEnd);

@@ -70,15 +70,15 @@ const ClientFinancialTab = ({ clientId, manualClientId, isManual }: Props) => {
     setLoading(true);
     const cols = "id,session_date,status,is_paid,payment_method,duration_minutes,title,price_cents,paid_at,paid_confirmed_by,service_option_id,therapist_id,therapist_rate_cents,therapist_paid";
     const sessionsQ = isManual
-      ? supabase.from("sessions").select(cols).eq("manual_client_id", manualClientId!)
-      : supabase.from("sessions").select(cols).eq("client_id", clientId!);
+      ? supabase.from("staff_sessions" as any).select(cols).eq("manual_client_id", manualClientId!)
+      : supabase.from("staff_sessions" as any).select(cols).eq("client_id", clientId!);
 
     const entriesQ = !isManual && clientId
       ? supabase.from("business_entries").select("id,entry_type,category,amount_cents,entry_date,title,description").eq("client_id", clientId)
       : null;
 
     const [sRes, eRes] = await Promise.all([sessionsQ, entriesQ ?? Promise.resolve({ data: [] as EntryRow[] })]);
-    setSessions((sRes.data as SessionRow[]) || []);
+    setSessions(((sRes as any).data as SessionRow[]) || []);
     setEntries(((eRes as any).data as EntryRow[]) || []);
     setLoading(false);
   };

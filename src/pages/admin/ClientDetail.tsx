@@ -139,7 +139,7 @@ const ClientDetail = () => {
     if (isManual && manualClientId) {
       const [mcRes, sessionsRes, notesRes, todosRes, docsRes] = await Promise.all([
         supabase.from("manual_clients").select("full_name, email, phone, created_at, linked_user_id, created_by").eq("id", manualClientId).single(),
-        supabase.from("sessions").select("*").eq("manual_client_id", manualClientId).order("session_date", { ascending: false }),
+        (supabase as any).from("staff_sessions").select("*").eq("manual_client_id", manualClientId).order("session_date", { ascending: false }),
         supabase.from("client_notes").select("*").eq("manual_client_id", manualClientId).order("created_at", { ascending: false }),
         supabase.from("client_todos").select("*").eq("manual_client_id", manualClientId).order("created_at", { ascending: false }),
         supabase.from("client_documents").select("*").eq("manual_client_id", manualClientId).order("created_at", { ascending: false }),
@@ -162,7 +162,7 @@ const ClientDetail = () => {
     } else if (realClientId) {
       const [profileRes, sessionsRes, notesRes, todosRes, docsRes, assignRes, intakesRes] = await Promise.all([
         supabase.from("profiles").select("full_name, created_at").eq("id", realClientId).single(),
-        supabase.from("sessions").select("*").eq("client_id", realClientId).order("session_date", { ascending: false }),
+        (supabase as any).from("staff_sessions").select("*").eq("client_id", realClientId).order("session_date", { ascending: false }),
         supabase.from("client_notes").select("*").eq("client_id", realClientId).order("created_at", { ascending: false }),
         supabase.from("client_todos").select("*").eq("client_id", realClientId).order("created_at", { ascending: false }),
         supabase.from("client_documents").select("*").eq("client_id", realClientId).order("created_at", { ascending: false }),

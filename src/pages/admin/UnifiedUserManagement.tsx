@@ -377,7 +377,7 @@ const ClientPortalPreview = ({ clientId, clientName, currentUserId }: { clientId
 
   const fetchPortalData = async () => {
     const [sessRes, todoRes, docRes, noteRes] = await Promise.all([
-      supabase.from("sessions").select("*").eq("client_id", clientId).order("session_date", { ascending: false }).limit(10),
+      (supabase as any).from("staff_sessions").select("*").eq("client_id", clientId).order("session_date", { ascending: false }).limit(10),
       supabase.from("client_todos").select("*").eq("client_id", clientId).order("created_at", { ascending: true }),
       supabase.from("client_documents").select("*").eq("client_id", clientId).order("created_at", { ascending: false }),
       supabase.from("client_notes").select("*").eq("client_id", clientId).order("created_at", { ascending: false }),

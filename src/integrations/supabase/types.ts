@@ -2024,6 +2024,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "sessions_recurrence_parent_id_fkey"
+            columns: ["recurrence_parent_id"]
+            isOneToOne: false
+            referencedRelation: "staff_sessions"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "sessions_service_option_id_fkey"
             columns: ["service_option_id"]
             isOneToOne: false
@@ -2956,6 +2963,173 @@ export type Database = {
       }
     }
     Views: {
+      staff_sessions: {
+        Row: {
+          actual_end_at: string | null
+          actual_start_at: string | null
+          attendee_ids: string[] | null
+          client_id: string | null
+          completed_at: string | null
+          created_at: string | null
+          description: string | null
+          duration_minutes: number | null
+          id: string | null
+          is_paid: boolean | null
+          live_notes: string | null
+          manual_client_id: string | null
+          meeting_platform: string | null
+          meeting_url: string | null
+          notes: string | null
+          paid_at: string | null
+          paid_confirmed_by: string | null
+          payment_method: string | null
+          plaud_recording_id: string | null
+          price_cents: number | null
+          recurrence_parent_id: string | null
+          service_option_id: string | null
+          session_date: string | null
+          status: string | null
+          therapist_id: string | null
+          therapist_paid: boolean | null
+          therapist_paid_at: string | null
+          therapist_paid_by: string | null
+          therapist_payout_batch_id: string | null
+          therapist_payout_method: string | null
+          therapist_rate_cents: number | null
+          title: string | null
+          xero_invoice_id: string | null
+          xero_invoice_pending: boolean | null
+          xero_invoice_raised_at: string | null
+        }
+        Insert: {
+          actual_end_at?: string | null
+          actual_start_at?: string | null
+          attendee_ids?: string[] | null
+          client_id?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string | null
+          is_paid?: boolean | null
+          live_notes?: string | null
+          manual_client_id?: string | null
+          meeting_platform?: string | null
+          meeting_url?: string | null
+          notes?: string | null
+          paid_at?: string | null
+          paid_confirmed_by?: string | null
+          payment_method?: string | null
+          plaud_recording_id?: string | null
+          price_cents?: number | null
+          recurrence_parent_id?: string | null
+          service_option_id?: string | null
+          session_date?: string | null
+          status?: string | null
+          therapist_id?: string | null
+          therapist_paid?: boolean | null
+          therapist_paid_at?: string | null
+          therapist_paid_by?: string | null
+          therapist_payout_batch_id?: string | null
+          therapist_payout_method?: string | null
+          therapist_rate_cents?: number | null
+          title?: string | null
+          xero_invoice_id?: string | null
+          xero_invoice_pending?: boolean | null
+          xero_invoice_raised_at?: string | null
+        }
+        Update: {
+          actual_end_at?: string | null
+          actual_start_at?: string | null
+          attendee_ids?: string[] | null
+          client_id?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string | null
+          is_paid?: boolean | null
+          live_notes?: string | null
+          manual_client_id?: string | null
+          meeting_platform?: string | null
+          meeting_url?: string | null
+          notes?: string | null
+          paid_at?: string | null
+          paid_confirmed_by?: string | null
+          payment_method?: string | null
+          plaud_recording_id?: string | null
+          price_cents?: number | null
+          recurrence_parent_id?: string | null
+          service_option_id?: string | null
+          session_date?: string | null
+          status?: string | null
+          therapist_id?: string | null
+          therapist_paid?: boolean | null
+          therapist_paid_at?: string | null
+          therapist_paid_by?: string | null
+          therapist_payout_batch_id?: string | null
+          therapist_payout_method?: string | null
+          therapist_rate_cents?: number | null
+          title?: string | null
+          xero_invoice_id?: string | null
+          xero_invoice_pending?: boolean | null
+          xero_invoice_raised_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sessions_manual_client_id_fkey"
+            columns: ["manual_client_id"]
+            isOneToOne: false
+            referencedRelation: "manual_clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sessions_recurrence_parent_id_fkey"
+            columns: ["recurrence_parent_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sessions_recurrence_parent_id_fkey"
+            columns: ["recurrence_parent_id"]
+            isOneToOne: false
+            referencedRelation: "staff_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sessions_service_option_id_fkey"
+            columns: ["service_option_id"]
+            isOneToOne: false
+            referencedRelation: "service_options"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      staff_team_member_rates: {
+        Row: {
+          default_session_rate_cents: number | null
+          id: string | null
+          is_active: boolean | null
+          name: string | null
+          user_id: string | null
+        }
+        Insert: {
+          default_session_rate_cents?: number | null
+          id?: string | null
+          is_active?: boolean | null
+          name?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          default_session_rate_cents?: number | null
+          id?: string | null
+          is_active?: boolean | null
+          name?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       team_members_public: {
         Row: {
           avatar_url: string | null
