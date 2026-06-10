@@ -1285,7 +1285,7 @@ const AdminCalendar = () => {
               </>
             )}
             </div>
-          </ScrollArea>
+          </div>
 
           {/* Sticky footer */}
           <div className="border-t border-border px-6 py-3 bg-background">
