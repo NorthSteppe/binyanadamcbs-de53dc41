@@ -1783,6 +1783,8 @@ export type Database = {
           is_active: boolean
           name: string
           price_cents: number
+          show_duration: boolean
+          show_price: boolean
           stripe_price_id: string | null
           therapist_rate_cents: number
           updated_at: string
@@ -1796,6 +1798,8 @@ export type Database = {
           is_active?: boolean
           name: string
           price_cents?: number
+          show_duration?: boolean
+          show_price?: boolean
           stripe_price_id?: string | null
           therapist_rate_cents?: number
           updated_at?: string
@@ -1809,6 +1813,8 @@ export type Database = {
           is_active?: boolean
           name?: string
           price_cents?: number
+          show_duration?: boolean
+          show_price?: boolean
           stripe_price_id?: string | null
           therapist_rate_cents?: number
           updated_at?: string
