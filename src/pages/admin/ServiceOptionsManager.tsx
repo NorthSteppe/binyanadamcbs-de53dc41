@@ -124,9 +124,7 @@ const ServiceOptionsManager = () => {
                         onBlur={(e) => update(svc.id, "therapist_rate_cents", Math.round(parseFloat(e.target.value || "0") * 100))}
                         className="w-28"
                       />
-                    <div className="space-y-1">
-                      <Label className="text-xs">Therapist payout from payment pool · admin-only, never shown to clients</Label>
-                      <div className="text-[10px] text-muted-foreground -mt-0.5">Sourced from the shared service pricing pool.</div>
+                      <div className="text-[10px] text-muted-foreground">Admin-only · never shown to clients</div>
                     </div>
                   </div>
                   <div className="flex items-center gap-6 pt-2 border-t border-border/40">
