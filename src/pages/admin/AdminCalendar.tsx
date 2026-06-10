@@ -116,6 +116,7 @@ const AdminCalendar = () => {
   // Drag state
   const [draggedEvent, setDraggedEvent] = useState<CalendarEvent | null>(null);
   const [dropTarget, setDropTarget] = useState<string | null>(null);
+  const [dragHover, setDragHover] = useState<{ time: Date; x: number; y: number } | null>(null);
 
   // AI Scheduler
   const [aiScheduling, setAiScheduling] = useState(false);
