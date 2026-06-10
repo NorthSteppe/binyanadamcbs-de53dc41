@@ -401,6 +401,7 @@ const AdminCalendar = () => {
     if (e.currentTarget instanceof HTMLElement) e.currentTarget.style.opacity = "1";
     setDraggedEvent(null);
     setDropTarget(null);
+    setDragHover(null);
   };
   const handleDragOver = (e: React.DragEvent, cellKey: string) => {
     e.preventDefault();
@@ -408,6 +409,27 @@ const AdminCalendar = () => {
     setDropTarget(cellKey);
   };
   const handleDragLeave = () => setDropTarget(null);
+
+  // Compute minute-precision time inside a week/day hour cell (snapped to SNAP_MIN).
+  const computeCellTime = (e: React.DragEvent, day: Date, hour: number): Date => {
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const offsetY = Math.max(0, Math.min(HOUR_PX, e.clientY - rect.top));
+    const rawMin = (offsetY / HOUR_PX) * 60;
+    const snapped = Math.round(rawMin / SNAP_MIN) * SNAP_MIN;
+    const clamped = Math.max(0, Math.min(59, snapped));
+    const d = new Date(day);
+    d.setHours(hour, clamped, 0, 0);
+    return d;
+  };
+
+  const handleCellDragOverPrecise = (e: React.DragEvent, day: Date, hour: number, cellKey: string) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    setDropTarget(cellKey);
+    if (!draggedEvent) return;
+    const t = computeCellTime(e, day, hour);
+    setDragHover({ time: t, x: e.clientX, y: e.clientY });
+  };
 
   const rescheduleEvent = useMutation({
     mutationFn: async ({ event, newStart }: { event: CalendarEvent; newStart: Date }) => {
@@ -424,19 +446,20 @@ const AdminCalendar = () => {
       qc.invalidateQueries({ queryKey: ["team_todos"] });
       toast.success("Event rescheduled");
     },
-    onError: () => toast.error("Failed to reschedule"),
+    onError: (err: any) => toast.error(`Failed to reschedule${err?.message ? ": " + err.message : ""}`),
   });
 
   const handleDrop = (e: React.DragEvent, day: Date, hour?: number) => {
-    e.preventDefault(); e.stopPropagation(); setDropTarget(null);
+    e.preventDefault(); e.stopPropagation(); setDropTarget(null); setDragHover(null);
     if (!draggedEvent) return;
     const newStart = new Date(day);
     if (hour !== undefined) {
-      newStart.setHours(hour, 0, 0, 0);
+      const precise = computeCellTime(e, day, hour);
+      newStart.setHours(precise.getHours(), precise.getMinutes(), 0, 0);
     } else {
       newStart.setHours(draggedEvent.start.getHours(), draggedEvent.start.getMinutes(), 0, 0);
     }
-    if (draggedEvent.start.getTime() === newStart.getTime()) return;
+    if (draggedEvent.start.getTime() === newStart.getTime()) { setDraggedEvent(null); return; }
     rescheduleEvent.mutate({ event: draggedEvent, newStart });
     setDraggedEvent(null);
   };
