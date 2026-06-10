@@ -44,6 +44,7 @@ const ServiceOptionsManager = () => {
     const { error } = await supabase.from("service_options").update({
       name: svc.name, description: svc.description, duration_minutes: svc.duration_minutes,
       is_active: svc.is_active, display_order: svc.display_order, price_cents: svc.price_cents,
+      therapist_rate_cents: svc.therapist_rate_cents,
     } as any).eq("id", svc.id);
     if (!error) toast({ title: "Updated" });
     else toast({ title: "Error", description: error.message, variant: "destructive" });
