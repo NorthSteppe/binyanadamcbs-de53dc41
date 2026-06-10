@@ -1383,9 +1383,10 @@ const AdminCalendar = () => {
           {/* Sticky footer */}
           <div className="border-t border-border px-6 py-3 bg-background">
             {createType === "session" && (
-              <div className="flex items-center gap-2 text-[10px] text-amber-600 mb-2">
-                <AlertCircle size={12} className="shrink-0" />
-                Sessions created as unpaid. Mark payment once received.
+              <div className="flex flex-wrap items-center gap-3 text-[10px] mb-2">
+                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: EVENT_COLORS.unpaid }} />Xero draft</span>
+                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: EVENT_COLORS.invoice_sent }} />Invoice sent</span>
+                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: EVENT_COLORS.paid }} />Paid</span>
               </div>
             )}
             <Button className="w-full h-9" onClick={createType === "session" ? handleCreateSession : handleCreateTask}>
