@@ -216,8 +216,8 @@ const AdminCalendar = () => {
   const { data: sessions = [] } = useQuery({
     queryKey: ["team_sessions", rangeStart.toISOString(), rangeEnd.toISOString()],
     queryFn: async () => {
-      const { data } = await supabase
-        .from("sessions").select("*")
+      const { data } = await (supabase as any)
+        .from("staff_sessions").select("*")
         .gte("session_date", rangeStart.toISOString())
         .lte("session_date", rangeEnd.toISOString())
         .order("session_date", { ascending: true });
