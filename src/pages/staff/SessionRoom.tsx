@@ -177,16 +177,16 @@ const SessionRoom = () => {
         .eq("id", session.id);
       if (error) throw error;
 
-      // Auto-create + auto-send Xero invoice (best effort)
+      // Push a DRAFT Xero invoice for the registered past session (best effort)
       const { data: inv } = await supabase.functions.invoke("xero-invoice-booking", {
-        body: { session_ids: [session.id], auto_send: true },
+        body: { session_ids: [session.id], auto_send: false },
       });
       if (inv?.ok) {
-        toast({ title: "Session completed", description: "Xero invoice issued and emailed to the client." });
+        toast({ title: "Session completed", description: "Draft invoice pushed to Xero for review." });
       } else if (inv?.skipped) {
-        toast({ title: "Session completed", description: "No chargeable amount — no invoice raised." });
+        toast({ title: "Session completed", description: "No chargeable amount — no draft invoice raised." });
       } else {
-        toast({ title: "Session completed", description: inv?.error ? `Xero: ${inv.error}` : "Invoice could not be raised automatically." });
+        toast({ title: "Session completed", description: inv?.error ? `Xero: ${inv.error}` : "Draft invoice could not be raised automatically." });
       }
       navigate("/staff/calendar");
     } catch (e: any) {
