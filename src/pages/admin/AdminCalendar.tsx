@@ -812,6 +812,11 @@ const AdminCalendar = () => {
               <Button variant="outline" size="sm" onClick={() => setConnectDialogOpen(true)} className="h-8 gap-1 text-xs">
                 <CalendarPlus size={14} /> Connect
               </Button>
+              <a href="/admin/calendar-hours">
+                <Button variant="outline" size="sm" className="h-8 gap-1 text-xs">
+                  <Clock size={14} /> Hour rules
+                </Button>
+              </a>
               <Button variant="outline" size="sm" onClick={() => setIsFullscreen(!isFullscreen)} className="h-8">
                 {isFullscreen ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
               </Button>
