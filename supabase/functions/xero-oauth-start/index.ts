@@ -45,14 +45,17 @@ Deno.serve(async (req) => {
     }
 
     const token = authHeader.replace("Bearer ", "").trim();
-    // Validate the caller's JWT using the anon-key client + getClaims (signing-keys compatible)
-    const authClient = createClient(supabaseUrl, anonKey);
-    const { data: claimsData, error: ce } = await authClient.auth.getClaims(token);
-    if (ce || !claimsData?.claims?.sub) {
-      console.error("xero-oauth-start getClaims failed", ce);
+    // Validate the caller's JWT via the Auth REST endpoint (works on any supabase-js version)
+    const userRes = await fetch(`${supabaseUrl}/auth/v1/user`, {
+      headers: { Authorization: `Bearer ${token}`, apikey: anonKey },
+    });
+    if (!userRes.ok) {
+      console.error("xero-oauth-start auth/v1/user failed", userRes.status);
       return json({ error: "Unauthorized", reason: "invalid_token" }, 401);
     }
-    const userId = claimsData.claims.sub as string;
+    const u = await userRes.json();
+    const userId = u?.id as string | undefined;
+    if (!userId) return json({ error: "Unauthorized", reason: "invalid_token" }, 401);
 
     // Admin gate (uses service role to bypass RLS on user_roles)
     const admin = createClient(supabaseUrl, serviceRoleKey);
