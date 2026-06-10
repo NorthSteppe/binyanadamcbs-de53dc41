@@ -59,7 +59,7 @@ const BusinessDashboard = () => {
     setLoading(true);
     const [sessRes, svcRes, cpRes, profRes, courseRes, rolesRes, beRes, bpRes] = await Promise.all([
       supabase.from("sessions").select("*").order("session_date", { ascending: false }),
-      supabase.from("service_options").select("*"),
+      (supabase as any).rpc("admin_list_service_options"),
       supabase.from("course_purchases").select("*"),
       supabase.from("profiles").select("id, full_name, created_at"),
       supabase.from("courses").select("id, title, price_cents"),
