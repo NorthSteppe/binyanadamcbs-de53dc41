@@ -402,6 +402,8 @@ const AdminCalendar = () => {
     const isManualClient = newSession.client_id.startsWith("manual:");
     const actualClientId = isManualClient ? newSession.client_id.replace("manual:", "") : newSession.client_id;
     const baseDateTime = `${format(selectedDate, "yyyy-MM-dd")}T${newSession.time}:00`;
+    const therapistId = newSession.therapist_id || null;
+    const attendeeIds = therapistId ? [therapistId] : [];
     const basePayload = {
       title: newSession.title,
       client_id: isManualClient ? user!.id : actualClientId,
@@ -409,15 +411,16 @@ const AdminCalendar = () => {
       duration_minutes: newSession.duration_minutes, description: newSession.description || null,
       meeting_platform: newSession.meeting_platform || null,
       meeting_url: newSession.meeting_url || null,
-      attendee_ids: newSession.attendee_ids,
+      attendee_ids: attendeeIds,
       is_paid: !!newSession.already_paid,
       payment_method: newSession.already_paid ? newSession.paid_method : "",
       paid_at: newSession.already_paid ? new Date().toISOString() : null,
       paid_confirmed_by: newSession.already_paid ? user!.id : null,
       service_option_id: newSession.service_option_id || null,
       price_cents: newSession.price_cents || 0,
-      therapist_id: newSession.therapist_id || null,
+      therapist_id: therapistId,
       therapist_rate_cents: newSession.therapist_rate_cents || 0,
+      xero_invoice_pending: !!newSession.send_payment_link,
     } as any;
 
     // Calculate dates for recurring sessions
