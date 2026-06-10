@@ -822,9 +822,10 @@ const AdminCalendar = () => {
               <Switch checked={showTasks} onCheckedChange={setShowTasks} className="scale-75" />
               <span>Tasks</span>
             </label>
-            <div className="flex items-center gap-3 ml-auto">
+            <div className="flex flex-wrap items-center gap-3 ml-auto">
               <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: EVENT_COLORS.paid }} />Paid</span>
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: EVENT_COLORS.unpaid }} />Unpaid</span>
+              <span className="flex items-center gap-1" title="Xero draft sent / awaiting payment"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: EVENT_COLORS.invoice_sent }} />Invoice sent</span>
+              <span className="flex items-center gap-1" title="Xero draft created or session unpaid"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: EVENT_COLORS.unpaid }} />Draft / Unpaid</span>
               <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: EVENT_COLORS.free }} />Free</span>
               <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: EVENT_COLORS.task }} />Task</span>
             </div>
