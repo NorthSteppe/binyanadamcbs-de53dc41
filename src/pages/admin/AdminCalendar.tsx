@@ -639,8 +639,8 @@ const AdminCalendar = () => {
       const dayStart = startOfDay(currentDate).toISOString();
       const dayEnd = endOfDay(currentDate).toISOString();
 
-      const { data: daySessions } = await supabase
-        .from("sessions")
+      const { data: daySessions } = await (supabase as any)
+        .from("staff_sessions")
         .select("*")
         .gte("session_date", dayStart)
         .lte("session_date", dayEnd);
