@@ -1149,7 +1149,7 @@ const AdminCalendar = () => {
                     </SelectContent>
                   </Select>
                   <p className="text-[10px] text-muted-foreground">
-                    To change a price, edit it in <a href="/admin/services" className="underline">Service Options</a>.
+                    To change a price, edit it in <a href="/admin/service-options" className="underline">Service Options</a>.
                   </p>
                   <div className="grid grid-cols-2 gap-2 text-[11px]">
                     <div className="bg-background/60 rounded px-2 py-1.5">
@@ -1579,7 +1579,7 @@ const AdminCalendar = () => {
                 </SelectContent>
               </Select>
               <p className="text-[10px] text-muted-foreground">
-                To change a price, edit it in <a href="/admin/services" className="underline">Service Options</a>.
+                To change a price, edit it in <a href="/admin/service-options" className="underline">Service Options</a>.
               </p>
               <div className="grid grid-cols-2 gap-2 text-[11px]">
                 <div className="bg-background/60 rounded px-2 py-1.5">
