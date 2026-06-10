@@ -42,13 +42,13 @@ const TherapistPayouts = () => {
   const load = async () => {
     setLoading(true);
     const [sRes, tRes] = await Promise.all([
-      supabase
-        .from("sessions")
+      (supabase as any)
+        .from("staff_sessions")
         .select("id,title,session_date,therapist_id,therapist_rate_cents,therapist_paid,therapist_paid_at,therapist_payout_method,status")
         .not("therapist_id", "is", null)
         .gt("therapist_rate_cents", 0)
         .order("session_date", { ascending: false }),
-      supabase.from("team_members" as any).select("user_id,name,default_session_rate_cents").eq("is_active", true).not("user_id", "is", null),
+      supabase.from("staff_team_member_rates" as any).select("user_id,name,default_session_rate_cents").eq("is_active", true).not("user_id", "is", null),
     ]);
     setSessions((sRes.data as SessionRow[]) || []);
     setTherapists((tRes.data as any) || []);
