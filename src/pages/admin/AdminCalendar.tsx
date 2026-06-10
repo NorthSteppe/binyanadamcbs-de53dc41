@@ -190,7 +190,7 @@ const AdminCalendar = () => {
     queryFn: async () => {
       const [rolesRes, tmRes] = await Promise.all([
         supabase.from("user_roles").select("user_id, role").in("role", ["team_member", "admin"] as any),
-        supabase.from("team_members" as any).select("id,name,user_id,default_session_rate_cents").eq("is_active", true),
+        supabase.from("staff_team_member_rates" as any).select("id,name,user_id,default_session_rate_cents").eq("is_active", true),
       ]);
       const tmList = (tmRes.data as any[]) || [];
       const rateByUser = new Map<string, number>();
