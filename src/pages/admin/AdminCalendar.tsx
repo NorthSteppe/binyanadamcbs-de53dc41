@@ -1079,16 +1079,34 @@ const AdminCalendar = () => {
                   const hourEvents = (eventsByDay.get(key) || []).filter((ev) => ev.start.getHours() === hour);
                   const cellKey = `day-${key}-${hour}`;
                   const isOver = dropTarget === cellKey;
+                  const cellRules = rulesForDay(currentDate).filter((r) => r.end_minutes > hour * 60 && r.start_minutes < (hour + 1) * 60);
                   return (
                     <div
                       key={hour}
-                      className={`flex border-b border-border/30 min-h-[64px] cursor-pointer transition-colors
+                      className={`flex border-b border-border/30 min-h-[64px] cursor-pointer transition-colors relative
                         ${isOver ? "bg-primary/10" : "hover:bg-muted/20"}`}
                       onClick={() => handleDayClick(currentDate, hour)}
-                      onDragOver={(e) => handleDragOver(e, cellKey)}
+                      onDragOver={(e) => handleCellDragOverPrecise(e, currentDate, hour, cellKey)}
                       onDragLeave={handleDragLeave}
                       onDrop={(e) => handleDrop(e, currentDate, hour)}
                     >
+                      {cellRules.map((r) => {
+                        const top = Math.max(0, (r.start_minutes - hour * 60) / 60) * 64;
+                        const bottom = Math.min(60, r.end_minutes - hour * 60) / 60 * 64;
+                        const h = Math.max(0, bottom - top);
+                        return (
+                          <div
+                            key={`${r.id}-${hour}`}
+                            className="absolute left-16 right-0 pointer-events-none"
+                            title={`${r.label}${r.info ? " — " + r.info : ""}${r.allow_booking ? "" : " (no bookings)"}`}
+                            style={{
+                              top: `${top}px`, height: `${h}px`,
+                              background: r.allow_booking ? `${r.color}26` : `repeating-linear-gradient(45deg, ${r.color}33 0 6px, ${r.color}1a 6px 12px)`,
+                              borderLeft: `2px solid ${r.color}`,
+                            }}
+                          />
+                        );
+                      })}
                       <div className="w-16 relative flex-shrink-0">
                         {hourEvents.map((ev, i) => (
                           <div
