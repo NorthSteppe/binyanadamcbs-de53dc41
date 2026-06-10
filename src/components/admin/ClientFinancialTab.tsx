@@ -78,7 +78,7 @@ const ClientFinancialTab = ({ clientId, manualClientId, isManual }: Props) => {
       : null;
 
     const [sRes, eRes] = await Promise.all([sessionsQ, entriesQ ?? Promise.resolve({ data: [] as EntryRow[] })]);
-    setSessions((sRes.data as SessionRow[]) || []);
+    setSessions(((sRes as any).data as SessionRow[]) || []);
     setEntries(((eRes as any).data as EntryRow[]) || []);
     setLoading(false);
   };
