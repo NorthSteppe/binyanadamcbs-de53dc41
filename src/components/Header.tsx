@@ -48,12 +48,17 @@ const Header = ({ hidelogo = false }: { hidelogo?: boolean }) => {
     if (isAdmin) return [
       { path: "/admin", label: "Admin", icon: Shield },
       { path: "/staff", label: "Therapist", icon: Users },
+      { path: "/supervisee", label: "Supervisee", icon: LayoutDashboard },
+      { path: "/portal", label: "Client", icon: LayoutDashboard },
     ];
     if (isTeamMember) return [
       { path: "/staff", label: "Therapist Portal", icon: Users },
+      ...(isSupervisee ? [{ path: "/supervisee", label: "Supervisee Portal", icon: LayoutDashboard }] : []),
+      { path: "/portal", label: "Client Portal", icon: LayoutDashboard },
     ];
     if (isSupervisee) return [
       { path: "/supervisee", label: "Supervisee Portal", icon: LayoutDashboard },
+      { path: "/portal", label: "Client Portal", icon: LayoutDashboard },
     ];
     return [
       { path: "/portal", label: portalT.portal || "Portal", icon: LayoutDashboard },
