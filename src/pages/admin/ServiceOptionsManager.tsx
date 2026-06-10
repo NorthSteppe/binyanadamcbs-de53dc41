@@ -31,7 +31,8 @@ const ServiceOptionsManager = () => {
   const [loading, setLoading] = useState(true);
 
   const fetchServices = async () => {
-    const { data } = await supabase.from("service_options").select("*").order("display_order");
+    // Admin RPC returns rows including the protected therapist_rate_cents column.
+    const { data } = await (supabase as any).rpc("admin_list_service_options");
     if (data) setServices(data as unknown as ServiceOption[]);
     setLoading(false);
   };
@@ -44,16 +45,21 @@ const ServiceOptionsManager = () => {
   };
 
   const updateService = async (svc: ServiceOption) => {
+    // Update non-sensitive columns via the table…
     const { error } = await supabase.from("service_options").update({
       name: svc.name, description: svc.description, duration_minutes: svc.duration_minutes,
       is_active: svc.is_active, display_order: svc.display_order, price_cents: svc.price_cents,
-      therapist_rate_cents: svc.therapist_rate_cents,
       show_duration: svc.show_duration, show_price: svc.show_price,
     } as any).eq("id", svc.id);
-    if (!error) {
-      toast({ title: "Updated" });
-      setServices(prev => prev.map(s => s.id === svc.id ? { ...s, __dirty: false } : s));
-    } else toast({ title: "Error", description: error.message, variant: "destructive" });
+    if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
+    // …and the protected therapist payout column via the admin-only RPC.
+    const { error: rateErr } = await (supabase as any).rpc("admin_set_service_option_rate", {
+      _id: svc.id,
+      _rate_cents: svc.therapist_rate_cents || 0,
+    });
+    if (rateErr) { toast({ title: "Error", description: rateErr.message, variant: "destructive" }); return; }
+    toast({ title: "Updated" });
+    setServices(prev => prev.map(s => s.id === svc.id ? { ...s, __dirty: false } : s));
   };
 
   const deleteService = async (id: string) => {
