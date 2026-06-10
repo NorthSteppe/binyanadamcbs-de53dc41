@@ -682,11 +682,10 @@ const AdminCalendar = () => {
     setDetailOpen(true);
   };
 
-  // Scroll to current hour
+  // Default scroll position: 8:00 AM (users can scroll up to see earlier hours)
   useEffect(() => {
     if ((viewMode === "week" || viewMode === "day") && scrollRef.current) {
-      const offset = Math.max(0, (new Date().getHours() - 1) * 64);
-      scrollRef.current.scrollTop = offset;
+      scrollRef.current.scrollTop = 8 * 64;
     }
   }, [viewMode]);
 
@@ -893,10 +892,24 @@ const AdminCalendar = () => {
               </div>
               <div ref={scrollRef} className={`overflow-y-auto ${calendarHeight}`}>
                 <div className="grid grid-cols-[50px_repeat(7,1fr)] relative">
-                  {HOURS.map((hour) => (
+                  {HOURS.map((hour) => {
+                    // Collect all events starting in this hour across visible days (for gutter time labels)
+                    const gutterTimes = days.flatMap((day) => {
+                      const key = format(day, "yyyy-MM-dd");
+                      return (eventsByDay.get(key) || []).filter((ev) => ev.start.getHours() === hour);
+                    });
+                    return (
                     <div key={hour} className="contents">
-                      <div className="text-[10px] text-muted-foreground text-right pr-2 py-1 h-16 border-b border-border/30">
-                        {hour.toString().padStart(2, "0")}:00
+                      <div className="relative text-right pr-2 h-16 border-b border-border/10">
+                        {gutterTimes.map((ev, i) => (
+                          <div
+                            key={`${ev.id}-${i}`}
+                            className="absolute right-2 text-[10px] text-muted-foreground font-medium leading-none"
+                            style={{ top: `${(ev.start.getMinutes() / 60) * 64}px` }}
+                          >
+                            {format(ev.start, "HH:mm")}
+                          </div>
+                        ))}
                       </div>
                       {days.map((day) => {
                         const key = format(day, "yyyy-MM-dd");
@@ -941,7 +954,8 @@ const AdminCalendar = () => {
                         );
                       })}
                     </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -984,8 +998,16 @@ const AdminCalendar = () => {
                       onDragLeave={handleDragLeave}
                       onDrop={(e) => handleDrop(e, currentDate, hour)}
                     >
-                      <div className="w-16 text-[11px] text-muted-foreground text-right pr-3 pt-1 flex-shrink-0">
-                        {hour.toString().padStart(2, "0")}:00
+                      <div className="w-16 relative flex-shrink-0">
+                        {hourEvents.map((ev, i) => (
+                          <div
+                            key={`${ev.id}-t-${i}`}
+                            className="absolute right-3 text-[11px] text-muted-foreground font-medium leading-none"
+                            style={{ top: `${(ev.start.getMinutes() / 60) * 64}px` }}
+                          >
+                            {format(ev.start, "HH:mm")}
+                          </div>
+                        ))}
                       </div>
                       <div className="flex-1 relative py-0.5 space-y-0.5">
                         {hourEvents.map((ev) => {
