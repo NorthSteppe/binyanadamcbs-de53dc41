@@ -244,6 +244,7 @@ const App = () => (
                   <Route path="/staff/booking" element={<StaffRoute><Booking /></StaffRoute>} />
                   <Route path="/staff/session/:id" element={<StaffRoute><SessionRoom /></StaffRoute>} />
                   <Route path="/staff/productivity" element={<StaffRoute><Productivity /></StaffRoute>} />
+                  <Route path="/staff/my-payouts" element={<StaffRoute><MyPayouts /></StaffRoute>} />
                   <Route path="/staff/toolkit" element={<StaffRoute><Toolkit /></StaffRoute>} />
                   <Route path="/staff/toolkit/act-matrix" element={<StaffRoute><StaffACTMatrix /></StaffRoute>} />
                   <Route path="/staff/toolkit/pomodoro" element={<StaffRoute><ToolkitPomodoro /></StaffRoute>} />
