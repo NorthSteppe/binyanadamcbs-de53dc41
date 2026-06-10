@@ -11,10 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
-interface ServiceOption extends Record<string, any> {
-  __dirty?: boolean;
-}
-interface _ServiceOption {
+interface ServiceOption {
   id: string;
   name: string;
   description: string;
@@ -23,6 +20,7 @@ interface _ServiceOption {
   display_order: number;
   price_cents: number;
   therapist_rate_cents: number;
+  __dirty?: boolean;
 }
 
 const ServiceOptionsManager = () => {
