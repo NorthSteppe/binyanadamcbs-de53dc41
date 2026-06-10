@@ -219,7 +219,7 @@ const App = () => (
                   <Route path="/admin/courses" element={<AdminRoute><CourseManager /></AdminRoute>} />
                   <Route path="/admin/courses/:courseId/lessons" element={<AdminRoute><CourseLessonManager /></AdminRoute>} />
                   <Route path="/admin/business" element={<AdminRoute><BusinessDashboard /></AdminRoute>} />
-                  <Route path="/admin/finance" element={<AdminRoute><FinanceHub /></AdminRoute>} />
+                  <Route path="/admin/finance" element={<Navigate to="/admin/business" replace />} />
 
                   <Route path="/admin/payouts" element={<AdminRoute><TherapistPayouts /></AdminRoute>} />
                   <Route path="/admin/blog" element={<AdminRoute><BlogManager /></AdminRoute>} />
