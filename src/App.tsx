@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { LanguageProvider } from "@/i18n/LanguageContext";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { EditModeProvider } from "@/hooks/useEditMode";
@@ -65,7 +65,7 @@ import UnifiedUserManagement from "./pages/admin/UnifiedUserManagement";
 import AuthSettings from "./pages/admin/AuthSettings";
 import SecurityDashboard from "./pages/admin/SecurityDashboard";
 import BusinessDashboard from "./pages/admin/BusinessDashboard";
-import FinanceHub from "./pages/admin/FinanceHub";
+
 
 import TherapistPayouts from "./pages/admin/TherapistPayouts";
 // Staff portal
@@ -219,7 +219,7 @@ const App = () => (
                   <Route path="/admin/courses" element={<AdminRoute><CourseManager /></AdminRoute>} />
                   <Route path="/admin/courses/:courseId/lessons" element={<AdminRoute><CourseLessonManager /></AdminRoute>} />
                   <Route path="/admin/business" element={<AdminRoute><BusinessDashboard /></AdminRoute>} />
-                  <Route path="/admin/finance" element={<AdminRoute><FinanceHub /></AdminRoute>} />
+                  <Route path="/admin/finance" element={<Navigate to="/admin/business" replace />} />
 
                   <Route path="/admin/payouts" element={<AdminRoute><TherapistPayouts /></AdminRoute>} />
                   <Route path="/admin/blog" element={<AdminRoute><BlogManager /></AdminRoute>} />
