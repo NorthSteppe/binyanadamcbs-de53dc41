@@ -60,22 +60,25 @@ type ViewMode = "month" | "week" | "day";
 type ClientProfile = { id: string; full_name: string };
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i);
+const HOUR_PX = 64; // height of one hour row in week/day view
+const SNAP_MIN = 5;
 
-// Event color palette: paid=green, unpaid=red, free=purple, task=blue
+// Event color palette
 const EVENT_COLORS = {
-  paid: "#16a34a",      // green-600
-  unpaid: "#dc2626",    // red-600
-  free: "#9333ea",      // purple-600
-  task: "#2563eb",      // blue-600
-  cancelled: "#94a3b8", // slate-400
-  completed: "#16a34a", // green-600
+  paid: "#16a34a",        // green
+  unpaid: "#dc2626",      // red (also: Xero DRAFT)
+  invoice_sent: "#eab308",// yellow (Xero AUTHORISED/SUBMITTED)
+  free: "#9333ea",        // purple
+  task: "#2563eb",        // blue
+  cancelled: "#94a3b8",   // grey
+  completed: "#16a34a",
 };
 
-const getSessionColor = (s: { status?: string; is_paid?: boolean; price_cents?: number; service_option_id?: string | null }) => {
+const getSessionColor = (s: { status?: string; is_paid?: boolean; price_cents?: number; service_option_id?: string | null; xero_status?: string | null; xero_invoice_pending?: boolean }) => {
   if (s.status === "cancelled") return EVENT_COLORS.cancelled;
-  if (s.is_paid) return EVENT_COLORS.paid;
-  // Purple ("free") only when an explicit service was chosen and it costs £0.
-  // £0 with no service = unpriced booking → treat as unpaid (red) so it gets attention.
+  if (s.is_paid || s.xero_status === "PAID") return EVENT_COLORS.paid;
+  if (s.xero_status === "AUTHORISED" || s.xero_status === "SUBMITTED") return EVENT_COLORS.invoice_sent;
+  if (s.xero_status === "DRAFT" || s.xero_invoice_pending) return EVENT_COLORS.unpaid;
   if (s.service_option_id && (s.price_cents ?? 0) === 0) return EVENT_COLORS.free;
   return EVENT_COLORS.unpaid;
 };
