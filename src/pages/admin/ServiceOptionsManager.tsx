@@ -20,6 +20,8 @@ interface ServiceOption {
   display_order: number;
   price_cents: number;
   therapist_rate_cents: number;
+  show_duration: boolean;
+  show_price: boolean;
   __dirty?: boolean;
 }
 
@@ -46,6 +48,7 @@ const ServiceOptionsManager = () => {
       name: svc.name, description: svc.description, duration_minutes: svc.duration_minutes,
       is_active: svc.is_active, display_order: svc.display_order, price_cents: svc.price_cents,
       therapist_rate_cents: svc.therapist_rate_cents,
+      show_duration: svc.show_duration, show_price: svc.show_price,
     } as any).eq("id", svc.id);
     if (!error) {
       toast({ title: "Updated" });
