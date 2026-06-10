@@ -57,6 +57,7 @@ const Booking = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [blockDates, setBlockDates] = useState<Date[]>([]);
   const [selectedTime, setSelectedTime] = useState("");
+  const [hourRules, setHourRules] = useState<any[]>([]);
   const [platform, setPlatform] = useState<MeetingPlatform>("in_person");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
