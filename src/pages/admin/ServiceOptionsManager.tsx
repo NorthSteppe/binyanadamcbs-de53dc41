@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Plus, Trash2, Save, Settings } from "lucide-react";
+import { Plus, Trash2, Save, Settings, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,6 +20,7 @@ interface ServiceOption {
   display_order: number;
   price_cents: number;
   therapist_rate_cents: number;
+  __dirty?: boolean;
 }
 
 const ServiceOptionsManager = () => {
@@ -46,8 +47,10 @@ const ServiceOptionsManager = () => {
       is_active: svc.is_active, display_order: svc.display_order, price_cents: svc.price_cents,
       therapist_rate_cents: svc.therapist_rate_cents,
     } as any).eq("id", svc.id);
-    if (!error) toast({ title: "Updated" });
-    else toast({ title: "Error", description: error.message, variant: "destructive" });
+    if (!error) {
+      toast({ title: "Updated" });
+      setServices(prev => prev.map(s => s.id === svc.id ? { ...s, __dirty: false } : s));
+    } else toast({ title: "Error", description: error.message, variant: "destructive" });
   };
 
   const deleteService = async (id: string) => {
@@ -57,7 +60,7 @@ const ServiceOptionsManager = () => {
   };
 
   const update = (id: string, field: string, value: any) => {
-    setServices(prev => prev.map(s => s.id === id ? { ...s, [field]: value } : s));
+    setServices(prev => prev.map(s => s.id === id ? { ...s, [field]: value, __dirty: true } : s));
   };
 
   return (
@@ -121,7 +124,11 @@ const ServiceOptionsManager = () => {
                     </div>
 
                     <div className="ms-auto flex gap-2 flex-wrap">
-                      <Button size="sm" variant="outline" className="rounded-full gap-1" onClick={() => updateService(svc)}><Save size={14} /> Save</Button>
+                      {svc.__dirty ? (
+                        <Button size="sm" className="rounded-full gap-1 bg-accent text-accent-foreground hover:bg-accent/90" onClick={() => updateService(svc)}><Save size={14} /> Save</Button>
+                      ) : (
+                        <Button size="sm" className="rounded-full gap-1 bg-primary text-primary-foreground hover:bg-primary/90" onClick={() => update(svc.id, "__dirty", true)}><Pencil size={14} /> Edit</Button>
+                      )}
                       <Button size="sm" variant="destructive" className="rounded-full gap-1" onClick={() => deleteService(svc.id)}><Trash2 size={14} /></Button>
                     </div>
                   </div>
