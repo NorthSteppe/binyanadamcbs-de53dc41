@@ -31,8 +31,8 @@ const MyPayouts = () => {
     queryKey: ["my-payouts", user?.id],
     queryFn: async () => {
       if (!user) return [];
-      const { data, error } = await supabase
-        .from("sessions")
+      const { data, error } = await (supabase as any)
+        .from("staff_sessions")
         .select("id,title,session_date,therapist_rate_cents,therapist_paid,therapist_paid_at,therapist_payout_method,status")
         .eq("therapist_id", user.id)
         .gt("therapist_rate_cents", 0)
