@@ -987,16 +987,36 @@ const AdminCalendar = () => {
                         const hourEvents = (eventsByDay.get(key) || []).filter((ev) => ev.start.getHours() === hour);
                         const cellKey = `week-${key}-${hour}`;
                         const isOver = dropTarget === cellKey;
+                        // Find any hour rules intersecting THIS hour for THIS day
+                        const cellRules = rulesForDay(day).filter((r) => r.end_minutes > hour * 60 && r.start_minutes < (hour + 1) * 60);
                         return (
                           <div
                             key={cellKey}
                             className={`h-16 border-b border-l border-border/30 relative cursor-pointer transition-colors
                               ${isOver ? "bg-primary/10" : "hover:bg-muted/20"}`}
                             onClick={() => handleDayClick(day, hour)}
-                            onDragOver={(e) => handleDragOver(e, cellKey)}
+                            onDragOver={(e) => handleCellDragOverPrecise(e, day, hour, cellKey)}
                             onDragLeave={handleDragLeave}
                             onDrop={(e) => handleDrop(e, day, hour)}
                           >
+                            {/* Hour rule backgrounds */}
+                            {cellRules.map((r) => {
+                              const top = Math.max(0, (r.start_minutes - hour * 60) / 60) * 64;
+                              const bottom = Math.min(60, r.end_minutes - hour * 60) / 60 * 64;
+                              const h = Math.max(0, bottom - top);
+                              return (
+                                <div
+                                  key={`${r.id}-${hour}`}
+                                  className="absolute left-0 right-0 pointer-events-none"
+                                  title={`${r.label}${r.info ? " — " + r.info : ""}${r.allow_booking ? "" : " (no bookings)"}`}
+                                  style={{
+                                    top: `${top}px`, height: `${h}px`,
+                                    background: r.allow_booking ? `${r.color}26` : `repeating-linear-gradient(45deg, ${r.color}33 0 6px, ${r.color}1a 6px 12px)`,
+                                    borderLeft: `2px solid ${r.color}`,
+                                  }}
+                                />
+                              );
+                            })}
                             {hourEvents.map((ev) => {
                               const duration = differenceInMinutes(ev.end, ev.start);
                               const heightPx = Math.max(16, (duration / 60) * 64);
