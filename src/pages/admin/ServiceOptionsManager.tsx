@@ -124,6 +124,20 @@ const ServiceOptionsManager = () => {
                         onBlur={(e) => update(svc.id, "therapist_rate_cents", Math.round(parseFloat(e.target.value || "0") * 100))}
                         className="w-28"
                       />
+                    <div className="space-y-1">
+                      <Label className="text-xs">Therapist payout from payment pool · admin-only, never shown to clients</Label>
+                      <div className="text-[10px] text-muted-foreground -mt-0.5">Sourced from the shared service pricing pool.</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-6 pt-2 border-t border-border/40">
+                    <span className="text-xs font-medium text-muted-foreground">Show to clients on booking:</span>
+                    <div className="flex items-center gap-2">
+                      <Switch checked={svc.show_duration} onCheckedChange={(v) => update(svc.id, "show_duration", v)} />
+                      <Label className="text-xs">Duration / time</Label>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Switch checked={svc.show_price} onCheckedChange={(v) => update(svc.id, "show_price", v)} />
+                      <Label className="text-xs">Price</Label>
                     </div>
 
                     <div className="ms-auto flex gap-2 flex-wrap">
