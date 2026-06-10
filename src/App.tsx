@@ -60,6 +60,7 @@ import HeroImageManager from "./pages/admin/HeroImageManager";
 import SiteContentManager from "./pages/admin/SiteContentManager";
 import TeamMemberManager from "./pages/admin/TeamMemberManager";
 import ServiceOptionsManager from "./pages/admin/ServiceOptionsManager";
+import CalendarHourRules from "./pages/admin/CalendarHourRules";
 import UnifiedUserManagement from "./pages/admin/UnifiedUserManagement";
 import AuthSettings from "./pages/admin/AuthSettings";
 import SecurityDashboard from "./pages/admin/SecurityDashboard";
