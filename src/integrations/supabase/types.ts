@@ -1885,6 +1885,9 @@ export type Database = {
           therapist_payout_method: string
           therapist_rate_cents: number
           title: string
+          xero_invoice_id: string | null
+          xero_invoice_pending: boolean
+          xero_invoice_raised_at: string | null
         }
         Insert: {
           actual_end_at?: string | null
@@ -1919,6 +1922,9 @@ export type Database = {
           therapist_payout_method?: string
           therapist_rate_cents?: number
           title: string
+          xero_invoice_id?: string | null
+          xero_invoice_pending?: boolean
+          xero_invoice_raised_at?: string | null
         }
         Update: {
           actual_end_at?: string | null
@@ -1953,6 +1959,9 @@ export type Database = {
           therapist_payout_method?: string
           therapist_rate_cents?: number
           title?: string
+          xero_invoice_id?: string | null
+          xero_invoice_pending?: boolean
+          xero_invoice_raised_at?: string | null
         }
         Relationships: [
           {
