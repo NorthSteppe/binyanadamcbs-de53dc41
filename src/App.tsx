@@ -60,6 +60,7 @@ import HeroImageManager from "./pages/admin/HeroImageManager";
 import SiteContentManager from "./pages/admin/SiteContentManager";
 import TeamMemberManager from "./pages/admin/TeamMemberManager";
 import ServiceOptionsManager from "./pages/admin/ServiceOptionsManager";
+import CalendarHourRules from "./pages/admin/CalendarHourRules";
 import UnifiedUserManagement from "./pages/admin/UnifiedUserManagement";
 import AuthSettings from "./pages/admin/AuthSettings";
 import SecurityDashboard from "./pages/admin/SecurityDashboard";
@@ -202,6 +203,7 @@ const App = () => (
                   {/* Admin portal */}
                   <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
                   <Route path="/admin/calendar" element={<AdminRoute><AdminCalendar /></AdminRoute>} />
+                  <Route path="/admin/calendar-hours" element={<AdminRoute><CalendarHourRules /></AdminRoute>} />
                   <Route path="/admin/clients" element={<StaffRoute><ClientsOverview /></StaffRoute>} />
                   <Route path="/admin/clients/:clientId" element={<StaffRoute><ClientDetail /></StaffRoute>} />
                   <Route path="/admin/team-requests" element={<AdminRoute><TeamRequests /></AdminRoute>} />

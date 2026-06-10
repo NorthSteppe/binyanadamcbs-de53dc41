@@ -519,6 +519,51 @@ export type Database = {
         }
         Relationships: []
       }
+      calendar_hour_rules: {
+        Row: {
+          allow_booking: boolean
+          color: string
+          created_at: string
+          created_by: string | null
+          day_of_week: number | null
+          end_minutes: number
+          id: string
+          info: string
+          label: string
+          specific_date: string | null
+          start_minutes: number
+          updated_at: string
+        }
+        Insert: {
+          allow_booking?: boolean
+          color?: string
+          created_at?: string
+          created_by?: string | null
+          day_of_week?: number | null
+          end_minutes?: number
+          id?: string
+          info?: string
+          label?: string
+          specific_date?: string | null
+          start_minutes?: number
+          updated_at?: string
+        }
+        Update: {
+          allow_booking?: boolean
+          color?: string
+          created_at?: string
+          created_by?: string | null
+          day_of_week?: number | null
+          end_minutes?: number
+          id?: string
+          info?: string
+          label?: string
+          specific_date?: string | null
+          start_minutes?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       calendar_shares: {
         Row: {
           can_view_focus: boolean
@@ -2996,6 +3041,29 @@ export type Database = {
       enqueue_email: {
         Args: { payload: Json; queue_name: string }
         Returns: number
+      }
+      get_calendar_rules_for_range: {
+        Args: { _end: string; _start: string }
+        Returns: {
+          allow_booking: boolean
+          color: string
+          created_at: string
+          created_by: string | null
+          day_of_week: number | null
+          end_minutes: number
+          id: string
+          info: string
+          label: string
+          specific_date: string | null
+          start_minutes: number
+          updated_at: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "calendar_hour_rules"
+          isOneToOne: false
+          isSetofReturn: true
+        }
       }
       get_public_assistant_config: {
         Args: never

@@ -57,6 +57,7 @@ const Booking = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [blockDates, setBlockDates] = useState<Date[]>([]);
   const [selectedTime, setSelectedTime] = useState("");
+  const [hourRules, setHourRules] = useState<any[]>([]);
   const [platform, setPlatform] = useState<MeetingPlatform>("in_person");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
@@ -76,6 +77,8 @@ const Booking = () => {
   useEffect(() => {
     supabase.from("service_options").select("*").eq("is_active", true).order("display_order")
       .then(({ data }) => { if (data) setServices(data as unknown as ServiceOption[]); });
+    supabase.from("calendar_hour_rules" as any).select("*")
+      .then(({ data }) => { if (data) setHourRules(data as any[]); });
   }, []);
 
   // Load bookable clients for staff/admin (assigned clients + manual clients; admins see all)
@@ -506,20 +509,37 @@ const Booking = () => {
               <div>
                 <Label className="text-base font-semibold mb-3 block">{portalT.step3}</Label>
                 <div className="grid grid-cols-3 gap-2">
-                  {TIME_SLOTS.map((slot) => (
-                    <button
-                      key={slot}
-                      onClick={() => setSelectedTime(slot)}
-                      className={cn(
-                        "py-2.5 px-3 rounded-lg text-sm font-medium border transition-all",
-                        selectedTime === slot
-                          ? "border-primary bg-primary text-primary-foreground"
-                          : "border-border/50 bg-card text-foreground hover:border-primary/30"
-                      )}
-                    >
-                      {slot}
-                    </button>
-                  ))}
+                  {TIME_SLOTS.map((slot) => {
+                    const [hh, mm] = slot.split(":").map(Number);
+                    const slotMin = hh * 60 + mm;
+                    const slotEnd = slotMin + (selectedService?.duration_minutes || 60);
+                    const checkDate = selectedDate || (blockDates[0]);
+                    const dow = checkDate ? checkDate.getDay() : -1;
+                    const dateKey = checkDate ? `${checkDate.getFullYear()}-${String(checkDate.getMonth()+1).padStart(2,"0")}-${String(checkDate.getDate()).padStart(2,"0")}` : "";
+                    const applicable = (hourRules || []).filter((r: any) =>
+                      (r.specific_date && r.specific_date === dateKey) || (!r.specific_date && r.day_of_week === dow)
+                    );
+                    const blockingRule = applicable.find((r: any) => !r.allow_booking && r.end_minutes > slotMin && r.start_minutes < slotEnd);
+                    const infoRule = applicable.find((r: any) => r.end_minutes > slotMin && r.start_minutes < slotEnd && r.info);
+                    return (
+                      <button
+                        key={slot}
+                        onClick={() => !blockingRule && setSelectedTime(slot)}
+                        disabled={!!blockingRule}
+                        title={blockingRule ? (blockingRule.info || `${blockingRule.label} — not bookable`) : (infoRule ? infoRule.info : undefined)}
+                        className={cn(
+                          "py-2.5 px-3 rounded-lg text-sm font-medium border transition-all",
+                          blockingRule
+                            ? "border-border/30 bg-muted/30 text-muted-foreground line-through cursor-not-allowed"
+                            : selectedTime === slot
+                              ? "border-primary bg-primary text-primary-foreground"
+                              : "border-border/50 bg-card text-foreground hover:border-primary/30"
+                        )}
+                      >
+                        {slot}
+                      </button>
+                    );
+                  })}
                 </div>
                 {bookingMode === "block" && (
                   <p className="text-xs text-muted-foreground mt-2">

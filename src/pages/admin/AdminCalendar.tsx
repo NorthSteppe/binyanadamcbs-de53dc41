@@ -60,22 +60,25 @@ type ViewMode = "month" | "week" | "day";
 type ClientProfile = { id: string; full_name: string };
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i);
+const HOUR_PX = 64; // height of one hour row in week/day view
+const SNAP_MIN = 5;
 
-// Event color palette: paid=green, unpaid=red, free=purple, task=blue
+// Event color palette
 const EVENT_COLORS = {
-  paid: "#16a34a",      // green-600
-  unpaid: "#dc2626",    // red-600
-  free: "#9333ea",      // purple-600
-  task: "#2563eb",      // blue-600
-  cancelled: "#94a3b8", // slate-400
-  completed: "#16a34a", // green-600
+  paid: "#16a34a",        // green
+  unpaid: "#dc2626",      // red (also: Xero DRAFT)
+  invoice_sent: "#eab308",// yellow (Xero AUTHORISED/SUBMITTED)
+  free: "#9333ea",        // purple
+  task: "#2563eb",        // blue
+  cancelled: "#94a3b8",   // grey
+  completed: "#16a34a",
 };
 
-const getSessionColor = (s: { status?: string; is_paid?: boolean; price_cents?: number; service_option_id?: string | null }) => {
+const getSessionColor = (s: { status?: string; is_paid?: boolean; price_cents?: number; service_option_id?: string | null; xero_status?: string | null; xero_invoice_pending?: boolean }) => {
   if (s.status === "cancelled") return EVENT_COLORS.cancelled;
-  if (s.is_paid) return EVENT_COLORS.paid;
-  // Purple ("free") only when an explicit service was chosen and it costs £0.
-  // £0 with no service = unpriced booking → treat as unpaid (red) so it gets attention.
+  if (s.is_paid || s.xero_status === "PAID") return EVENT_COLORS.paid;
+  if (s.xero_status === "AUTHORISED" || s.xero_status === "SUBMITTED") return EVENT_COLORS.invoice_sent;
+  if (s.xero_status === "DRAFT" || s.xero_invoice_pending) return EVENT_COLORS.unpaid;
   if (s.service_option_id && (s.price_cents ?? 0) === 0) return EVENT_COLORS.free;
   return EVENT_COLORS.unpaid;
 };
@@ -113,6 +116,7 @@ const AdminCalendar = () => {
   // Drag state
   const [draggedEvent, setDraggedEvent] = useState<CalendarEvent | null>(null);
   const [dropTarget, setDropTarget] = useState<string | null>(null);
+  const [dragHover, setDragHover] = useState<{ time: Date; x: number; y: number } | null>(null);
 
   // AI Scheduler
   const [aiScheduling, setAiScheduling] = useState(false);
@@ -220,6 +224,45 @@ const AdminCalendar = () => {
     },
   });
 
+  // Xero invoice status per session (for colour coding)
+  const xeroInvoiceIds = useMemo(
+    () => Array.from(new Set((sessions as any[]).map((s) => s.xero_invoice_id).filter(Boolean))),
+    [sessions]
+  );
+  const { data: xeroInvoiceMap = {} } = useQuery({
+    queryKey: ["session_xero_invoice_statuses", xeroInvoiceIds.join(",")],
+    queryFn: async () => {
+      if (xeroInvoiceIds.length === 0) return {};
+      const { data } = await supabase
+        .from("xero_invoices" as any)
+        .select("xero_invoice_id, status")
+        .in("xero_invoice_id", xeroInvoiceIds);
+      const m: Record<string, string> = {};
+      ((data as any[]) || []).forEach((row) => { m[row.xero_invoice_id] = row.status; });
+      return m;
+    },
+    enabled: xeroInvoiceIds.length > 0,
+  });
+
+  // Calendar hour rules (admin-painted colour blocks)
+  const { data: hourRules = [] } = useQuery({
+    queryKey: ["calendar_hour_rules_admin"],
+    queryFn: async () => {
+      const { data } = await supabase.from("calendar_hour_rules" as any).select("*");
+      return ((data as any[]) || []) as Array<{
+        id: string; label: string; color: string; info: string;
+        day_of_week: number | null; specific_date: string | null;
+        start_minutes: number; end_minutes: number; allow_booking: boolean;
+      }>;
+    },
+  });
+
+  const rulesForDay = useCallback((day: Date) => {
+    const dow = day.getDay();
+    const key = format(day, "yyyy-MM-dd");
+    return hourRules.filter((r) => (r.specific_date && r.specific_date === key) || (!r.specific_date && r.day_of_week === dow));
+  }, [hourRules]);
+
   // Fetch staff todos
   const { data: todos = [] } = useQuery({
     queryKey: ["team_todos", rangeStart.toISOString(), rangeEnd.toISOString()],
@@ -289,10 +332,12 @@ const AdminCalendar = () => {
       sessions.forEach((s: any) => {
         const start = parseISO(s.session_date);
         const clientId = s.manual_client_id || s.client_id;
+        const xero_status = s.xero_invoice_id ? (xeroInvoiceMap as any)[s.xero_invoice_id] : null;
         result.push({
           id: s.id, title: s.title, start,
           end: new Date(start.getTime() + (s.duration_minutes || 60) * 60000),
-          type: "session", color: getSessionColor(s),
+          type: "session",
+          color: getSessionColor({ ...s, xero_status }),
           status: s.status, description: s.description,
           clientName: nameMap.get(clientId) || "Unknown",
           clientId: clientId,
@@ -319,7 +364,7 @@ const AdminCalendar = () => {
       });
     }
     return result;
-  }, [sessions, todos, showSessions, showTasks, nameMap]);
+  }, [sessions, todos, showSessions, showTasks, nameMap, xeroInvoiceMap]);
 
   const eventsByDay = useMemo(() => {
     const map = new Map<string, CalendarEvent[]>();
@@ -356,6 +401,7 @@ const AdminCalendar = () => {
     if (e.currentTarget instanceof HTMLElement) e.currentTarget.style.opacity = "1";
     setDraggedEvent(null);
     setDropTarget(null);
+    setDragHover(null);
   };
   const handleDragOver = (e: React.DragEvent, cellKey: string) => {
     e.preventDefault();
@@ -363,6 +409,27 @@ const AdminCalendar = () => {
     setDropTarget(cellKey);
   };
   const handleDragLeave = () => setDropTarget(null);
+
+  // Compute minute-precision time inside a week/day hour cell (snapped to SNAP_MIN).
+  const computeCellTime = (e: React.DragEvent, day: Date, hour: number): Date => {
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const offsetY = Math.max(0, Math.min(HOUR_PX, e.clientY - rect.top));
+    const rawMin = (offsetY / HOUR_PX) * 60;
+    const snapped = Math.round(rawMin / SNAP_MIN) * SNAP_MIN;
+    const clamped = Math.max(0, Math.min(59, snapped));
+    const d = new Date(day);
+    d.setHours(hour, clamped, 0, 0);
+    return d;
+  };
+
+  const handleCellDragOverPrecise = (e: React.DragEvent, day: Date, hour: number, cellKey: string) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    setDropTarget(cellKey);
+    if (!draggedEvent) return;
+    const t = computeCellTime(e, day, hour);
+    setDragHover({ time: t, x: e.clientX, y: e.clientY });
+  };
 
   const rescheduleEvent = useMutation({
     mutationFn: async ({ event, newStart }: { event: CalendarEvent; newStart: Date }) => {
@@ -379,19 +446,20 @@ const AdminCalendar = () => {
       qc.invalidateQueries({ queryKey: ["team_todos"] });
       toast.success("Event rescheduled");
     },
-    onError: () => toast.error("Failed to reschedule"),
+    onError: (err: any) => toast.error(`Failed to reschedule${err?.message ? ": " + err.message : ""}`),
   });
 
   const handleDrop = (e: React.DragEvent, day: Date, hour?: number) => {
-    e.preventDefault(); e.stopPropagation(); setDropTarget(null);
+    e.preventDefault(); e.stopPropagation(); setDropTarget(null); setDragHover(null);
     if (!draggedEvent) return;
     const newStart = new Date(day);
     if (hour !== undefined) {
-      newStart.setHours(hour, 0, 0, 0);
+      const precise = computeCellTime(e, day, hour);
+      newStart.setHours(precise.getHours(), precise.getMinutes(), 0, 0);
     } else {
       newStart.setHours(draggedEvent.start.getHours(), draggedEvent.start.getMinutes(), 0, 0);
     }
-    if (draggedEvent.start.getTime() === newStart.getTime()) return;
+    if (draggedEvent.start.getTime() === newStart.getTime()) { setDraggedEvent(null); return; }
     rescheduleEvent.mutate({ event: draggedEvent, newStart });
     setDraggedEvent(null);
   };
@@ -702,6 +770,15 @@ const AdminCalendar = () => {
   return (
     <div className={containerClass}>
       {!isFullscreen && <Header />}
+      {/* Floating time pill shown while dragging an event */}
+      {dragHover && draggedEvent && (
+        <div
+          className="fixed z-[100] pointer-events-none px-2.5 py-1 rounded-full text-xs font-mono font-semibold shadow-lg bg-foreground text-background"
+          style={{ left: dragHover.x + 14, top: dragHover.y + 14 }}
+        >
+          {format(dragHover.time, "EEE d MMM · HH:mm")}
+        </div>
+      )}
       <section
         className={isFullscreen ? "" : "pb-20"}
         style={isFullscreen ? undefined : { paddingTop: "var(--header-height)" }}
@@ -735,6 +812,11 @@ const AdminCalendar = () => {
               <Button variant="outline" size="sm" onClick={() => setConnectDialogOpen(true)} className="h-8 gap-1 text-xs">
                 <CalendarPlus size={14} /> Connect
               </Button>
+              <a href="/admin/calendar-hours">
+                <Button variant="outline" size="sm" className="h-8 gap-1 text-xs">
+                  <Clock size={14} /> Hour rules
+                </Button>
+              </a>
               <Button variant="outline" size="sm" onClick={() => setIsFullscreen(!isFullscreen)} className="h-8">
                 {isFullscreen ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
               </Button>
@@ -754,9 +836,10 @@ const AdminCalendar = () => {
               <Switch checked={showTasks} onCheckedChange={setShowTasks} className="scale-75" />
               <span>Tasks</span>
             </label>
-            <div className="flex items-center gap-3 ml-auto">
+            <div className="flex flex-wrap items-center gap-3 ml-auto">
               <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: EVENT_COLORS.paid }} />Paid</span>
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: EVENT_COLORS.unpaid }} />Unpaid</span>
+              <span className="flex items-center gap-1" title="Xero draft sent / awaiting payment"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: EVENT_COLORS.invoice_sent }} />Invoice sent</span>
+              <span className="flex items-center gap-1" title="Xero draft created or session unpaid"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: EVENT_COLORS.unpaid }} />Draft / Unpaid</span>
               <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: EVENT_COLORS.free }} />Free</span>
               <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: EVENT_COLORS.task }} />Task</span>
             </div>
@@ -919,16 +1002,36 @@ const AdminCalendar = () => {
                         const hourEvents = (eventsByDay.get(key) || []).filter((ev) => ev.start.getHours() === hour);
                         const cellKey = `week-${key}-${hour}`;
                         const isOver = dropTarget === cellKey;
+                        // Find any hour rules intersecting THIS hour for THIS day
+                        const cellRules = rulesForDay(day).filter((r) => r.end_minutes > hour * 60 && r.start_minutes < (hour + 1) * 60);
                         return (
                           <div
                             key={cellKey}
                             className={`h-16 border-b border-l border-border/30 relative cursor-pointer transition-colors
                               ${isOver ? "bg-primary/10" : "hover:bg-muted/20"}`}
                             onClick={() => handleDayClick(day, hour)}
-                            onDragOver={(e) => handleDragOver(e, cellKey)}
+                            onDragOver={(e) => handleCellDragOverPrecise(e, day, hour, cellKey)}
                             onDragLeave={handleDragLeave}
                             onDrop={(e) => handleDrop(e, day, hour)}
                           >
+                            {/* Hour rule backgrounds */}
+                            {cellRules.map((r) => {
+                              const top = Math.max(0, (r.start_minutes - hour * 60) / 60) * 64;
+                              const bottom = Math.min(60, r.end_minutes - hour * 60) / 60 * 64;
+                              const h = Math.max(0, bottom - top);
+                              return (
+                                <div
+                                  key={`${r.id}-${hour}`}
+                                  className="absolute left-0 right-0 pointer-events-none"
+                                  title={`${r.label}${r.info ? " — " + r.info : ""}${r.allow_booking ? "" : " (no bookings)"}`}
+                                  style={{
+                                    top: `${top}px`, height: `${h}px`,
+                                    background: r.allow_booking ? `${r.color}26` : `repeating-linear-gradient(45deg, ${r.color}33 0 6px, ${r.color}1a 6px 12px)`,
+                                    borderLeft: `2px solid ${r.color}`,
+                                  }}
+                                />
+                              );
+                            })}
                             {hourEvents.map((ev) => {
                               const duration = differenceInMinutes(ev.end, ev.start);
                               const heightPx = Math.max(16, (duration / 60) * 64);
@@ -991,16 +1094,34 @@ const AdminCalendar = () => {
                   const hourEvents = (eventsByDay.get(key) || []).filter((ev) => ev.start.getHours() === hour);
                   const cellKey = `day-${key}-${hour}`;
                   const isOver = dropTarget === cellKey;
+                  const cellRules = rulesForDay(currentDate).filter((r) => r.end_minutes > hour * 60 && r.start_minutes < (hour + 1) * 60);
                   return (
                     <div
                       key={hour}
-                      className={`flex border-b border-border/30 min-h-[64px] cursor-pointer transition-colors
+                      className={`flex border-b border-border/30 min-h-[64px] cursor-pointer transition-colors relative
                         ${isOver ? "bg-primary/10" : "hover:bg-muted/20"}`}
                       onClick={() => handleDayClick(currentDate, hour)}
-                      onDragOver={(e) => handleDragOver(e, cellKey)}
+                      onDragOver={(e) => handleCellDragOverPrecise(e, currentDate, hour, cellKey)}
                       onDragLeave={handleDragLeave}
                       onDrop={(e) => handleDrop(e, currentDate, hour)}
                     >
+                      {cellRules.map((r) => {
+                        const top = Math.max(0, (r.start_minutes - hour * 60) / 60) * 64;
+                        const bottom = Math.min(60, r.end_minutes - hour * 60) / 60 * 64;
+                        const h = Math.max(0, bottom - top);
+                        return (
+                          <div
+                            key={`${r.id}-${hour}`}
+                            className="absolute left-16 right-0 pointer-events-none"
+                            title={`${r.label}${r.info ? " — " + r.info : ""}${r.allow_booking ? "" : " (no bookings)"}`}
+                            style={{
+                              top: `${top}px`, height: `${h}px`,
+                              background: r.allow_booking ? `${r.color}26` : `repeating-linear-gradient(45deg, ${r.color}33 0 6px, ${r.color}1a 6px 12px)`,
+                              borderLeft: `2px solid ${r.color}`,
+                            }}
+                          />
+                        );
+                      })}
                       <div className="w-16 relative flex-shrink-0">
                         {hourEvents.map((ev, i) => (
                           <div
@@ -1112,10 +1233,12 @@ const AdminCalendar = () => {
                       </SelectContent>
                     </Select>
                   </div>
-                  <div>
-                    <Label className="text-xs flex items-center gap-1"><Link2 size={10} /> Link</Label>
-                    <Input value={newSession.meeting_url} onChange={(e) => setNewSession({ ...newSession, meeting_url: e.target.value })} placeholder="https://..." className="h-8 text-sm" />
-                  </div>
+                  {["zoom", "teams", "google-meet", "other"].includes(newSession.meeting_platform) && (
+                    <div>
+                      <Label className="text-xs flex items-center gap-1"><Link2 size={10} /> Link</Label>
+                      <Input value={newSession.meeting_url} onChange={(e) => setNewSession({ ...newSession, meeting_url: e.target.value })} placeholder="https://..." className="h-8 text-sm" />
+                    </div>
+                  )}
                 </div>
 
                 {/* Service & pricing — admin only. Prices defined in Service Options. */}
@@ -1274,9 +1397,10 @@ const AdminCalendar = () => {
           {/* Sticky footer */}
           <div className="border-t border-border px-6 py-3 bg-background">
             {createType === "session" && (
-              <div className="flex items-center gap-2 text-[10px] text-amber-600 mb-2">
-                <AlertCircle size={12} className="shrink-0" />
-                Sessions created as unpaid. Mark payment once received.
+              <div className="flex flex-wrap items-center gap-3 text-[10px] mb-2">
+                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: EVENT_COLORS.unpaid }} />Xero draft</span>
+                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: EVENT_COLORS.invoice_sent }} />Invoice sent</span>
+                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: EVENT_COLORS.paid }} />Paid</span>
               </div>
             )}
             <Button className="w-full h-9" onClick={createType === "session" ? handleCreateSession : handleCreateTask}>
@@ -1504,10 +1628,12 @@ const AdminCalendar = () => {
                   </SelectContent>
                 </Select>
               </div>
-              <div>
-                <Label className="flex items-center gap-1"><Link2 size={12} /> Meeting Link</Label>
-                <Input value={editForm.meeting_url} onChange={(e) => setEditForm({ ...editForm, meeting_url: e.target.value })} placeholder="https://..." />
-              </div>
+              {["zoom", "teams", "google-meet", "other"].includes(editForm.meeting_platform) && (
+                <div>
+                  <Label className="flex items-center gap-1"><Link2 size={12} /> Meeting Link</Label>
+                  <Input value={editForm.meeting_url} onChange={(e) => setEditForm({ ...editForm, meeting_url: e.target.value })} placeholder="https://..." />
+                </div>
+              )}
             </div>
             {/* Attendees: automatically derived from the assigned therapist below */}
             {/* Service & pricing — admin only. Prices defined in Service Options. */}
