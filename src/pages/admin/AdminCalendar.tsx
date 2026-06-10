@@ -1509,27 +1509,7 @@ const AdminCalendar = () => {
                 <Input value={editForm.meeting_url} onChange={(e) => setEditForm({ ...editForm, meeting_url: e.target.value })} placeholder="https://..." />
               </div>
             </div>
-            <div>
-              <Label className="flex items-center gap-1 mb-1.5"><UserPlus size={12} /> Attendees</Label>
-              <div className="grid grid-cols-2 gap-1.5 max-h-[100px] overflow-y-auto border border-border/50 rounded-lg p-2">
-                {staffMembers.map((s) => (
-                  <label key={s.id} className="flex items-center gap-2 text-xs cursor-pointer hover:bg-muted/50 rounded px-1 py-0.5">
-                    <Checkbox
-                      checked={editForm.attendee_ids.includes(s.id)}
-                      onCheckedChange={(checked) => {
-                        setEditForm((prev) => ({
-                          ...prev,
-                          attendee_ids: checked
-                            ? [...prev.attendee_ids, s.id]
-                            : prev.attendee_ids.filter((id) => id !== s.id),
-                        }));
-                      }}
-                    />
-                    {s.full_name}
-                  </label>
-                ))}
-              </div>
-            </div>
+            {/* Attendees: automatically derived from the assigned therapist below */}
             {/* Service & pricing — admin only. Prices defined in Service Options. */}
             <div className="border border-border/50 rounded-lg p-3 space-y-2 bg-muted/30">
               <Label className="flex items-center gap-1.5 text-xs"><DollarSign size={12} /> Service & pricing <span className="text-[10px] text-muted-foreground">(admin only)</span></Label>
