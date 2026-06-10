@@ -179,12 +179,32 @@ const AdminCalendar = () => {
     },
   });
 
-  // Team members with default rate (for therapist payout)
+  // Therapists pool: any user with team_member or admin role, plus default rate from team_members
   const { data: teamMembersWithRates = [] } = useQuery({
-    queryKey: ["team_members_rates"],
+    queryKey: ["therapist_pool_rates"],
     queryFn: async () => {
-      const { data } = await supabase.from("team_members" as any).select("id,name,user_id,default_session_rate_cents").eq("is_active", true);
-      return (data as any) || [];
+      const [rolesRes, tmRes] = await Promise.all([
+        supabase.from("user_roles").select("user_id, role").in("role", ["team_member", "admin"] as any),
+        supabase.from("team_members" as any).select("id,name,user_id,default_session_rate_cents").eq("is_active", true),
+      ]);
+      const tmList = (tmRes.data as any[]) || [];
+      const rateByUser = new Map<string, number>();
+      const nameByUser = new Map<string, string>();
+      tmList.forEach((tm) => {
+        if (tm.user_id) {
+          rateByUser.set(tm.user_id, tm.default_session_rate_cents || 0);
+          nameByUser.set(tm.user_id, tm.name);
+        }
+      });
+      const userIds = Array.from(new Set(((rolesRes.data as any[]) || []).map((r) => r.user_id)));
+      if (userIds.length === 0) return [];
+      const { data: profs } = await supabase.from("profiles").select("id, full_name").in("id", userIds);
+      const profMap = new Map<string, string>(((profs as any[]) || []).map((p) => [p.id, p.full_name]));
+      return userIds.map((uid) => ({
+        user_id: uid,
+        name: nameByUser.get(uid) || profMap.get(uid) || "Unnamed",
+        default_session_rate_cents: rateByUser.get(uid) || 0,
+      }));
     },
   });
   // Fetch sessions
