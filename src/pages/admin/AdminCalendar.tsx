@@ -224,6 +224,45 @@ const AdminCalendar = () => {
     },
   });
 
+  // Xero invoice status per session (for colour coding)
+  const xeroInvoiceIds = useMemo(
+    () => Array.from(new Set((sessions as any[]).map((s) => s.xero_invoice_id).filter(Boolean))),
+    [sessions]
+  );
+  const { data: xeroInvoiceMap = {} } = useQuery({
+    queryKey: ["session_xero_invoice_statuses", xeroInvoiceIds.join(",")],
+    queryFn: async () => {
+      if (xeroInvoiceIds.length === 0) return {};
+      const { data } = await supabase
+        .from("xero_invoices" as any)
+        .select("xero_invoice_id, status")
+        .in("xero_invoice_id", xeroInvoiceIds);
+      const m: Record<string, string> = {};
+      ((data as any[]) || []).forEach((row) => { m[row.xero_invoice_id] = row.status; });
+      return m;
+    },
+    enabled: xeroInvoiceIds.length > 0,
+  });
+
+  // Calendar hour rules (admin-painted colour blocks)
+  const { data: hourRules = [] } = useQuery({
+    queryKey: ["calendar_hour_rules_admin"],
+    queryFn: async () => {
+      const { data } = await supabase.from("calendar_hour_rules" as any).select("*");
+      return ((data as any[]) || []) as Array<{
+        id: string; label: string; color: string; info: string;
+        day_of_week: number | null; specific_date: string | null;
+        start_minutes: number; end_minutes: number; allow_booking: boolean;
+      }>;
+    },
+  });
+
+  const rulesForDay = useCallback((day: Date) => {
+    const dow = day.getDay();
+    const key = format(day, "yyyy-MM-dd");
+    return hourRules.filter((r) => (r.specific_date && r.specific_date === key) || (!r.specific_date && r.day_of_week === dow));
+  }, [hourRules]);
+
   // Fetch staff todos
   const { data: todos = [] } = useQuery({
     queryKey: ["team_todos", rangeStart.toISOString(), rangeEnd.toISOString()],
