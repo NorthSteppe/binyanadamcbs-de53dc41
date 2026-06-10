@@ -84,11 +84,18 @@ const Index = () => {
                   </Link>
                 </Button>
               ) : (
-                <Button size="lg" variant="outline" asChild className="rounded-full px-8 h-12 text-[14px] font-medium">
-                  <Link to="/contact">
-                    <EditableText contentKey="landing.contactBtn" defaultValue="Get in Touch" as="span" />
-                  </Link>
-                </Button>
+                <>
+                  <Button size="lg" variant="outline" asChild className="rounded-full px-8 h-12 text-[14px] font-medium">
+                    <Link to="/contact">
+                      <EditableText contentKey="landing.contactBtn" defaultValue="Get in Touch" as="span" />
+                    </Link>
+                  </Button>
+                  <Button size="lg" variant="outline" asChild className="rounded-full px-8 h-12 text-[14px] font-medium">
+                    <Link to="/signup">
+                      <EditableText contentKey="landing.signupBtn" defaultValue="Sign Up" as="span" />
+                    </Link>
+                  </Button>
+                </>
               )}
             </div>
           </motion.div>
