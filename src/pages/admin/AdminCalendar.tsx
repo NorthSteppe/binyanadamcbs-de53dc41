@@ -1613,10 +1613,12 @@ const AdminCalendar = () => {
                   </SelectContent>
                 </Select>
               </div>
-              <div>
-                <Label className="flex items-center gap-1"><Link2 size={12} /> Meeting Link</Label>
-                <Input value={editForm.meeting_url} onChange={(e) => setEditForm({ ...editForm, meeting_url: e.target.value })} placeholder="https://..." />
-              </div>
+              {["zoom", "teams", "google-meet", "other"].includes(editForm.meeting_platform) && (
+                <div>
+                  <Label className="flex items-center gap-1"><Link2 size={12} /> Meeting Link</Label>
+                  <Input value={editForm.meeting_url} onChange={(e) => setEditForm({ ...editForm, meeting_url: e.target.value })} placeholder="https://..." />
+                </div>
+              )}
             </div>
             {/* Attendees: automatically derived from the assigned therapist below */}
             {/* Service & pricing — admin only. Prices defined in Service Options. */}
