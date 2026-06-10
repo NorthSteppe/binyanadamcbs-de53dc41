@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { createRemoteJWKSet, jwtVerify } from "https://esm.sh/jose@5.9.6";
 import { signState } from "../_shared/oauth-state.ts";
 
 const corsHeaders = {
@@ -45,16 +46,24 @@ Deno.serve(async (req) => {
     }
 
     const token = authHeader.replace("Bearer ", "").trim();
-    // Validate the caller's JWT via the Auth REST endpoint (works on any supabase-js version)
-    const userRes = await fetch(`${supabaseUrl}/auth/v1/user`, {
-      headers: { Authorization: `Bearer ${token}`, apikey: anonKey },
-    });
-    if (!userRes.ok) {
-      console.error("xero-oauth-start auth/v1/user failed", userRes.status);
-      return json({ error: "Unauthorized", reason: "invalid_token" }, 401);
+    // Verify the caller's JWT against the project's JWKS (works with new signing keys),
+    // falling back to the Auth REST endpoint for legacy HS256 tokens.
+    let userId: string | undefined;
+    try {
+      const jwks = createRemoteJWKSet(new URL(`${supabaseUrl}/auth/v1/.well-known/jwks.json`));
+      const { payload } = await jwtVerify(token, jwks);
+      if (payload.sub && payload.role !== "anon") userId = payload.sub as string;
+    } catch (_e) {
+      const userRes = await fetch(`${supabaseUrl}/auth/v1/user`, {
+        headers: { Authorization: `Bearer ${token}`, apikey: anonKey },
+      });
+      if (userRes.ok) {
+        const u = await userRes.json();
+        userId = u?.id as string | undefined;
+      } else {
+        console.error("xero-oauth-start auth/v1/user failed", userRes.status);
+      }
     }
-    const u = await userRes.json();
-    const userId = u?.id as string | undefined;
     if (!userId) return json({ error: "Unauthorized", reason: "invalid_token" }, 401);
 
     // Admin gate (uses service role to bypass RLS on user_roles)

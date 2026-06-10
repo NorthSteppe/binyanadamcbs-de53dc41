@@ -2,6 +2,7 @@
 // Actions: "summary" | "contacts" | "invoices" (by contactId or all recent)
 // Admin only.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { createRemoteJWKSet, jwtVerify } from "https://esm.sh/jose@5.9.6";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -49,15 +50,25 @@ Deno.serve(async (req) => {
     const anonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? Deno.env.get("SUPABASE_PUBLISHABLE_KEY")!;
     const admin = createClient(supabaseUrl, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
     const token = authHeader.replace("Bearer ", "").trim();
-    const userRes = await fetch(`${supabaseUrl}/auth/v1/user`, {
-      headers: { Authorization: `Bearer ${token}`, apikey: anonKey },
-    });
-    if (!userRes.ok) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-    const u = await userRes.json();
-    const userId = u?.id;
+    // Verify the caller's JWT against the project's JWKS (works with new signing keys),
+    // falling back to the Auth REST endpoint for legacy HS256 tokens.
+    let userId: string | undefined;
+    try {
+      const jwks = createRemoteJWKSet(new URL(`${supabaseUrl}/auth/v1/.well-known/jwks.json`));
+      const { payload } = await jwtVerify(token, jwks);
+      if (payload.sub && payload.role !== "anon") userId = payload.sub as string;
+    } catch (_e) {
+      const userRes = await fetch(`${supabaseUrl}/auth/v1/user`, {
+        headers: { Authorization: `Bearer ${token}`, apikey: anonKey },
+      });
+      if (userRes.ok) {
+        const u = await userRes.json();
+        userId = u?.id as string | undefined;
+      } else {
+        console.error("xero-live auth/v1/user failed", userRes.status);
+      }
+    }
     if (!userId) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-    const { data: isAdmin } = await admin.rpc("has_role", { _user_id: userId, _role: "admin" });
-    if (!isAdmin) return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     const { data: isAdmin } = await admin.rpc("has_role", { _user_id: userId, _role: "admin" });
     if (!isAdmin) return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
