@@ -96,7 +96,7 @@ const ServiceOptionsManager = () => {
                       <Input type="number" value={svc.display_order} onChange={(e) => update(svc.id, "display_order", parseInt(e.target.value) || 0)} className="w-20" />
                     </div>
                     <div className="space-y-1">
-                      <Label className="text-xs">Price (£)</Label>
+                      <Label className="text-xs">Client price (£)</Label>
                       <Input
                         type="number"
                         step="0.01"
@@ -105,6 +105,17 @@ const ServiceOptionsManager = () => {
                         className="w-28"
                       />
                     </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Therapist payout (£)</Label>
+                      <Input
+                        type="number"
+                        step="0.01"
+                        value={((svc.therapist_rate_cents || 0) / 100).toFixed(2)}
+                        onChange={(e) => update(svc.id, "therapist_rate_cents", Math.round(parseFloat(e.target.value || "0") * 100))}
+                        className="w-28"
+                      />
+                    </div>
+
                     <div className="ms-auto flex gap-2 flex-wrap">
                       <Button size="sm" variant="outline" className="rounded-full gap-1" onClick={() => updateService(svc)}><Save size={14} /> Save</Button>
                       <Button size="sm" variant="destructive" className="rounded-full gap-1" onClick={() => deleteService(svc.id)}><Trash2 size={14} /></Button>
