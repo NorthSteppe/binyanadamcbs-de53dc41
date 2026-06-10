@@ -77,6 +77,8 @@ const Booking = () => {
   useEffect(() => {
     supabase.from("service_options").select("*").eq("is_active", true).order("display_order")
       .then(({ data }) => { if (data) setServices(data as unknown as ServiceOption[]); });
+    supabase.from("calendar_hour_rules" as any).select("*")
+      .then(({ data }) => { if (data) setHourRules(data as any[]); });
   }, []);
 
   // Load bookable clients for staff/admin (assigned clients + manual clients; admins see all)
