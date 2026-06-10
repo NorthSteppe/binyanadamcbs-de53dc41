@@ -332,10 +332,12 @@ const AdminCalendar = () => {
       sessions.forEach((s: any) => {
         const start = parseISO(s.session_date);
         const clientId = s.manual_client_id || s.client_id;
+        const xero_status = s.xero_invoice_id ? (xeroInvoiceMap as any)[s.xero_invoice_id] : null;
         result.push({
           id: s.id, title: s.title, start,
           end: new Date(start.getTime() + (s.duration_minutes || 60) * 60000),
-          type: "session", color: getSessionColor(s),
+          type: "session",
+          color: getSessionColor({ ...s, xero_status }),
           status: s.status, description: s.description,
           clientName: nameMap.get(clientId) || "Unknown",
           clientId: clientId,
@@ -362,7 +364,7 @@ const AdminCalendar = () => {
       });
     }
     return result;
-  }, [sessions, todos, showSessions, showTasks, nameMap]);
+  }, [sessions, todos, showSessions, showTasks, nameMap, xeroInvoiceMap]);
 
   const eventsByDay = useMemo(() => {
     const map = new Map<string, CalendarEvent[]>();
