@@ -59,8 +59,11 @@ export const useFeatureFlags = () => {
 
   const isEnabled = (key: string): boolean => {
     if (isLoading || !access) return false;
-    // Admins always have admin.features as a safety hatch
-    if (key === "admin.features" && roles?.includes("admin")) return true;
+    // Admins have access to every feature across every portal
+    if (roles?.includes("admin")) {
+      if (key === "admin.features") return true;
+      return access.some((row) => row.feature_key === key && row.enabled);
+    }
     const userRoles = roles && roles.length > 0 ? roles : ["client"];
     return access.some(
       (row) => row.feature_key === key && row.enabled && userRoles.includes(row.role),
