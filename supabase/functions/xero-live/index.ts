@@ -63,22 +63,34 @@ Deno.serve(async (req) => {
     const conn = await refreshIfNeeded(admin, conns[0]);
 
     if (action === "contacts") {
-      // Fetch ACCREC customers, up to 200 per page; pull a couple of pages.
+      // Xero rejects IsCustomer filter on high-volume tenants. Fetch summary pages
+      // (optionally narrowed by searchTerm) and filter client-side.
+      const searchTerm: string | null = (body?.search ?? "").toString().trim() || null;
+      const maxPages: number = Math.min(Math.max(Number(body?.max_pages ?? 5), 1), 20);
       const all: any[] = [];
-      for (let page = 1; page <= 3; page++) {
-        const j = await xeroGet(`/api.xro/2.0/Contacts?where=IsCustomer==true&page=${page}&summaryOnly=true`, conn);
+      for (let page = 1; page <= maxPages; page++) {
+        const params = new URLSearchParams({
+          page: String(page),
+          summaryOnly: "true",
+          includeArchived: "false",
+        });
+        if (searchTerm) params.set("searchTerm", searchTerm);
+        const j = await xeroGet(`/api.xro/2.0/Contacts?${params.toString()}`, conn);
         const items = j.Contacts ?? [];
         all.push(...items);
         if (items.length < 100) break;
       }
-      const contacts = all.map((c: any) => ({
-        contact_id: c.ContactID,
-        name: c.Name,
-        email: c.EmailAddress ?? null,
-        first_name: c.FirstName ?? null,
-        last_name: c.LastName ?? null,
-        status: c.ContactStatus ?? null,
-      }));
+      const contacts = all
+        .filter((c: any) => c.ContactStatus !== "ARCHIVED")
+        .filter((c: any) => c.IsCustomer !== false) // keep undefined + true
+        .map((c: any) => ({
+          contact_id: c.ContactID,
+          name: c.Name,
+          email: c.EmailAddress ?? null,
+          first_name: c.FirstName ?? null,
+          last_name: c.LastName ?? null,
+          status: c.ContactStatus ?? null,
+        }));
       return new Response(JSON.stringify({ ok: true, contacts }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
