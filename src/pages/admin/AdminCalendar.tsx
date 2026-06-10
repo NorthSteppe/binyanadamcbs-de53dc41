@@ -1193,7 +1193,7 @@ const AdminCalendar = () => {
                   <label className="flex items-center justify-between gap-2 pt-1.5 border-t border-border/50">
                     <span className="text-[11px] text-muted-foreground leading-tight">
                       Raise Xero invoice for client
-                      <span className="block text-[10px] opacity-70">Creates a draft invoice in Xero for the first session.</span>
+                      <span className="block text-[10px] opacity-70">Draft will be created automatically at the start of the session's week.</span>
                     </span>
                     <Switch
                       checked={newSession.send_payment_link}
@@ -1225,30 +1225,11 @@ const AdminCalendar = () => {
                       </Select>
                     </div>
                   )}
+                  <p className="text-[10px] text-muted-foreground pt-1 border-t border-border/50">
+                    The assigned therapist is automatically invited to this session and notified.
+                  </p>
                 </div>
 
-                <div>
-                  <Label className="text-xs flex items-center gap-1 mb-1"><UserPlus size={10} /> Invite Therapists</Label>
-                  <div className="grid grid-cols-2 gap-1 max-h-[80px] overflow-y-auto border border-border/50 rounded-lg p-1.5">
-                    {staffMembers.map((s) => (
-                      <label key={s.id} className="flex items-center gap-1.5 text-[11px] cursor-pointer hover:bg-muted/50 rounded px-1 py-0.5">
-                        <Checkbox
-                          checked={newSession.attendee_ids.includes(s.id)}
-                          onCheckedChange={(checked) => {
-                            setNewSession((prev) => ({
-                              ...prev,
-                              attendee_ids: checked
-                                ? [...prev.attendee_ids, s.id]
-                                : prev.attendee_ids.filter((id) => id !== s.id),
-                            }));
-                          }}
-                          className="h-3.5 w-3.5"
-                        />
-                        {s.full_name}
-                      </label>
-                    ))}
-                  </div>
-                </div>
                 <div><Label className="text-xs">Notes</Label><Textarea value={newSession.description} onChange={(e) => setNewSession({ ...newSession, description: e.target.value })} placeholder="Optional" rows={2} className="text-sm" /></div>
                 {/* Recurring */}
                 <div className="border border-border/50 rounded-lg p-2.5 space-y-2 bg-muted/30">
