@@ -3024,6 +3024,34 @@ export type Database = {
       }
     }
     Functions: {
+      admin_list_service_options: {
+        Args: never
+        Returns: {
+          created_at: string
+          description: string
+          display_order: number
+          duration_minutes: number
+          id: string
+          is_active: boolean
+          name: string
+          price_cents: number
+          show_duration: boolean
+          show_price: boolean
+          stripe_price_id: string | null
+          therapist_rate_cents: number
+          updated_at: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "service_options"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
+      admin_set_service_option_rate: {
+        Args: { _id: string; _rate_cents: number }
+        Returns: undefined
+      }
       create_notification: {
         Args: {
           _link?: string
