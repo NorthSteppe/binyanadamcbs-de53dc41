@@ -102,7 +102,7 @@ const BusinessDashboard = () => {
   const fetchAll = useCallback(async () => {
     setLoading(true);
     const [sessRes, svcRes, cpRes, profRes, profXeroRes, manualRes, courseRes, rolesRes, beRes, bpRes] = await Promise.all([
-      supabase.from("sessions").select("id, client_id, title, session_date, duration_minutes, status, description, created_at, therapist_id, therapist_rate_cents, therapist_paid").order("session_date", { ascending: false }),
+      (supabase as any).from("staff_sessions").select("id, client_id, title, session_date, duration_minutes, status, description, created_at, therapist_id, therapist_rate_cents, therapist_paid").order("session_date", { ascending: false }),
       (supabase as any).rpc("admin_list_service_options"),
       supabase.from("course_purchases").select("*"),
       supabase.from("profiles").select("id, full_name, created_at"),
