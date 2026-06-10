@@ -203,6 +203,7 @@ const App = () => (
                   {/* Admin portal */}
                   <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
                   <Route path="/admin/calendar" element={<AdminRoute><AdminCalendar /></AdminRoute>} />
+                  <Route path="/admin/calendar-hours" element={<AdminRoute><CalendarHourRules /></AdminRoute>} />
                   <Route path="/admin/clients" element={<StaffRoute><ClientsOverview /></StaffRoute>} />
                   <Route path="/admin/clients/:clientId" element={<StaffRoute><ClientDetail /></StaffRoute>} />
                   <Route path="/admin/team-requests" element={<AdminRoute><TeamRequests /></AdminRoute>} />
