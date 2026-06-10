@@ -27,31 +27,38 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) return json({ error: "Unauthorized" }, 401);
+    const authHeader = req.headers.get("Authorization") ?? req.headers.get("authorization");
+    if (!authHeader?.startsWith("Bearer ")) return json({ error: "Unauthorized", reason: "missing_bearer" }, 401);
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    const anonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? Deno.env.get("SUPABASE_PUBLISHABLE_KEY");
     const clientId = Deno.env.get("XERO_CLIENT_ID");
-    if (!supabaseUrl || !serviceRoleKey || !clientId) {
+    if (!supabaseUrl || !serviceRoleKey || !anonKey || !clientId) {
       console.error("xero-oauth-start missing configuration", {
         hasSupabaseUrl: Boolean(supabaseUrl),
         hasServiceRoleKey: Boolean(serviceRoleKey),
+        hasAnonKey: Boolean(anonKey),
         hasClientId: Boolean(clientId),
       });
       return json({ error: "Xero is not fully configured yet." });
     }
 
+    const token = authHeader.replace("Bearer ", "").trim();
+    // Validate the caller's JWT using the anon-key client + getClaims (signing-keys compatible)
+    const authClient = createClient(supabaseUrl, anonKey);
+    const { data: claimsData, error: ce } = await authClient.auth.getClaims(token);
+    if (ce || !claimsData?.claims?.sub) {
+      console.error("xero-oauth-start getClaims failed", ce);
+      return json({ error: "Unauthorized", reason: "invalid_token" }, 401);
+    }
+    const userId = claimsData.claims.sub as string;
+
+    // Admin gate (uses service role to bypass RLS on user_roles)
     const admin = createClient(supabaseUrl, serviceRoleKey);
-    const token = authHeader.replace("Bearer ", "");
-    const { data: userData, error: ue } = await admin.auth.getUser(token);
-    if (ue || !userData?.user) return json({ error: "Unauthorized" }, 401);
-
-    const userId = userData.user.id;
-
-    // Admin gate
     const { data: isAdmin } = await admin.rpc("has_role", { _user_id: userId, _role: "admin" });
     if (!isAdmin) return json({ error: "Forbidden" }, 403);
+
 
     const redirectUri = `${supabaseUrl}/functions/v1/xero-oauth-callback`;
 
