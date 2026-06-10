@@ -98,20 +98,24 @@ const ServiceOptionsManager = () => {
                     <div className="space-y-1">
                       <Label className="text-xs">Client price (£)</Label>
                       <Input
+                        key={`price-${svc.id}`}
                         type="number"
                         step="0.01"
-                        value={(svc.price_cents / 100).toFixed(2)}
-                        onChange={(e) => update(svc.id, "price_cents", Math.round(parseFloat(e.target.value || "0") * 100))}
+                        min="0"
+                        defaultValue={(svc.price_cents / 100).toFixed(2)}
+                        onBlur={(e) => update(svc.id, "price_cents", Math.round(parseFloat(e.target.value || "0") * 100))}
                         className="w-28"
                       />
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs">Therapist payout (£)</Label>
                       <Input
+                        key={`payout-${svc.id}`}
                         type="number"
                         step="0.01"
-                        value={((svc.therapist_rate_cents || 0) / 100).toFixed(2)}
-                        onChange={(e) => update(svc.id, "therapist_rate_cents", Math.round(parseFloat(e.target.value || "0") * 100))}
+                        min="0"
+                        defaultValue={((svc.therapist_rate_cents || 0) / 100).toFixed(2)}
+                        onBlur={(e) => update(svc.id, "therapist_rate_cents", Math.round(parseFloat(e.target.value || "0") * 100))}
                         className="w-28"
                       />
                     </div>
