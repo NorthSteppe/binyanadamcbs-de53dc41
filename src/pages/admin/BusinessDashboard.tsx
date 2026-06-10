@@ -378,7 +378,7 @@ const BusinessDashboard = () => {
                     <IssueRow label="Draft invoices" value={money(xeroDrafts, ccy)} count={xs?.count_draft ?? 0} tone="slate" />
                     <IssueRow label="Therapist payouts owed" value={money(therapistPayoutsOwed, ccy)} count={payoutSessionsOwed} tone="amber" />
                     <div className="pt-3 border-t border-border">
-                      <Button size="sm" variant="outline" className="w-full" onClick={() => navigate("/admin/therapist-payouts")}>
+                      <Button size="sm" variant="outline" className="w-full" onClick={() => navigate("/admin/payouts")}>
                         Manage payouts <ExternalLink size={12} className="ml-1.5" />
                       </Button>
                     </div>
@@ -527,7 +527,7 @@ const BusinessDashboard = () => {
                     </TableBody>
                   </Table>
                   <div className="mt-4 flex justify-end">
-                    <Button size="sm" variant="outline" onClick={() => navigate("/admin/therapist-payouts")}>
+                    <Button size="sm" variant="outline" onClick={() => navigate("/admin/payouts")}>
                       Open payouts manager <ExternalLink size={12} className="ml-1.5" />
                     </Button>
                   </div>
