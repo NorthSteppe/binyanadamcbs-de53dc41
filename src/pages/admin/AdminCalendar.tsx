@@ -682,11 +682,10 @@ const AdminCalendar = () => {
     setDetailOpen(true);
   };
 
-  // Scroll to current hour
+  // Default scroll position: 8:00 AM (users can scroll up to see earlier hours)
   useEffect(() => {
     if ((viewMode === "week" || viewMode === "day") && scrollRef.current) {
-      const offset = Math.max(0, (new Date().getHours() - 1) * 64);
-      scrollRef.current.scrollTop = offset;
+      scrollRef.current.scrollTop = 8 * 64;
     }
   }, [viewMode]);
 
