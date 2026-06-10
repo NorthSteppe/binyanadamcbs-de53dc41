@@ -954,7 +954,8 @@ const AdminCalendar = () => {
                         );
                       })}
                     </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             </div>
