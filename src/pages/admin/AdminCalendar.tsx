@@ -402,6 +402,8 @@ const AdminCalendar = () => {
     const isManualClient = newSession.client_id.startsWith("manual:");
     const actualClientId = isManualClient ? newSession.client_id.replace("manual:", "") : newSession.client_id;
     const baseDateTime = `${format(selectedDate, "yyyy-MM-dd")}T${newSession.time}:00`;
+    const therapistId = newSession.therapist_id || null;
+    const attendeeIds = therapistId ? [therapistId] : [];
     const basePayload = {
       title: newSession.title,
       client_id: isManualClient ? user!.id : actualClientId,
@@ -409,15 +411,16 @@ const AdminCalendar = () => {
       duration_minutes: newSession.duration_minutes, description: newSession.description || null,
       meeting_platform: newSession.meeting_platform || null,
       meeting_url: newSession.meeting_url || null,
-      attendee_ids: newSession.attendee_ids,
+      attendee_ids: attendeeIds,
       is_paid: !!newSession.already_paid,
       payment_method: newSession.already_paid ? newSession.paid_method : "",
       paid_at: newSession.already_paid ? new Date().toISOString() : null,
       paid_confirmed_by: newSession.already_paid ? user!.id : null,
       service_option_id: newSession.service_option_id || null,
       price_cents: newSession.price_cents || 0,
-      therapist_id: newSession.therapist_id || null,
+      therapist_id: therapistId,
       therapist_rate_cents: newSession.therapist_rate_cents || 0,
+      xero_invoice_pending: !!newSession.send_payment_link,
     } as any;
 
     // Calculate dates for recurring sessions
@@ -451,30 +454,10 @@ const AdminCalendar = () => {
       if (recErr) toast.error("Some recurring sessions failed to create");
     }
 
-    // Send invite notifications to attendees
-    for (const aid of newSession.attendee_ids) {
-      await supabase.rpc("create_notification", {
-        _user_id: aid, _type: "session", _title: "Session Invitation",
-        _message: `You have been invited to "${newSession.title}"`,
-        _link: "/admin/calendar",
-      });
-    }
+    // Therapist gets notified automatically via DB trigger when assigned.
     toast.success(dates.length > 1 ? `${dates.length} recurring sessions created` : "Session created");
-
-    // Optionally raise a Xero invoice for the first session
-    if (newSession.send_payment_link && firstSession?.id) {
-      try {
-        const { data: linkData, error: linkErr } = await supabase.functions.invoke("xero-invoice-booking", {
-          body: { session_ids: [firstSession.id] },
-        });
-        if (linkErr || (linkData as any)?.error) {
-          toast.error(`Xero invoice: ${(linkData as any)?.error || linkErr?.message || "failed"}`);
-        } else {
-          toast.success("Draft invoice raised in Xero");
-        }
-      } catch (e: any) {
-        toast.error(`Xero invoice failed: ${e.message}`);
-      }
+    if (newSession.send_payment_link) {
+      toast.info("Xero draft will be raised at the start of the session's week.");
     }
 
     setCreateOpen(false);
@@ -568,7 +551,7 @@ const AdminCalendar = () => {
       description: editForm.description || null, status: editForm.status,
       meeting_platform: editForm.meeting_platform || null,
       meeting_url: editForm.meeting_url || null,
-      attendee_ids: editForm.attendee_ids,
+      attendee_ids: editForm.therapist_id ? [editForm.therapist_id] : [],
       service_option_id: editForm.service_option_id || null,
       price_cents: editForm.price_cents || 0,
       therapist_id: editForm.therapist_id || null,
@@ -1210,7 +1193,7 @@ const AdminCalendar = () => {
                   <label className="flex items-center justify-between gap-2 pt-1.5 border-t border-border/50">
                     <span className="text-[11px] text-muted-foreground leading-tight">
                       Raise Xero invoice for client
-                      <span className="block text-[10px] opacity-70">Creates a draft invoice in Xero for the first session.</span>
+                      <span className="block text-[10px] opacity-70">Draft will be created automatically at the start of the session's week.</span>
                     </span>
                     <Switch
                       checked={newSession.send_payment_link}
@@ -1242,30 +1225,11 @@ const AdminCalendar = () => {
                       </Select>
                     </div>
                   )}
+                  <p className="text-[10px] text-muted-foreground pt-1 border-t border-border/50">
+                    The assigned therapist is automatically invited to this session and notified.
+                  </p>
                 </div>
 
-                <div>
-                  <Label className="text-xs flex items-center gap-1 mb-1"><UserPlus size={10} /> Invite Therapists</Label>
-                  <div className="grid grid-cols-2 gap-1 max-h-[80px] overflow-y-auto border border-border/50 rounded-lg p-1.5">
-                    {staffMembers.map((s) => (
-                      <label key={s.id} className="flex items-center gap-1.5 text-[11px] cursor-pointer hover:bg-muted/50 rounded px-1 py-0.5">
-                        <Checkbox
-                          checked={newSession.attendee_ids.includes(s.id)}
-                          onCheckedChange={(checked) => {
-                            setNewSession((prev) => ({
-                              ...prev,
-                              attendee_ids: checked
-                                ? [...prev.attendee_ids, s.id]
-                                : prev.attendee_ids.filter((id) => id !== s.id),
-                            }));
-                          }}
-                          className="h-3.5 w-3.5"
-                        />
-                        {s.full_name}
-                      </label>
-                    ))}
-                  </div>
-                </div>
                 <div><Label className="text-xs">Notes</Label><Textarea value={newSession.description} onChange={(e) => setNewSession({ ...newSession, description: e.target.value })} placeholder="Optional" rows={2} className="text-sm" /></div>
                 {/* Recurring */}
                 <div className="border border-border/50 rounded-lg p-2.5 space-y-2 bg-muted/30">
@@ -1545,27 +1509,7 @@ const AdminCalendar = () => {
                 <Input value={editForm.meeting_url} onChange={(e) => setEditForm({ ...editForm, meeting_url: e.target.value })} placeholder="https://..." />
               </div>
             </div>
-            <div>
-              <Label className="flex items-center gap-1 mb-1.5"><UserPlus size={12} /> Attendees</Label>
-              <div className="grid grid-cols-2 gap-1.5 max-h-[100px] overflow-y-auto border border-border/50 rounded-lg p-2">
-                {staffMembers.map((s) => (
-                  <label key={s.id} className="flex items-center gap-2 text-xs cursor-pointer hover:bg-muted/50 rounded px-1 py-0.5">
-                    <Checkbox
-                      checked={editForm.attendee_ids.includes(s.id)}
-                      onCheckedChange={(checked) => {
-                        setEditForm((prev) => ({
-                          ...prev,
-                          attendee_ids: checked
-                            ? [...prev.attendee_ids, s.id]
-                            : prev.attendee_ids.filter((id) => id !== s.id),
-                        }));
-                      }}
-                    />
-                    {s.full_name}
-                  </label>
-                ))}
-              </div>
-            </div>
+            {/* Attendees: automatically derived from the assigned therapist below */}
             {/* Service & pricing — admin only. Prices defined in Service Options. */}
             <div className="border border-border/50 rounded-lg p-3 space-y-2 bg-muted/30">
               <Label className="flex items-center gap-1.5 text-xs"><DollarSign size={12} /> Service & pricing <span className="text-[10px] text-muted-foreground">(admin only)</span></Label>
