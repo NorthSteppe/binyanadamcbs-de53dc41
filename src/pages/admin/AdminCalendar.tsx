@@ -551,7 +551,7 @@ const AdminCalendar = () => {
       description: editForm.description || null, status: editForm.status,
       meeting_platform: editForm.meeting_platform || null,
       meeting_url: editForm.meeting_url || null,
-      attendee_ids: editForm.attendee_ids,
+      attendee_ids: editForm.therapist_id ? [editForm.therapist_id] : [],
       service_option_id: editForm.service_option_id || null,
       price_cents: editForm.price_cents || 0,
       therapist_id: editForm.therapist_id || null,
