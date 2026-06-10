@@ -95,7 +95,13 @@ const ServiceOptionsManager = () => {
                   <div className="flex gap-3 items-end flex-wrap">
                     <div className="space-y-1">
                       <Label className="text-xs">Duration (min)</Label>
-                      <Input type="number" value={svc.duration_minutes} onChange={(e) => update(svc.id, "duration_minutes", parseInt(e.target.value) || 60)} className="w-24" />
+                      <Input
+                        key={`dur-${svc.id}`}
+                        type="number"
+                        defaultValue={svc.duration_minutes}
+                        onBlur={(e) => update(svc.id, "duration_minutes", parseInt(e.target.value) || 60)}
+                        className="w-24"
+                      />
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs">Order</Label>
