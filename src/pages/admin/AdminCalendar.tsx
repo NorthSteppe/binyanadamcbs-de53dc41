@@ -1116,14 +1116,18 @@ const AdminCalendar = () => {
                         return (
                           <div
                             key={`${r.id}-${hour}`}
-                            className="absolute left-16 right-0 pointer-events-none"
+                            className="absolute left-16 right-0 pointer-events-none overflow-hidden backdrop-blur-[2px]"
                             title={`${r.label}${r.info ? " — " + r.info : ""}${r.allow_booking ? "" : " (no bookings)"}`}
                             style={{
                               top: `${top}px`, height: `${h}px`,
-                              background: r.allow_booking ? `${r.color}26` : `repeating-linear-gradient(45deg, ${r.color}33 0 6px, ${r.color}1a 6px 12px)`,
+                              background: `linear-gradient(135deg, ${r.color}4d 0%, ${r.color}26 45%, ${r.color}3d 100%)`,
                               borderLeft: `2px solid ${r.color}`,
+                              boxShadow: `inset 0 1px 0 rgba(255,255,255,0.45), inset 0 -1px 0 ${r.color}33`,
+                              opacity: r.allow_booking ? 1 : 0.85,
                             }}
-                          />
+                          >
+                            <div className="absolute inset-x-0 top-0 h-1/2 pointer-events-none" style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0) 100%)" }} />
+                          </div>
                         );
                       })}
                       <div className="w-16 relative flex-shrink-0">
