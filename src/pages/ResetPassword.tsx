@@ -50,7 +50,7 @@ const ResetPassword = () => {
           <div className="bg-card border border-border rounded-2xl p-10 shadow-apple">
             <h1 className="text-3xl font-display mb-2 text-center tracking-tight">Choose a new password</h1>
             <p className="text-muted-foreground text-center mb-8 text-sm">
-              {ready ? "Set a password you'll remember." : "Validating your reset link..."}
+              Set a password you'll remember.
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-5">
@@ -62,7 +62,7 @@ const ResetPassword = () => {
                 <Label htmlFor="confirm" className="text-[12px] font-medium uppercase tracking-wider text-muted-foreground">Confirm password</Label>
                 <Input id="confirm" type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} required minLength={8} className="rounded-xl bg-background border-border h-11" />
               </div>
-              <Button type="submit" className="w-full rounded-full bg-primary text-primary-foreground hover:bg-primary/90 h-11 text-[14px] font-medium shadow-apple" size="lg" disabled={loading || !ready}>
+              <Button type="submit" className="w-full rounded-full bg-primary text-primary-foreground hover:bg-primary/90 h-11 text-[14px] font-medium shadow-apple" size="lg" disabled={loading}>
                 {loading ? "Updating..." : "Update password"}
               </Button>
             </form>
