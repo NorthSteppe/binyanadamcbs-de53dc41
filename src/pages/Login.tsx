@@ -110,6 +110,11 @@ const Login = () => {
               <Button type="submit" className="w-full rounded-full bg-primary text-primary-foreground hover:bg-primary/90 h-11 text-[14px] font-medium shadow-apple" size="lg" disabled={loading}>
                 {loading ? t.login.loading : t.login.button}
               </Button>
+              <div className="text-center">
+                <Link to="/forgot-password" className="text-xs text-muted-foreground hover:text-foreground hover:underline">
+                  Forgot your password?
+                </Link>
+              </div>
             </form>
             <p className="text-sm text-muted-foreground text-center mt-8">
               {t.login.noAccount}{" "}
