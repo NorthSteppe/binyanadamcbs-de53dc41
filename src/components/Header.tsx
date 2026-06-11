@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/hooks/useAuth";
 import NotificationBell from "@/components/NotificationBell";
+import MessagesIcon from "@/components/MessagesIcon";
 
 const Header = ({ hidelogo = false }: { hidelogo?: boolean }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
