@@ -13,21 +13,8 @@ const ResetPassword = () => {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [loading, setLoading] = useState(false);
-  const [ready, setReady] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-
-  useEffect(() => {
-    // The recovery link sets a session via the hash; AuthProvider already calls setSession.
-    // Confirm we have a session before allowing password update.
-    supabase.auth.getSession().then(({ data }) => {
-      setReady(!!data.session);
-    });
-    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
-      if (event === "PASSWORD_RECOVERY" || event === "SIGNED_IN") setReady(true);
-    });
-    return () => sub.subscription.unsubscribe();
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
