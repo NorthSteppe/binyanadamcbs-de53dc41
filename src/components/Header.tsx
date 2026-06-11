@@ -199,6 +199,7 @@ const Header = ({ hidelogo = false }: { hidelogo?: boolean }) => {
 
           {user ? (
             <>
+              <MessagesIcon />
               <NotificationBell />
               {portalLinks.length > 1 ? (
                 <div className="relative group">
