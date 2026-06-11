@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -13,21 +13,8 @@ const ResetPassword = () => {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [loading, setLoading] = useState(false);
-  const [ready, setReady] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-
-  useEffect(() => {
-    // The recovery link sets a session via the hash; AuthProvider already calls setSession.
-    // Confirm we have a session before allowing password update.
-    supabase.auth.getSession().then(({ data }) => {
-      setReady(!!data.session);
-    });
-    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
-      if (event === "PASSWORD_RECOVERY" || event === "SIGNED_IN") setReady(true);
-    });
-    return () => sub.subscription.unsubscribe();
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,7 +50,7 @@ const ResetPassword = () => {
           <div className="bg-card border border-border rounded-2xl p-10 shadow-apple">
             <h1 className="text-3xl font-display mb-2 text-center tracking-tight">Choose a new password</h1>
             <p className="text-muted-foreground text-center mb-8 text-sm">
-              {ready ? "Set a password you'll remember." : "Validating your reset link..."}
+              Set a password you'll remember.
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-5">
@@ -75,7 +62,7 @@ const ResetPassword = () => {
                 <Label htmlFor="confirm" className="text-[12px] font-medium uppercase tracking-wider text-muted-foreground">Confirm password</Label>
                 <Input id="confirm" type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} required minLength={8} className="rounded-xl bg-background border-border h-11" />
               </div>
-              <Button type="submit" className="w-full rounded-full bg-primary text-primary-foreground hover:bg-primary/90 h-11 text-[14px] font-medium shadow-apple" size="lg" disabled={loading || !ready}>
+              <Button type="submit" className="w-full rounded-full bg-primary text-primary-foreground hover:bg-primary/90 h-11 text-[14px] font-medium shadow-apple" size="lg" disabled={loading}>
                 {loading ? "Updating..." : "Update password"}
               </Button>
             </form>
