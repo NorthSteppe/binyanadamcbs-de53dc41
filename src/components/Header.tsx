@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/hooks/useAuth";
 import NotificationBell from "@/components/NotificationBell";
-import MessagesIcon from "@/components/MessagesIcon";
 
 const Header = ({ hidelogo = false }: { hidelogo?: boolean }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -199,7 +198,6 @@ const Header = ({ hidelogo = false }: { hidelogo?: boolean }) => {
 
           {user ? (
             <>
-              <MessagesIcon />
               <NotificationBell />
               {portalLinks.length > 1 ? (
                 <div className="relative group">
@@ -256,7 +254,6 @@ const Header = ({ hidelogo = false }: { hidelogo?: boolean }) => {
           <Button variant="ghost" size="icon" onClick={() => navigate("/search")} aria-label="Search" className="text-muted-foreground rounded-full">
             <Search size={18} />
           </Button>
-          {user && <MessagesIcon />}
           {user && <NotificationBell />}
           <Button variant="ghost" size="icon" onClick={toggleLanguage} aria-label={language === "en" ? "Switch language to Hebrew" : "Switch language to English"} className="text-muted-foreground rounded-full">
             <Globe size={18} />
