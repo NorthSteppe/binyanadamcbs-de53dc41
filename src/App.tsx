@@ -28,6 +28,8 @@ import Contact from "./pages/Contact";
 import TeamMemberProfile from "./pages/TeamMemberProfile";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 import Unsubscribe from "./pages/Unsubscribe";
 import SearchPage from "./pages/Search";
@@ -175,6 +177,8 @@ const App = () => (
                   <Route path="/courses/:slug" element={<CourseDetail />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/signup" element={<Signup />} />
+                  <Route path="/forgot-password" element={<ForgotPassword />} />
+                  <Route path="/reset-password" element={<ResetPassword />} />
                   <Route path="/unsubscribe" element={<Unsubscribe />} />
                   <Route path="/search" element={<SearchPage />} />
                   {/* Blog / Insights */}
