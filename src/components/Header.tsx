@@ -256,6 +256,7 @@ const Header = ({ hidelogo = false }: { hidelogo?: boolean }) => {
           <Button variant="ghost" size="icon" onClick={() => navigate("/search")} aria-label="Search" className="text-muted-foreground rounded-full">
             <Search size={18} />
           </Button>
+          {user && <MessagesIcon />}
           {user && <NotificationBell />}
           <Button variant="ghost" size="icon" onClick={toggleLanguage} aria-label={language === "en" ? "Switch language to Hebrew" : "Switch language to English"} className="text-muted-foreground rounded-full">
             <Globe size={18} />
