@@ -134,16 +134,20 @@ const SuperviseeCompetencies = () => {
     else { setNewJournal({ entry_type: "observation", entry_date: new Date().toISOString().slice(0, 10) }); loadAll(); }
   };
 
-  const exportPdf = () => {
-    downloadSupervisionPdf({
-      superviseeName: profile?.full_name || user?.email || "Supervisee",
-      generatedBy: profile?.full_name || user?.email || undefined,
-      competencies,
-      seInputs,
-      svInputs,
-      journal,
-      lang: language === "he" ? "he" : "en",
-    });
+  const exportPdf = async () => {
+    try {
+      await downloadSupervisionPdf({
+        superviseeName: profile?.full_name || user?.email || "Supervisee",
+        generatedBy: profile?.full_name || user?.email || undefined,
+        competencies,
+        seInputs,
+        svInputs,
+        journal,
+        lang: language === "he" ? "he" : "en",
+      });
+    } catch (e: any) {
+      toast.error(e?.message || "Failed to generate PDF");
+    }
   };
 
   const LevelChips = ({ value, onChange }: { value: SupervisionLevel; onChange: (v: SupervisionLevel) => void }) => (

@@ -358,17 +358,21 @@ const SupervisionTrackerAdmin = () => {
 
   const activeName = supervisees.find((s) => s.id === activeId)?.full_name || "";
 
-  const exportPdf = () => {
+  const exportPdf = async () => {
     if (!activeId) return;
-    downloadSupervisionPdf({
-      superviseeName: activeName,
-      generatedBy: user?.email || undefined,
-      competencies,
-      seInputs,
-      svInputs,
-      journal,
-      lang: language === "he" ? "he" : "en",
-    });
+    try {
+      await downloadSupervisionPdf({
+        superviseeName: activeName,
+        generatedBy: user?.email || undefined,
+        competencies,
+        seInputs,
+        svInputs,
+        journal,
+        lang: language === "he" ? "he" : "en",
+      });
+    } catch (e: any) {
+      toast.error(e?.message || "Failed to generate PDF");
+    }
   };
 
   return (
