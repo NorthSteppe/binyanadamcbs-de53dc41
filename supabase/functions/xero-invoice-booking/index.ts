@@ -134,11 +134,20 @@ Deno.serve(async (req) => {
     const today = new Date().toISOString().slice(0, 10);
     const due = new Date(); due.setDate(due.getDate() + 14);
     const autoSend = body?.auto_send === true && !!contactEmail;
+
+    // Prefer linking by existing ContactID to avoid Xero "contact name already in use" errors.
+    let contact: any;
+    if (existingContactId) {
+      contact = { ContactID: existingContactId };
+    } else if (contactEmail) {
+      contact = { Name: contactName.slice(0, 200), EmailAddress: contactEmail };
+    } else {
+      contact = { Name: contactName.slice(0, 200) };
+    }
+
     const payload = {
       Type: "ACCREC",
-      Contact: contactEmail
-        ? { Name: contactName.slice(0, 200), EmailAddress: contactEmail }
-        : { Name: contactName.slice(0, 200) },
+      Contact: contact,
       Date: today,
       DueDate: due.toISOString().slice(0, 10),
       LineAmountTypes: "Exclusive",
@@ -157,24 +166,37 @@ Deno.serve(async (req) => {
       },
       body: JSON.stringify(payload),
     });
-    const json = await res.json();
+    const json = await res.json().catch(() => ({}));
     if (!res.ok) {
-      console.error("Xero invoice create failed", json);
-      return new Response(JSON.stringify({ ok: false, error: json?.Message || "Xero invoice create failed" }), {
+      // Xero validation errors live under Elements[].ValidationErrors[].Message
+      const veMsg = json?.Elements?.[0]?.ValidationErrors?.map((v: any) => v.Message).join("; ");
+      const msg = veMsg || json?.Message || json?.Detail || `Xero invoice create failed (HTTP ${res.status})`;
+      console.error("Xero invoice create failed", res.status, JSON.stringify(json));
+      return new Response(JSON.stringify({ ok: false, error: msg, status: res.status, xero: json }), {
         status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     const createdInvoice = json.Invoices?.[0] ?? null;
+    const invoiceId = createdInvoice?.InvoiceID ?? null;
     const xeroContactId = createdInvoice?.Contact?.ContactID ?? null;
     if (linkProfileId && xeroContactId) {
       await admin.from("profiles").update({ xero_contact_id: xeroContactId }).eq("id", linkProfileId).is("xero_contact_id", null);
     }
 
+    // Mark the originating sessions so we don't re-invoice them.
+    if (chargedSessionIds.length && invoiceId) {
+      await admin.from("sessions").update({
+        xero_invoice_pending: false,
+        xero_invoice_raised_at: new Date().toISOString(),
+        xero_invoice_id: invoiceId,
+      }).in("id", chargedSessionIds);
+    }
+
     // Auto-email the invoice to the client when requested
     let emailed = false;
-    if (autoSend && createdInvoice?.InvoiceID) {
-      const emailRes = await fetch(`https://api.xero.com/api.xro/2.0/Invoices/${createdInvoice.InvoiceID}/Email`, {
+    if (autoSend && invoiceId) {
+      const emailRes = await fetch(`https://api.xero.com/api.xro/2.0/Invoices/${invoiceId}/Email`, {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${conn.access_token}`,
@@ -191,9 +213,10 @@ Deno.serve(async (req) => {
       }
     }
 
-    return new Response(JSON.stringify({ ok: true, invoice: createdInvoice, xero_contact_id: xeroContactId, emailed }), {
+    return new Response(JSON.stringify({ ok: true, invoice: createdInvoice, invoice_id: invoiceId, xero_contact_id: xeroContactId, emailed }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
+
 
 
   } catch (e) {
