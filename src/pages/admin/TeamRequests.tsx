@@ -46,13 +46,13 @@ const TeamRequests = () => {
   }, []);
 
   const handleApprove = async (request: TeamRequest) => {
-    // Add admin role
+    const roleToGrant = request.requested_role === "supervisee" ? "supervisee" : "team_member";
     const { error: roleError } = await supabase
       .from("user_roles")
-      .insert({ user_id: request.user_id, role: "admin" });
+      .insert({ user_id: request.user_id, role: roleToGrant });
 
     if (roleError) {
-      toast.error("Failed to grant admin role");
+      toast.error(`Failed to grant ${roleToGrant} role`);
       return;
     }
 
@@ -62,7 +62,7 @@ const TeamRequests = () => {
       .update({ status: "approved", reviewed_at: new Date().toISOString(), reviewed_by: user?.id })
       .eq("id", request.id);
 
-    toast.success(`${request.full_name} approved as therapist`);
+    toast.success(`${request.full_name} approved as ${roleToGrant === "supervisee" ? "supervisee" : "therapist"}`);
     fetchRequests();
   };
 
