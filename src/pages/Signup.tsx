@@ -66,7 +66,10 @@ const Signup = () => {
       if (accountType === "team" || accountType === "supervisee") {
         const { data: { session } } = await supabase.auth.getSession();
         if (session?.user) {
-          await supabase.from("team_requests").insert({ user_id: session.user.id });
+          await supabase.from("team_requests").insert({
+            user_id: session.user.id,
+            requested_role: accountType === "supervisee" ? "supervisee" : "team_member",
+          });
         }
       }
       toast({ title: t.signup.successTitle, description: (accountType === "team" || accountType === "supervisee") ? "Account created. Your access request is pending admin approval." : t.signup.successDescription });
