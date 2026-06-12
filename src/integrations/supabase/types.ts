@@ -2615,6 +2615,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          requested_role: string
           reviewed_at: string | null
           reviewed_by: string | null
           status: string
@@ -2623,6 +2624,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          requested_role?: string
           reviewed_at?: string | null
           reviewed_by?: string | null
           status?: string
@@ -2631,6 +2633,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          requested_role?: string
           reviewed_at?: string | null
           reviewed_by?: string | null
           status?: string
