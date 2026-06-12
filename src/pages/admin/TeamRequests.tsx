@@ -36,7 +36,7 @@ const TeamRequests = () => {
         .select("id, full_name")
         .in("id", userIds);
       const nameMap = Object.fromEntries((profiles || []).map((p) => [p.id, p.full_name]));
-      setRequests(data.map((r) => ({ ...r, full_name: nameMap[r.user_id] || "Unknown" })));
+      setRequests(data.map((r) => ({ ...r, requested_role: (r.requested_role === "supervisee" ? "supervisee" : "team_member") as "supervisee" | "team_member", full_name: nameMap[r.user_id] || "Unknown" })));
     }
     setLoading(false);
   };
