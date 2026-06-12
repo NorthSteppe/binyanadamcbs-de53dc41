@@ -83,8 +83,8 @@ const Signup = () => {
 
   const confirmGoogleSignup = async () => {
     setShowRoleDialog(false);
-    if (googleRoleChoice === "team") {
-      sessionStorage.setItem("pending_google_role", "team");
+    if (googleRoleChoice === "team" || googleRoleChoice === "supervisee") {
+      sessionStorage.setItem("pending_google_role", googleRoleChoice);
     }
     const { error } = await lovable.auth.signInWithOAuth("google", {
       redirect_uri: window.location.origin,
