@@ -46,9 +46,11 @@ Deno.serve(async (req) => {
     // Build line items + identify contact
     let contactName = "";
     let contactEmail: string | null = null;
+    let existingContactId: string | null = null;
     let linkProfileId: string | null = null;
     const lineItems: any[] = [];
     let description = "";
+    let chargedSessionIds: string[] = [];
 
 
     if (sessionIds.length) {
@@ -64,10 +66,11 @@ Deno.serve(async (req) => {
       }
 
       const clientId = sessions[0].client_id;
-      const { data: prof } = await admin.from("profiles").select("full_name, xero_contact_id").eq("id", clientId).single();
+      const { data: prof } = await admin.from("profiles").select("full_name, xero_contact_id").eq("id", clientId).maybeSingle();
       const { data: u } = await admin.auth.admin.getUserById(clientId);
       contactName = prof?.full_name || u?.user?.email || "Client";
       contactEmail = u?.user?.email ?? null;
+      existingContactId = (prof as any)?.xero_contact_id ?? null;
       linkProfileId = clientId;
 
 
@@ -80,6 +83,7 @@ Deno.serve(async (req) => {
           UnitAmount: Number((s.price_cents / 100).toFixed(2)),
           AccountCode: "200",
         });
+        chargedSessionIds.push(s.id);
       }
       description = sessions.map((s: any) => s.title).join(", ");
     } else if (coursePurchaseId) {
@@ -95,10 +99,11 @@ Deno.serve(async (req) => {
       const { data: course } = await admin.from("courses").select("title, price_cents").eq("id", purchase.course_id).single();
       if (!course?.price_cents) throw new Error("Course has no price");
 
-      const { data: prof } = await admin.from("profiles").select("full_name, xero_contact_id").eq("id", purchase.user_id).single();
+      const { data: prof } = await admin.from("profiles").select("full_name, xero_contact_id").eq("id", purchase.user_id).maybeSingle();
       const { data: u } = await admin.auth.admin.getUserById(purchase.user_id);
       contactName = prof?.full_name || u?.user?.email || "Client";
       contactEmail = u?.user?.email ?? null;
+      existingContactId = (prof as any)?.xero_contact_id ?? null;
       linkProfileId = purchase.user_id;
 
 
@@ -112,6 +117,7 @@ Deno.serve(async (req) => {
     } else {
       return new Response(JSON.stringify({ error: "session_ids or course_purchase_id required" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
+
 
     if (lineItems.length === 0) {
       return new Response(JSON.stringify({ ok: true, skipped: true, reason: "no chargeable items" }), {
