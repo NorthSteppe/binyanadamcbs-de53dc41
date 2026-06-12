@@ -135,9 +135,22 @@ const TherapistPayouts = () => {
       return;
     }
     toast.success(`Paid ${formatCurrency(selectedTotal)} to ${therapistName(therapistId)}`);
+
+    // Push a DRAFT bill to Xero for this batch (best-effort)
+    try {
+      const { data: bill } = await supabase.functions.invoke("xero-bill-therapist", {
+        body: { batch_id: (batch as any).id },
+      });
+      if (bill?.ok) toast.success("Draft bill pushed to Xero");
+      else if (bill?.error) toast.error(`Xero bill: ${bill.error}`);
+    } catch (e: any) {
+      toast.error(`Xero bill failed: ${e.message}`);
+    }
+
     setSelected(new Set());
     load();
   };
+
 
   const markSinglePaid = async (s: SessionRow, method: string) => {
     const { error } = await supabase
