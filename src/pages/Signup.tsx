@@ -30,10 +30,13 @@ const Signup = () => {
   useEffect(() => {
     if (!authLoading && user) {
       const pendingRole = sessionStorage.getItem("pending_google_role");
-      if (pendingRole === "team") {
+      if (pendingRole === "team" || pendingRole === "supervisee") {
         sessionStorage.removeItem("pending_google_role");
-        supabase.from("team_requests").insert({ user_id: user.id }).then(() => {
-          toast({ title: "Team access requested", description: "Your request is pending admin approval." });
+        supabase.from("team_requests").insert({
+          user_id: user.id,
+          requested_role: pendingRole === "supervisee" ? "supervisee" : "team_member",
+        }).then(() => {
+          toast({ title: "Access requested", description: "Your request is pending admin approval." });
         });
       } else {
         sessionStorage.removeItem("pending_google_role");
