@@ -2564,6 +2564,7 @@ export type Database = {
           social_website: string
           updated_at: string
           user_id: string | null
+          xero_contact_id: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -2586,6 +2587,7 @@ export type Database = {
           social_website?: string
           updated_at?: string
           user_id?: string | null
+          xero_contact_id?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -2608,6 +2610,7 @@ export type Database = {
           social_website?: string
           updated_at?: string
           user_id?: string | null
+          xero_contact_id?: string | null
         }
         Relationships: []
       }
@@ -2653,6 +2656,8 @@ export type Database = {
           therapist_id: string
           total_cents: number
           updated_at: string
+          xero_bill_id: string | null
+          xero_pushed_at: string | null
         }
         Insert: {
           created_at?: string
@@ -2665,6 +2670,8 @@ export type Database = {
           therapist_id: string
           total_cents?: number
           updated_at?: string
+          xero_bill_id?: string | null
+          xero_pushed_at?: string | null
         }
         Update: {
           created_at?: string
@@ -2677,6 +2684,8 @@ export type Database = {
           therapist_id?: string
           total_cents?: number
           updated_at?: string
+          xero_bill_id?: string | null
+          xero_pushed_at?: string | null
         }
         Relationships: []
       }
