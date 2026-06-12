@@ -14,9 +14,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Plus, Trash2, ChevronRight, ChevronDown, Edit2, Save, X, Sparkles, ListPlus } from "lucide-react";
+import { Plus, Trash2, ChevronRight, ChevronDown, Edit2, Save, X, Sparkles, ListPlus, FileDown } from "lucide-react";
 import { SUPERVISION_LEVELS, levelMeta, levelLabel, statusLabel, gapIcon, STATUSES, SupervisionLevel } from "@/lib/supervisionLevels";
 import { DEFAULT_FRAMEWORK } from "@/lib/supervisionFramework";
+import { downloadSupervisionPdf } from "@/utils/supervisionPdf";
 
 type Competency = {
   id: string; supervisee_id: string; supervisor_id: string;
@@ -37,7 +38,7 @@ const T = {
     title: "Supervision Tracker", subtitle: "Define competencies, track progress, and journal alongside your supervisee.",
     supervisee: "Supervisee", noSupervisees: "No supervisees yet. Assign the supervisee role to a user first.",
     competencies: "Competencies", dashboard: "Dashboard", journal: "Shared Journal",
-    add: "Add competency", loadFramework: "Load default UKBA framework", bulkAdd: "Bulk add",
+    add: "Add competency", loadFramework: "Load default UKBA framework", bulkAdd: "Bulk add", exportPdf: "Export PDF",
     countFor: (n: number, name: string) => `${n} competencies for ${name}`,
     competency: "Competency", domain: "Domain", obs: "Obs", selfAssess: "Self assessment", supRating: "Supervisor rating", gap: "Gap", actions: "",
     nextGoal: "Next goal…", supNotes: "Supervisor notes…",
@@ -65,7 +66,7 @@ const T = {
     title: "מערכת הדרכה", subtitle: "הגדירו כשירויות, עקבו אחר התקדמות ותעדו יחד עם המודרך/ת.",
     supervisee: "מודרך/ת", noSupervisees: "אין עדיין מודרכים. הקצו תחילה את התפקיד 'מודרך' למשתמש.",
     competencies: "כשירויות", dashboard: "לוח מחוונים", journal: "יומן משותף",
-    add: "הוסף כשירות", loadFramework: "טען מסגרת UKBA ברירת מחדל", bulkAdd: "הוספה מרובה",
+    add: "הוסף כשירות", loadFramework: "טען מסגרת UKBA ברירת מחדל", bulkAdd: "הוספה מרובה", exportPdf: "ייצוא PDF",
     countFor: (n: number, name: string) => `${n} כשירויות עבור ${name}`,
     competency: "כשירות", domain: "תחום", obs: "תצפ׳", selfAssess: "הערכה עצמית", supRating: "דירוג המדריך", gap: "פער", actions: "",
     nextGoal: "יעד הבא…", supNotes: "הערות המדריך…",
@@ -357,6 +358,19 @@ const SupervisionTrackerAdmin = () => {
 
   const activeName = supervisees.find((s) => s.id === activeId)?.full_name || "";
 
+  const exportPdf = () => {
+    if (!activeId) return;
+    downloadSupervisionPdf({
+      superviseeName: activeName,
+      generatedBy: user?.email || undefined,
+      competencies,
+      seInputs,
+      svInputs,
+      journal,
+      lang: language === "he" ? "he" : "en",
+    });
+  };
+
   return (
     <div className="min-h-screen bg-background" dir={isRTL ? "rtl" : "ltr"}>
       <Header />
@@ -375,6 +389,9 @@ const SupervisionTrackerAdmin = () => {
               </SelectContent>
             </Select>
           </div>
+          <Button variant="outline" onClick={exportPdf} disabled={!activeId || !competencies.length}>
+            <FileDown size={14} className="me-1" /> {t.exportPdf}
+          </Button>
         </div>
 
         {!activeId ? (

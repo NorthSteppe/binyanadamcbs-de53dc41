@@ -13,8 +13,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Plus, ChevronRight, ChevronDown, Minus } from "lucide-react";
+import { Plus, ChevronRight, ChevronDown, Minus, FileDown } from "lucide-react";
 import { SUPERVISION_LEVELS, levelMeta, levelLabel, statusLabel, gapIcon, SupervisionLevel } from "@/lib/supervisionLevels";
+import { downloadSupervisionPdf } from "@/utils/supervisionPdf";
 
 type Competency = { id: string; parent_id: string | null; number: string; name: string; definition: string; domain: string; can_break_down: boolean; };
 type SeInput = { competency_id: string; observations_count: number; evidence: string; self_assessment_level: SupervisionLevel; notes: string };
@@ -41,6 +42,7 @@ const T = {
     add: "Add entry", noJournal: "No entries yet.", noneOpt: "— none —",
     sup: "🟦 Supervisor", me: "🟢 Me",
     taskMe: "Task for me", taskSv: "Task for supervisor",
+    exportPdf: "Export PDF",
   },
   he: {
     title: "הכשירויות שלי",
@@ -56,11 +58,12 @@ const T = {
     add: "הוסף ערך", noJournal: "אין עדיין ערכים.", noneOpt: "— ללא —",
     sup: "🟦 מדריך/ה", me: "🟢 אני",
     taskMe: "משימה עבורי", taskSv: "משימה למדריך/ה",
+    exportPdf: "ייצוא PDF",
   },
 };
 
 const SuperviseeCompetencies = () => {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const { language, isRTL } = useLanguage();
   const t = T[language === "he" ? "he" : "en"];
 
@@ -129,6 +132,18 @@ const SuperviseeCompetencies = () => {
     } as any);
     if (error) toast.error(error.message);
     else { setNewJournal({ entry_type: "observation", entry_date: new Date().toISOString().slice(0, 10) }); loadAll(); }
+  };
+
+  const exportPdf = () => {
+    downloadSupervisionPdf({
+      superviseeName: profile?.full_name || user?.email || "Supervisee",
+      generatedBy: profile?.full_name || user?.email || undefined,
+      competencies,
+      seInputs,
+      svInputs,
+      journal,
+      lang: language === "he" ? "he" : "en",
+    });
   };
 
   const LevelChips = ({ value, onChange }: { value: SupervisionLevel; onChange: (v: SupervisionLevel) => void }) => (
@@ -221,9 +236,14 @@ const SuperviseeCompetencies = () => {
     <div className="min-h-screen bg-background" dir={isRTL ? "rtl" : "ltr"}>
       <Header />
       <div className="container max-w-7xl pt-28 pb-8 space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">{t.title}</h1>
-          <p className="text-muted-foreground text-sm mt-1">{t.subtitle}</p>
+        <div className="flex items-start justify-between gap-4 flex-wrap">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">{t.title}</h1>
+            <p className="text-muted-foreground text-sm mt-1">{t.subtitle}</p>
+          </div>
+          <Button variant="outline" onClick={exportPdf} disabled={!competencies.length}>
+            <FileDown size={14} className="me-1" /> {t.exportPdf}
+          </Button>
         </div>
 
         <div className="grid sm:grid-cols-3 gap-4">
