@@ -15,6 +15,7 @@ interface TeamRequest {
   status: string;
   created_at: string;
   full_name: string;
+  requested_role: "team_member" | "supervisee";
 }
 
 const TeamRequests = () => {
@@ -35,7 +36,7 @@ const TeamRequests = () => {
         .select("id, full_name")
         .in("id", userIds);
       const nameMap = Object.fromEntries((profiles || []).map((p) => [p.id, p.full_name]));
-      setRequests(data.map((r) => ({ ...r, full_name: nameMap[r.user_id] || "Unknown" })));
+      setRequests(data.map((r) => ({ ...r, requested_role: (r.requested_role === "supervisee" ? "supervisee" : "team_member") as "supervisee" | "team_member", full_name: nameMap[r.user_id] || "Unknown" })));
     }
     setLoading(false);
   };
@@ -45,13 +46,13 @@ const TeamRequests = () => {
   }, []);
 
   const handleApprove = async (request: TeamRequest) => {
-    // Add admin role
+    const roleToGrant = request.requested_role === "supervisee" ? "supervisee" : "team_member";
     const { error: roleError } = await supabase
       .from("user_roles")
-      .insert({ user_id: request.user_id, role: "admin" });
+      .insert({ user_id: request.user_id, role: roleToGrant });
 
     if (roleError) {
-      toast.error("Failed to grant admin role");
+      toast.error(`Failed to grant ${roleToGrant} role`);
       return;
     }
 
@@ -61,7 +62,7 @@ const TeamRequests = () => {
       .update({ status: "approved", reviewed_at: new Date().toISOString(), reviewed_by: user?.id })
       .eq("id", request.id);
 
-    toast.success(`${request.full_name} approved as therapist`);
+    toast.success(`${request.full_name} approved as ${roleToGrant === "supervisee" ? "supervisee" : "therapist"}`);
     fetchRequests();
   };
 
@@ -111,7 +112,10 @@ const TeamRequests = () => {
                         className="flex items-center justify-between bg-card border border-border/50 rounded-2xl p-5"
                       >
                         <div>
-                          <p className="font-semibold text-card-foreground">{r.full_name}</p>
+                          <p className="font-semibold text-card-foreground flex items-center gap-2">
+                            {r.full_name}
+                            <Badge variant="outline" className="capitalize">{r.requested_role === "supervisee" ? "Supervisee" : "Therapist"}</Badge>
+                          </p>
                           <p className="text-xs text-muted-foreground">
                             Requested {format(new Date(r.created_at), "MMM d, yyyy 'at' HH:mm")}
                           </p>

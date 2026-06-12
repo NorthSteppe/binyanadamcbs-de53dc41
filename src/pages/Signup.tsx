@@ -30,10 +30,13 @@ const Signup = () => {
   useEffect(() => {
     if (!authLoading && user) {
       const pendingRole = sessionStorage.getItem("pending_google_role");
-      if (pendingRole === "team") {
+      if (pendingRole === "team" || pendingRole === "supervisee") {
         sessionStorage.removeItem("pending_google_role");
-        supabase.from("team_requests").insert({ user_id: user.id }).then(() => {
-          toast({ title: "Team access requested", description: "Your request is pending admin approval." });
+        supabase.from("team_requests").insert({
+          user_id: user.id,
+          requested_role: pendingRole === "supervisee" ? "supervisee" : "team_member",
+        }).then(() => {
+          toast({ title: "Access requested", description: "Your request is pending admin approval." });
         });
       } else {
         sessionStorage.removeItem("pending_google_role");
@@ -63,7 +66,10 @@ const Signup = () => {
       if (accountType === "team" || accountType === "supervisee") {
         const { data: { session } } = await supabase.auth.getSession();
         if (session?.user) {
-          await supabase.from("team_requests").insert({ user_id: session.user.id });
+          await supabase.from("team_requests").insert({
+            user_id: session.user.id,
+            requested_role: accountType === "supervisee" ? "supervisee" : "team_member",
+          });
         }
       }
       toast({ title: t.signup.successTitle, description: (accountType === "team" || accountType === "supervisee") ? "Account created. Your access request is pending admin approval." : t.signup.successDescription });
@@ -77,8 +83,8 @@ const Signup = () => {
 
   const confirmGoogleSignup = async () => {
     setShowRoleDialog(false);
-    if (googleRoleChoice === "team") {
-      sessionStorage.setItem("pending_google_role", "team");
+    if (googleRoleChoice === "team" || googleRoleChoice === "supervisee") {
+      sessionStorage.setItem("pending_google_role", googleRoleChoice);
     }
     const { error } = await lovable.auth.signInWithOAuth("google", {
       redirect_uri: window.location.origin,
