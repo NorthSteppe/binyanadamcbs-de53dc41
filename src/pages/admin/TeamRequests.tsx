@@ -112,7 +112,10 @@ const TeamRequests = () => {
                         className="flex items-center justify-between bg-card border border-border/50 rounded-2xl p-5"
                       >
                         <div>
-                          <p className="font-semibold text-card-foreground">{r.full_name}</p>
+                          <p className="font-semibold text-card-foreground flex items-center gap-2">
+                            {r.full_name}
+                            <Badge variant="outline" className="capitalize">{r.requested_role === "supervisee" ? "Supervisee" : "Therapist"}</Badge>
+                          </p>
                           <p className="text-xs text-muted-foreground">
                             Requested {format(new Date(r.created_at), "MMM d, yyyy 'at' HH:mm")}
                           </p>
