@@ -46,9 +46,11 @@ Deno.serve(async (req) => {
     // Build line items + identify contact
     let contactName = "";
     let contactEmail: string | null = null;
+    let existingContactId: string | null = null;
     let linkProfileId: string | null = null;
     const lineItems: any[] = [];
     let description = "";
+    let chargedSessionIds: string[] = [];
 
 
     if (sessionIds.length) {
@@ -64,10 +66,11 @@ Deno.serve(async (req) => {
       }
 
       const clientId = sessions[0].client_id;
-      const { data: prof } = await admin.from("profiles").select("full_name, xero_contact_id").eq("id", clientId).single();
+      const { data: prof } = await admin.from("profiles").select("full_name, xero_contact_id").eq("id", clientId).maybeSingle();
       const { data: u } = await admin.auth.admin.getUserById(clientId);
       contactName = prof?.full_name || u?.user?.email || "Client";
       contactEmail = u?.user?.email ?? null;
+      existingContactId = (prof as any)?.xero_contact_id ?? null;
       linkProfileId = clientId;
 
 
@@ -80,6 +83,7 @@ Deno.serve(async (req) => {
           UnitAmount: Number((s.price_cents / 100).toFixed(2)),
           AccountCode: "200",
         });
+        chargedSessionIds.push(s.id);
       }
       description = sessions.map((s: any) => s.title).join(", ");
     } else if (coursePurchaseId) {
@@ -95,10 +99,11 @@ Deno.serve(async (req) => {
       const { data: course } = await admin.from("courses").select("title, price_cents").eq("id", purchase.course_id).single();
       if (!course?.price_cents) throw new Error("Course has no price");
 
-      const { data: prof } = await admin.from("profiles").select("full_name, xero_contact_id").eq("id", purchase.user_id).single();
+      const { data: prof } = await admin.from("profiles").select("full_name, xero_contact_id").eq("id", purchase.user_id).maybeSingle();
       const { data: u } = await admin.auth.admin.getUserById(purchase.user_id);
       contactName = prof?.full_name || u?.user?.email || "Client";
       contactEmail = u?.user?.email ?? null;
+      existingContactId = (prof as any)?.xero_contact_id ?? null;
       linkProfileId = purchase.user_id;
 
 
@@ -112,6 +117,7 @@ Deno.serve(async (req) => {
     } else {
       return new Response(JSON.stringify({ error: "session_ids or course_purchase_id required" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
+
 
     if (lineItems.length === 0) {
       return new Response(JSON.stringify({ ok: true, skipped: true, reason: "no chargeable items" }), {
@@ -128,11 +134,20 @@ Deno.serve(async (req) => {
     const today = new Date().toISOString().slice(0, 10);
     const due = new Date(); due.setDate(due.getDate() + 14);
     const autoSend = body?.auto_send === true && !!contactEmail;
+
+    // Prefer linking by existing ContactID to avoid Xero "contact name already in use" errors.
+    let contact: any;
+    if (existingContactId) {
+      contact = { ContactID: existingContactId };
+    } else if (contactEmail) {
+      contact = { Name: contactName.slice(0, 200), EmailAddress: contactEmail };
+    } else {
+      contact = { Name: contactName.slice(0, 200) };
+    }
+
     const payload = {
       Type: "ACCREC",
-      Contact: contactEmail
-        ? { Name: contactName.slice(0, 200), EmailAddress: contactEmail }
-        : { Name: contactName.slice(0, 200) },
+      Contact: contact,
       Date: today,
       DueDate: due.toISOString().slice(0, 10),
       LineAmountTypes: "Exclusive",
@@ -151,24 +166,37 @@ Deno.serve(async (req) => {
       },
       body: JSON.stringify(payload),
     });
-    const json = await res.json();
+    const json = await res.json().catch(() => ({}));
     if (!res.ok) {
-      console.error("Xero invoice create failed", json);
-      return new Response(JSON.stringify({ ok: false, error: json?.Message || "Xero invoice create failed" }), {
+      // Xero validation errors live under Elements[].ValidationErrors[].Message
+      const veMsg = json?.Elements?.[0]?.ValidationErrors?.map((v: any) => v.Message).join("; ");
+      const msg = veMsg || json?.Message || json?.Detail || `Xero invoice create failed (HTTP ${res.status})`;
+      console.error("Xero invoice create failed", res.status, JSON.stringify(json));
+      return new Response(JSON.stringify({ ok: false, error: msg, status: res.status, xero: json }), {
         status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     const createdInvoice = json.Invoices?.[0] ?? null;
+    const invoiceId = createdInvoice?.InvoiceID ?? null;
     const xeroContactId = createdInvoice?.Contact?.ContactID ?? null;
     if (linkProfileId && xeroContactId) {
       await admin.from("profiles").update({ xero_contact_id: xeroContactId }).eq("id", linkProfileId).is("xero_contact_id", null);
     }
 
+    // Mark the originating sessions so we don't re-invoice them.
+    if (chargedSessionIds.length && invoiceId) {
+      await admin.from("sessions").update({
+        xero_invoice_pending: false,
+        xero_invoice_raised_at: new Date().toISOString(),
+        xero_invoice_id: invoiceId,
+      }).in("id", chargedSessionIds);
+    }
+
     // Auto-email the invoice to the client when requested
     let emailed = false;
-    if (autoSend && createdInvoice?.InvoiceID) {
-      const emailRes = await fetch(`https://api.xero.com/api.xro/2.0/Invoices/${createdInvoice.InvoiceID}/Email`, {
+    if (autoSend && invoiceId) {
+      const emailRes = await fetch(`https://api.xero.com/api.xro/2.0/Invoices/${invoiceId}/Email`, {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${conn.access_token}`,
@@ -185,9 +213,10 @@ Deno.serve(async (req) => {
       }
     }
 
-    return new Response(JSON.stringify({ ok: true, invoice: createdInvoice, xero_contact_id: xeroContactId, emailed }), {
+    return new Response(JSON.stringify({ ok: true, invoice: createdInvoice, invoice_id: invoiceId, xero_contact_id: xeroContactId, emailed }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
+
 
 
   } catch (e) {
