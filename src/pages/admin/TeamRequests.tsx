@@ -15,6 +15,7 @@ interface TeamRequest {
   status: string;
   created_at: string;
   full_name: string;
+  requested_role: "team_member" | "supervisee";
 }
 
 const TeamRequests = () => {
