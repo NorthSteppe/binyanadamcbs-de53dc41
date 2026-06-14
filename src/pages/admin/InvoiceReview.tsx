@@ -110,11 +110,24 @@ const InvoiceReview = () => {
     }
     setPushing(true);
     try {
+      // Backward-compatible payload: newer deployments use line_items[]; older
+      // deployed versions of the function only understand description+amount, so
+      // send a combined single-line fallback too. The function prefers line_items
+      // when present, so this upgrades automatically once it's redeployed.
+      const fallbackDescription = cleanLines
+        .map((l) => (l.quantity > 1 ? `${l.description} ×${l.quantity}` : l.description))
+        .join("; ")
+        .slice(0, 500);
+      const fallbackAmount = Number(
+        cleanLines.reduce((s, l) => s + l.quantity * l.unit_amount, 0).toFixed(2),
+      );
       const { data, error } = await supabase.functions.invoke("xero-create-invoice", {
         body: {
           contact_name: contactName.trim(),
           contact_id: contactId || undefined,
           line_items: cleanLines,
+          description: fallbackDescription,
+          amount: fallbackAmount,
           due_date: dueDate || undefined,
           reference: reference || undefined,
           session_ids: sessionIds.length ? sessionIds : undefined,
