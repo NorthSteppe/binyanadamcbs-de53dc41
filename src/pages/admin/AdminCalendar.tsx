@@ -514,19 +514,37 @@ const AdminCalendar = () => {
     if (error) { toast.error("Failed to create session"); return; }
 
     // Insert remaining recurring sessions with parent reference
+    const createdSessionIds: string[] = firstSession ? [firstSession.id] : [];
     if (dates.length > 1 && firstSession) {
       const remaining = dates.slice(1).map((d) => ({
         ...basePayload, session_date: d.toISOString(),
         recurrence_parent_id: firstSession.id,
       }));
-      const { error: recErr } = await supabase.from("sessions").insert(remaining as any);
+      const { data: recRows, error: recErr } = await supabase.from("sessions").insert(remaining as any).select("id");
       if (recErr) toast.error("Some recurring sessions failed to create");
+      else if (recRows) for (const r of recRows as any[]) createdSessionIds.push(r.id);
     }
 
     // Therapist gets notified automatically via DB trigger when assigned.
     toast.success(dates.length > 1 ? `${dates.length} recurring sessions created` : "Session created");
-    if (newSession.send_payment_link) {
-      toast.info("Xero draft will be raised at the start of the session's week.");
+
+    // Push a DRAFT invoice to Xero immediately when invoicing was requested.
+    // (xero-invoice-booking marks the sessions raised, so this won't double-invoice.)
+    if (newSession.send_payment_link && createdSessionIds.length) {
+      try {
+        const { data: inv } = await supabase.functions.invoke("xero-invoice-booking", {
+          body: { session_ids: createdSessionIds },
+        });
+        if (inv?.ok && !inv?.skipped) {
+          toast.success("Draft invoice pushed to Xero.");
+        } else if (inv?.skipped) {
+          toast.info("No chargeable amount set — no Xero draft raised.");
+        } else {
+          toast.error(inv?.error ? `Xero: ${inv.error}` : "Could not raise the Xero draft.");
+        }
+      } catch (e: any) {
+        toast.error(e?.message ? `Xero: ${e.message}` : "Could not raise the Xero draft.");
+      }
     }
 
     setCreateOpen(false);
