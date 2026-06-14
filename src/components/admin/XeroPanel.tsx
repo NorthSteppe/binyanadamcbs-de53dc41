@@ -8,7 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
-import { Plug, RefreshCw, Loader2, CheckCircle2, ExternalLink, Plus, AlertCircle } from "lucide-react";
+import { Plug, RefreshCw, Loader2, CheckCircle2, ExternalLink, Plus, AlertCircle, FileText } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip as RTooltip, CartesianGrid, Legend } from "recharts";
 
@@ -32,6 +33,7 @@ const fmtMoney = (v: number, ccy = "GBP") =>
   new Intl.NumberFormat("en-GB", { style: "currency", currency: ccy || "GBP" }).format(v || 0);
 
 const XeroPanel = () => {
+  const navigate = useNavigate();
   const [conn, setConn] = useState<XeroConn | null>(null);
   const [invoices, setInvoices] = useState<XeroInvoice[]>([]);
   const [pnl, setPnl] = useState<PnL[]>([]);
@@ -195,6 +197,9 @@ const XeroPanel = () => {
                 </DialogFooter>
               </DialogContent>
             </Dialog>
+            <Button variant="outline" size="sm" onClick={() => navigate("/admin/xero-drafts")} className="rounded-full">
+              <FileText size={14} className="me-1" /> Drafts
+            </Button>
             <Button variant="outline" size="sm" onClick={sync} disabled={syncing} className="rounded-full">
               {syncing ? <Loader2 className="animate-spin me-1" size={14} /> : <RefreshCw size={14} className="me-1" />} Sync now
             </Button>

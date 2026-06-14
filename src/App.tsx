@@ -115,6 +115,8 @@ import AssistantManager from "./pages/admin/AssistantManager";
 import FBAReportTool from "./pages/admin/FBAReportTool";
 import StoryEngine from "./pages/admin/StoryEngine";
 import FeatureFlags from "./pages/admin/FeatureFlags";
+import InvoiceReview from "./pages/admin/InvoiceReview";
+import XeroDrafts from "./pages/admin/XeroDrafts";
 
 // Business Planner
 import PlannerLayout from "./components/planner/PlannerLayout";
@@ -233,6 +235,8 @@ const App = () => (
                   <Route path="/admin/assistant" element={<AdminRoute><AssistantManager /></AdminRoute>} />
                   <Route path="/admin/fba-report" element={<AdminRoute><FBAReportTool /></AdminRoute>} />
                   <Route path="/admin/story-engine" element={<AdminRoute><StoryEngine /></AdminRoute>} />
+                  <Route path="/admin/xero-drafts" element={<AdminRoute><XeroDrafts /></AdminRoute>} />
+                  <Route path="/admin/invoice-review" element={<AdminRoute><InvoiceReview /></AdminRoute>} />
                   <Route path="/admin/pathway-templates" element={<AdminRoute><PathwayTemplateManager /></AdminRoute>} />
                   <Route path="/admin/pathway-quiz" element={<AdminRoute><PathwayQuizManager /></AdminRoute>} />
                   <Route path="/admin/supervision" element={<AdminRoute><SupervisionTrackerAdmin /></AdminRoute>} />

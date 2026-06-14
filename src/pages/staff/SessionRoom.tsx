@@ -77,7 +77,7 @@ const SessionRoom = () => {
     (async () => {
       const { data, error } = await supabase
         .from("sessions")
-        .select("id,title,client_id,manual_client_id,session_date,duration_minutes,status,notes,live_notes,actual_start_at,actual_end_at,completed_at,meeting_url")
+        .select("id,title,client_id,manual_client_id,session_date,duration_minutes,status,notes,live_notes,actual_start_at,actual_end_at,completed_at,meeting_url,price_cents")
         .eq("id", id)
         .maybeSingle();
       if (!mounted) return;
@@ -177,16 +177,13 @@ const SessionRoom = () => {
         .eq("id", session.id);
       if (error) throw error;
 
-      // Push a DRAFT Xero invoice for the registered past session (best effort)
-      const { data: inv } = await supabase.functions.invoke("xero-invoice-booking", {
-        body: { session_ids: [session.id], auto_send: false },
-      });
-      if (inv?.ok) {
-        toast({ title: "Session completed", description: "Draft invoice pushed to Xero for review." });
-      } else if (inv?.skipped) {
-        toast({ title: "Session completed", description: "No chargeable amount — no draft invoice raised." });
+      // Chargeable sessions are flagged for the admin "Drafts (Xero)" review queue
+      // rather than pushing a draft directly; an admin reviews and pushes it.
+      if (((session as any).price_cents ?? 0) > 0) {
+        await supabase.from("sessions").update({ xero_invoice_pending: true }).eq("id", session.id);
+        toast({ title: "Session completed", description: "A draft invoice has been queued for admin review." });
       } else {
-        toast({ title: "Session completed", description: inv?.error ? `Xero: ${inv.error}` : "Draft invoice could not be raised automatically." });
+        toast({ title: "Session completed" });
       }
       navigate("/staff/calendar");
     } catch (e: any) {

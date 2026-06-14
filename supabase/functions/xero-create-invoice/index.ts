@@ -65,10 +65,26 @@ Deno.serve(async (req) => {
     if (!isAdmin) return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
     const body = await req.json().catch(() => ({}));
-    const { contact_name, contact_email, contact_id, description, amount, due_date, currency_code } = body ?? {};
-    const amt = Number(amount);
-    if (!contact_name || !description || !Number.isFinite(amt) || amt <= 0) {
-      return new Response(JSON.stringify({ error: "contact_name, description, and a positive amount are required" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    const { contact_name, contact_email, contact_id, description, amount, due_date, currency_code, reference } = body ?? {};
+    const session_ids: string[] = Array.isArray(body?.session_ids) ? body.session_ids.slice(0, 50) : [];
+
+    // Build line items: prefer an explicit (possibly edited) line_items[] array,
+    // otherwise fall back to the single description/amount form.
+    type LineIn = { description?: string; quantity?: number; unit_amount?: number; account_code?: string };
+    const rawLines: LineIn[] = Array.isArray(body?.line_items) && body.line_items.length
+      ? body.line_items
+      : [{ description, quantity: 1, unit_amount: Number(amount), account_code: "200" }];
+    const lineItems = rawLines
+      .map((l) => ({
+        Description: String(l.description ?? "").slice(0, 500),
+        Quantity: Number.isFinite(Number(l.quantity)) && Number(l.quantity) > 0 ? Number(l.quantity) : 1,
+        UnitAmount: Number(Number(l.unit_amount).toFixed(2)),
+        AccountCode: String(l.account_code || "200"),
+      }))
+      .filter((l) => l.Description && Number.isFinite(l.UnitAmount) && l.UnitAmount > 0);
+
+    if ((!contact_name && !contact_id) || lineItems.length === 0) {
+      return new Response(JSON.stringify({ error: "A contact and at least one line item with a positive amount are required" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const { data: conns } = await admin.from("xero_connection").select("*").limit(1);
@@ -98,13 +114,9 @@ Deno.serve(async (req) => {
       DueDate: due_date ?? today,
       LineAmountTypes: "Exclusive",
       Status: "DRAFT",
-      LineItems: [{
-        Description: String(description).slice(0, 500),
-        Quantity: 1,
-        UnitAmount: Number(amt.toFixed(2)),
-        AccountCode: "200",
-      }],
+      LineItems: lineItems,
     };
+    if (reference) payload.Reference = String(reference).slice(0, 200);
     if (currency_code) payload.CurrencyCode = currency_code;
 
     const res = await xeroFetch("/api.xro/2.0/Invoices", conn, {
@@ -122,7 +134,19 @@ Deno.serve(async (req) => {
       });
     }
 
-    return new Response(JSON.stringify({ ok: true, invoice: json.Invoices?.[0] ?? null }), {
+    const createdInvoice = json.Invoices?.[0] ?? null;
+    const invoiceId = createdInvoice?.InvoiceID ?? null;
+
+    // Link the originating sessions so they leave the pending queue and aren't re-invoiced.
+    if (session_ids.length && invoiceId) {
+      await admin.from("sessions").update({
+        xero_invoice_pending: false,
+        xero_invoice_raised_at: new Date().toISOString(),
+        xero_invoice_id: invoiceId,
+      }).in("id", session_ids);
+    }
+
+    return new Response(JSON.stringify({ ok: true, invoice: createdInvoice, invoice_id: invoiceId }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {

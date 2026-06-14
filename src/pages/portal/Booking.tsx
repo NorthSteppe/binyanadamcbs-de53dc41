@@ -269,10 +269,10 @@ const Booking = () => {
       }
     }
 
-    // Fire-and-forget Xero invoice for paid services
+    // Paid bookings go into the admin "Drafts (Xero)" review queue rather than
+    // pushing a draft immediately — an admin reviews and pushes it from there.
     if (isPaid) {
-      supabase.functions.invoke("xero-invoice-booking", { body: { session_ids: allIds } })
-        .catch((e) => console.warn("Xero invoice failed", e));
+      await supabase.from("sessions").update({ xero_invoice_pending: true }).in("id", allIds);
     }
 
     setLoading(false);

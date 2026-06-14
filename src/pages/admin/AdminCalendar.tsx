@@ -3,6 +3,7 @@ import { getHebrewDay, getAllHolidays, HolidayInfo } from "@/utils/hebrewCalenda
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -94,6 +95,8 @@ const AdminCalendar = () => {
   // Filters
   const [showSessions, setShowSessions] = useState(true);
   const [showTasks, setShowTasks] = useState(true);
+
+  const routerNavigate = useNavigate();
 
   // Dialogs
   const [createOpen, setCreateOpen] = useState(false);
@@ -528,28 +531,20 @@ const AdminCalendar = () => {
     // Therapist gets notified automatically via DB trigger when assigned.
     toast.success(dates.length > 1 ? `${dates.length} recurring sessions created` : "Session created");
 
-    // Push a DRAFT invoice to Xero immediately when invoicing was requested.
-    // (xero-invoice-booking marks the sessions raised, so this won't double-invoice.)
-    if (newSession.send_payment_link && createdSessionIds.length) {
-      try {
-        const { data: inv } = await supabase.functions.invoke("xero-invoice-booking", {
-          body: { session_ids: createdSessionIds },
-        });
-        if (inv?.ok && !inv?.skipped) {
-          toast.success("Draft invoice pushed to Xero.");
-        } else if (inv?.skipped) {
-          toast.info("No chargeable amount set — no Xero draft raised.");
-        } else {
-          toast.error(inv?.error ? `Xero: ${inv.error}` : "Could not raise the Xero draft.");
-        }
-      } catch (e: any) {
-        toast.error(e?.message ? `Xero: ${e.message}` : "Could not raise the Xero draft.");
-      }
-    }
+    // Capture invoicing intent before the form resets.
+    const wantsInvoice = newSession.send_payment_link;
+    const clientForInvoice = isManualClient ? undefined : actualClientId;
 
     setCreateOpen(false);
     setNewSession({ title: "", client_id: "", time: "09:00", duration_minutes: 60, description: "", meeting_platform: "", meeting_url: "", attendee_ids: [], recurrence: "none", recurrence_count: 4, service_option_id: "", price_cents: 0, therapist_id: "", therapist_rate_cents: 0, send_payment_link: false, already_paid: false, paid_method: "cash" });
     qc.invalidateQueries({ queryKey: ["team_sessions"] });
+
+    // When invoicing was requested, open the review page to check/edit the draft before pushing.
+    if (wantsInvoice && createdSessionIds.length) {
+      routerNavigate("/admin/invoice-review", {
+        state: { sessionIds: createdSessionIds, clientId: clientForInvoice, returnTo: "/admin/calendar" },
+      });
+    }
   };
 
   const handleCreateTask = async () => {
