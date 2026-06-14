@@ -1,3 +1,4 @@
+// Admin-triggered DRAFT invoice (free-form contact + line item) from the Xero panel.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
@@ -24,64 +25,108 @@ async function refreshIfNeeded(admin: any, conn: any) {
   return { ...conn, access_token: j.access_token, refresh_token: j.refresh_token, expires_at: expiresAt };
 }
 
+async function xeroFetch(path: string, conn: any, init: RequestInit = {}) {
+  return fetch(`https://api.xero.com${path}`, {
+    ...init,
+    headers: {
+      "Authorization": `Bearer ${conn.access_token}`,
+      "Xero-Tenant-Id": conn.tenant_id,
+      "Accept": "application/json",
+      ...(init.headers || {}),
+    },
+  });
+}
+
+// Look up an existing Xero contact by exact name so we reuse the ContactID
+// instead of letting Xero reject the create with "contact name already in use".
+async function findContactIdByName(name: string, conn: any): Promise<string | null> {
+  try {
+    const where = encodeURIComponent(`Name="${name.replace(/"/g, '\\"')}"`);
+    const res = await xeroFetch(`/api.xro/2.0/Contacts?where=${where}`, conn);
+    if (!res.ok) return null;
+    const j = await res.json();
+    return j?.Contacts?.[0]?.ContactID ?? null;
+  } catch {
+    return null;
+  }
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   try {
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-    const userClient = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!, { global: { headers: { Authorization: authHeader } } });
-    const { data: userData } = await userClient.auth.getUser(authHeader.replace("Bearer ", ""));
-    if (!userData?.user) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
     const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+    const { data: userData } = await admin.auth.getUser(authHeader.replace("Bearer ", ""));
+    if (!userData?.user) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
     const { data: isAdmin } = await admin.rpc("has_role", { _user_id: userData.user.id, _role: "admin" });
     if (!isAdmin) return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
-    const body = await req.json();
-    const { contact_name, description, amount, due_date, currency_code } = body ?? {};
-    if (!contact_name || !description || !amount) {
-      return new Response(JSON.stringify({ error: "contact_name, description, amount required" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    const body = await req.json().catch(() => ({}));
+    const { contact_name, contact_email, contact_id, description, amount, due_date, currency_code } = body ?? {};
+    const amt = Number(amount);
+    if (!contact_name || !description || !Number.isFinite(amt) || amt <= 0) {
+      return new Response(JSON.stringify({ error: "contact_name, description, and a positive amount are required" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const { data: conns } = await admin.from("xero_connection").select("*").limit(1);
     if (!conns || conns.length === 0) return new Response(JSON.stringify({ error: "Xero not connected" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     const conn = await refreshIfNeeded(admin, conns[0]);
 
-    const today = new Date().toISOString().slice(0,10);
-    const payload = {
+    // Resolve the contact: explicit id > lookup by name > new contact payload.
+    let contact: any;
+    if (contact_id) {
+      contact = { ContactID: contact_id };
+    } else {
+      const existingId = await findContactIdByName(String(contact_name), conn);
+      if (existingId) {
+        contact = { ContactID: existingId };
+      } else if (contact_email) {
+        contact = { Name: String(contact_name).slice(0, 200), EmailAddress: String(contact_email) };
+      } else {
+        contact = { Name: String(contact_name).slice(0, 200) };
+      }
+    }
+
+    const today = new Date().toISOString().slice(0, 10);
+    const payload: any = {
       Type: "ACCREC",
-      Contact: { Name: String(contact_name).slice(0,200) },
+      Contact: contact,
       Date: today,
       DueDate: due_date ?? today,
       LineAmountTypes: "Exclusive",
       Status: "DRAFT",
-      CurrencyCode: currency_code ?? undefined,
       LineItems: [{
-        Description: String(description).slice(0,500),
+        Description: String(description).slice(0, 500),
         Quantity: 1,
-        UnitAmount: Number(amount),
+        UnitAmount: Number(amt.toFixed(2)),
         AccountCode: "200",
       }],
     };
+    if (currency_code) payload.CurrencyCode = currency_code;
 
-    const res = await fetch("https://api.xero.com/api.xro/2.0/Invoices", {
+    const res = await xeroFetch("/api.xro/2.0/Invoices", conn, {
       method: "POST",
-      headers: {
-        "Authorization": `Bearer ${conn.access_token}`,
-        "Xero-Tenant-Id": conn.tenant_id,
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
-    const json = await res.json();
-    if (!res.ok) throw new Error("Xero invoice create failed: " + JSON.stringify(json));
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      const veMsg = json?.Elements?.[0]?.ValidationErrors?.map((v: any) => v.Message).join("; ");
+      const msg = veMsg || json?.Message || json?.Detail || `Xero invoice create failed (HTTP ${res.status})`;
+      console.error("xero-create-invoice failed", res.status, JSON.stringify(json));
+      return new Response(JSON.stringify({ ok: false, error: msg, status: res.status, xero: json }), {
+        status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     return new Response(JSON.stringify({ ok: true, invoice: json.Invoices?.[0] ?? null }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {
     console.error("xero-create-invoice", e);
-    return new Response(JSON.stringify({ error: (e as Error).message, fallback: true }), { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    return new Response(JSON.stringify({ ok: false, error: (e as Error).message }), { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });
