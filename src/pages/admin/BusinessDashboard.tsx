@@ -328,7 +328,7 @@ const BusinessDashboard = () => {
             <KPICard title="Therapist Payouts Owed" value={money(therapistPayoutsOwed, ccy)} subtitle={`${payoutSessionsOwed} sessions awaiting payout`} icon={HandCoins} delay={0.15} tone={therapistPayoutsOwed > 0 ? "amber" : undefined} />
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <KPICard title="Drafts (Xero)" value={money(xeroDrafts, ccy)} subtitle={`${xs?.count_draft ?? 0} ready to send`} icon={FileText} delay={0.2} />
+            <KPICard title="Drafts (Xero)" value={money(xeroDrafts, ccy)} subtitle={`${xs?.count_draft ?? 0} ready to send`} icon={FileText} delay={0.2} onClick={() => navigate("/admin/xero-drafts")} />
             <KPICard title="Net Profit" value={money(netProfit, ccy)} subtitle={`After ${money(totalExpenses, ccy)} total costs`} icon={DollarSign} delay={0.25} tone={netProfit < 0 ? "rose" : undefined} />
             <KPICard title="Clients" value={clientProfiles.length.toString()} subtitle={`${newClientsPerMonth[newClientsPerMonth.length - 1]?.count || 0} new this month`} icon={Users} delay={0.3} />
             <KPICard title="Sessions This Week" value={thisWeekSessions.length.toString()} subtitle={`${sessions.filter((s) => s.status === "scheduled").length} upcoming`} icon={Calendar} delay={0.35} />
@@ -937,11 +937,11 @@ function RecentActivityList({ sessions, coursePurchases, courses, svcPriceMap, c
 }
 
 // ─── KPI Card ───────────────────────────────────────
-function KPICard({ title, value, change, subtitle, icon: Icon, delay, tone }: { title: string; value: string; change?: number; subtitle?: string; icon: React.ElementType; delay: number; tone?: "rose" | "amber" }) {
+function KPICard({ title, value, change, subtitle, icon: Icon, delay, tone, onClick }: { title: string; value: string; change?: number; subtitle?: string; icon: React.ElementType; delay: number; tone?: "rose" | "amber"; onClick?: () => void }) {
   const iconBg = tone === "rose" ? "bg-rose-100 text-rose-700" : tone === "amber" ? "bg-amber-100 text-amber-700" : "bg-primary/10 text-primary";
   return (
     <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}>
-      <Card>
+      <Card onClick={onClick} role={onClick ? "button" : undefined} tabIndex={onClick ? 0 : undefined} onKeyDown={onClick ? (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(); } } : undefined} className={onClick ? "cursor-pointer transition-shadow hover:shadow-md hover:border-primary/40" : undefined}>
         <CardContent className="pt-5 pb-4 px-5">
           <div className="flex items-start justify-between mb-2">
             <div className={`rounded-lg p-2 ${iconBg}`}><Icon size={16} /></div>
