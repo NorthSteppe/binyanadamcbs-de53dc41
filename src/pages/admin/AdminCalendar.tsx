@@ -110,7 +110,7 @@ const AdminCalendar = () => {
   // New session form
   const [newSession, setNewSession] = useState({ title: "", client_id: "", time: "09:00", duration_minutes: 60, description: "", meeting_platform: "", meeting_url: "", attendee_ids: [] as string[], recurrence: "none" as string, recurrence_count: 4, service_option_id: "", price_cents: 0, therapist_id: "", therapist_rate_cents: 0, send_payment_link: false, already_paid: false, paid_method: "cash" as string });
   // New task form
-  const [newTask, setNewTask] = useState({ title: "", assigned_to: "", description: "" });
+  const [newTask, setNewTask] = useState({ title: "", assigned_to: "", description: "", time: "09:00" });
 
   // Deep link: /admin/calendar?book=<clientId> preselects the client and opens the
   // create-session dialog so an admin can book straight from a client list.
@@ -374,7 +374,8 @@ const AdminCalendar = () => {
     if (showTasks) {
       todos.forEach((t: any) => {
         if (!t.due_date) return;
-        const d = new Date(t.due_date + "T09:00:00");
+        const tt = t.due_time ? String(t.due_time) : "09:00:00";
+        const d = new Date(`${t.due_date}T${tt.length === 5 ? tt + ":00" : tt}`);
         result.push({
           id: t.id, title: t.title, start: d, end: new Date(d.getTime() + 30 * 60000),
           type: "task", color: "#3b82f6",
@@ -457,7 +458,12 @@ const AdminCalendar = () => {
         const { error } = await supabase.from("sessions").update({ session_date: newStart.toISOString() }).eq("id", event.id);
         if (error) throw error;
       } else if (event.type === "task") {
-        const { error } = await supabase.from("staff_todos").update({ due_date: format(newStart, "yyyy-MM-dd") }).eq("id", event.id);
+        const payload: any = { due_date: format(newStart, "yyyy-MM-dd"), due_time: format(newStart, "HH:mm:ss") };
+        let { error } = await supabase.from("staff_todos").update(payload).eq("id", event.id);
+        if (error && /due_time/i.test(error.message || "")) {
+          delete payload.due_time; // column not deployed yet — fall back to date-only
+          ({ error } = await supabase.from("staff_todos").update(payload).eq("id", event.id));
+        }
         if (error) throw error;
       }
     },
@@ -565,15 +571,21 @@ const AdminCalendar = () => {
 
   const handleCreateTask = async () => {
     if (!newTask.title || !newTask.assigned_to || !user || !selectedDate) return;
-    const { error } = await supabase.from("staff_todos").insert({
+    const payload: any = {
       title: newTask.title, assigned_to: newTask.assigned_to, created_by: user.id,
       due_date: format(selectedDate, "yyyy-MM-dd"), description: newTask.description || "",
-    });
+      due_time: (newTask.time || "09:00") + ":00",
+    };
+    let { error } = await supabase.from("staff_todos").insert(payload);
+    if (error && /due_time/i.test(error.message || "")) {
+      delete payload.due_time; // column not deployed yet — fall back to date-only
+      ({ error } = await supabase.from("staff_todos").insert(payload));
+    }
     if (error) toast.error("Failed to create task");
     else {
       toast.success("Task created");
       setCreateOpen(false);
-      setNewTask({ title: "", assigned_to: "", description: "" });
+      setNewTask({ title: "", assigned_to: "", description: "", time: "09:00" });
       qc.invalidateQueries({ queryKey: ["team_todos"] });
     }
   };
@@ -761,7 +773,9 @@ const AdminCalendar = () => {
   const handleDayClick = (day: Date, hour?: number) => {
     setSelectedDate(day);
     if (hour !== undefined) {
-      setNewSession((p) => ({ ...p, time: `${hour.toString().padStart(2, "0")}:00` }));
+      const hhmm = `${hour.toString().padStart(2, "0")}:00`;
+      setNewSession((p) => ({ ...p, time: hhmm }));
+      setNewTask((p) => ({ ...p, time: hhmm }));
       setCreateType("session");
       setCreateOpen(true);
     } else {
@@ -1419,6 +1433,7 @@ const AdminCalendar = () => {
             ) : (
               <>
                 <div><Label className="text-xs">Title</Label><Input value={newTask.title} onChange={(e) => setNewTask({ ...newTask, title: e.target.value })} placeholder="Task title" className="h-8 text-sm" /></div>
+                <div><Label className="text-xs">Time</Label><Input type="time" value={newTask.time} onChange={(e) => setNewTask({ ...newTask, time: e.target.value })} className="h-8 text-sm" /></div>
                 <div>
                   <Label className="text-xs">Assign To</Label>
                   <Select value={newTask.assigned_to} onValueChange={(v) => setNewTask({ ...newTask, assigned_to: v })}>
