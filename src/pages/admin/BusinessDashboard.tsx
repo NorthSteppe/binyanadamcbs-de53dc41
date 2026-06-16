@@ -240,7 +240,14 @@ const BusinessDashboard = () => {
     return rows.sort((a, b) => a.name.localeCompare(b.name));
   }, [xeroContacts, profilesXero, manualClients]);
 
-  const filteredUnified = unifiedClients.filter((r) => !clientSearch || r.name.toLowerCase().includes(clientSearch.toLowerCase()) || (r.email || "").toLowerCase().includes(clientSearch.toLowerCase()));
+  // Only show actual clients: portal users with the client role, or manual clients.
+  // Raw Xero-only contacts (suppliers/other contacts like "NEXT") are excluded here.
+  const clientIdSet = useMemo(() => new Set(clientProfiles.map((p) => p.id)), [clientProfiles]);
+  const realClients = useMemo(
+    () => unifiedClients.filter((r) => (r.portal_id && clientIdSet.has(r.portal_id)) || !!r.manual_id),
+    [unifiedClients, clientIdSet],
+  );
+  const filteredUnified = realClients.filter((r) => !clientSearch || r.name.toLowerCase().includes(clientSearch.toLowerCase()) || (r.email || "").toLowerCase().includes(clientSearch.toLowerCase()));
   const filteredInvoices = xeroInvoices.filter((i) => invoiceStatusFilter === "all" || i.status === invoiceStatusFilter);
 
   const connectXero = async () => {
@@ -439,8 +446,15 @@ const BusinessDashboard = () => {
             <TabsContent value="clients" className="space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Unified client directory</CardTitle>
-                  <CardDescription>Xero contacts, portal users and manual clients merged. Unlinked rows can be tied to a Xero contact for billing.</CardDescription>
+                  <div className="flex items-start justify-between gap-3 flex-wrap">
+                    <div>
+                      <CardTitle>Client directory</CardTitle>
+                      <CardDescription>Portal and manual clients. Open a client's record, book a session, or link them to a Xero contact for billing.</CardDescription>
+                    </div>
+                    <Button variant="outline" size="sm" onClick={() => navigate("/admin/clients")}>
+                      <ExternalLink size={12} className="mr-1.5" /> Full clients page
+                    </Button>
+                  </div>
                   <div className="relative mt-3 max-w-sm">
                     <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                     <Input placeholder="Search by name or email…" className="pl-9" value={clientSearch} onChange={(e) => setClientSearch(e.target.value)} />
@@ -477,6 +491,12 @@ const BusinessDashboard = () => {
                                   <ExternalLink size={12} className="mr-1"/>Open
                                 </Button>
                               )}
+                              <Button size="sm" variant="ghost" onClick={() => {
+                                const bookId = r.portal_id ?? (r.manual_id ? `manual:${r.manual_id}` : null);
+                                if (bookId) navigate(`/admin/calendar?book=${encodeURIComponent(bookId)}`);
+                              }}>
+                                <Calendar size={12} className="mr-1"/>Book
+                              </Button>
                               {!r.xero_contact_id && (r.portal_id || r.manual_id) && (
                                 <Button size="sm" variant="outline" onClick={() => setLinkDialog({
                                   open: true, kind: r.portal_id ? "profile" : "manual",

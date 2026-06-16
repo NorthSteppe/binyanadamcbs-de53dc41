@@ -3,7 +3,7 @@ import { getHebrewDay, getAllHolidays, HolidayInfo } from "@/utils/hebrewCalenda
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -97,6 +97,7 @@ const AdminCalendar = () => {
   const [showTasks, setShowTasks] = useState(true);
 
   const routerNavigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   // Dialogs
   const [createOpen, setCreateOpen] = useState(false);
@@ -110,6 +111,21 @@ const AdminCalendar = () => {
   const [newSession, setNewSession] = useState({ title: "", client_id: "", time: "09:00", duration_minutes: 60, description: "", meeting_platform: "", meeting_url: "", attendee_ids: [] as string[], recurrence: "none" as string, recurrence_count: 4, service_option_id: "", price_cents: 0, therapist_id: "", therapist_rate_cents: 0, send_payment_link: false, already_paid: false, paid_method: "cash" as string });
   // New task form
   const [newTask, setNewTask] = useState({ title: "", assigned_to: "", description: "" });
+
+  // Deep link: /admin/calendar?book=<clientId> preselects the client and opens the
+  // create-session dialog so an admin can book straight from a client list.
+  useEffect(() => {
+    const book = searchParams.get("book");
+    if (!book) return;
+    setNewSession((prev) => ({ ...prev, client_id: book }));
+    setSelectedDate(new Date());
+    setCreateType("session");
+    setCreateOpen(true);
+    searchParams.delete("book");
+    setSearchParams(searchParams, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Edit session form
   const [editForm, setEditForm] = useState({ title: "", session_date: "", session_time: "09:00", duration_minutes: 60, description: "", status: "scheduled", meeting_platform: "", meeting_url: "", attendee_ids: [] as string[], service_option_id: "", price_cents: 0, therapist_id: "", therapist_rate_cents: 0 });
   const [editSessionId, setEditSessionId] = useState("");

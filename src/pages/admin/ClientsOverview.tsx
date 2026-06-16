@@ -270,7 +270,7 @@ const ClientsOverview = () => {
                 key={s.label}
                 className="bg-white/95 backdrop-blur rounded-2xl p-4 border border-black/5 shadow-sm"
               >
-                <p className="text-xs text-muted-foreground">{s.label}</p>
+                <p className="text-xs text-slate-500">{s.label}</p>
                 <p className="text-2xl font-bold mt-1" style={{ color: s.color }}>{s.value}</p>
               </div>
             ))}
@@ -335,7 +335,7 @@ const ClientsOverview = () => {
                     {/* Main */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <p className="font-semibold text-base">{c.full_name}</p>
+                        <p className="font-semibold text-base text-slate-900">{c.full_name}</p>
                         {c.is_manual ? (
                           <span className="text-[10px] px-2 py-0.5 rounded-full border bg-slate-500/10 text-slate-700 border-slate-500/30">
                             manual
@@ -357,7 +357,7 @@ const ClientsOverview = () => {
                         )}
                       </div>
 
-                      <p className="text-xs text-muted-foreground mt-0.5">
+                      <p className="text-xs text-slate-500 mt-0.5">
                         {c.is_manual ? "Added" : "Client since"} {format(new Date(c.created_at), "MMM yyyy")}
                         {c.next_session && (
                           <> · Next: {format(new Date(c.next_session), "EEE d MMM, HH:mm")}</>
@@ -378,13 +378,13 @@ const ClientsOverview = () => {
                       )}
 
                       {c.internal_summary && (
-                        <p className="text-xs text-muted-foreground mt-2 line-clamp-2 italic">
+                        <p className="text-xs text-slate-600 mt-2 line-clamp-2 italic">
                           {c.internal_summary}
                         </p>
                       )}
 
                       {!c.is_manual && (
-                        <div className="flex gap-3 flex-wrap mt-3 text-[11px] text-muted-foreground">
+                        <div className="flex gap-3 flex-wrap mt-3 text-[11px] text-slate-500">
                           <span className="flex items-center gap-1"><Calendar size={11} /> {c.session_count} sessions</span>
                           <span className="flex items-center gap-1"><FileText size={11} /> {c.note_count} notes</span>
                           <span className="flex items-center gap-1"><BookOpen size={11} /> {c.clinical_entry_count} clinical</span>
