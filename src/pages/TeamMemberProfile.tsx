@@ -8,14 +8,6 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import NotFound from "./NotFound";
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: (i: number) => ({
-    opacity: 1, y: 0,
-    transition: { duration: 0.6, delay: i * 0.1 },
-  }),
-};
-
 const TeamMemberProfile = () => {
   const { slug } = useParams<{ slug: string }>();
 
@@ -49,142 +41,190 @@ const TeamMemberProfile = () => {
   if (!member) return <NotFound />;
 
   const credentials = member.credentials
-    ? member.credentials.split("\n").filter((c: string) => c.trim())
+    ? member.credentials.split("\n").map((c: string) => c.trim()).filter(Boolean)
     : [];
-
   const heroImage = member.profile_image_url || member.avatar_url;
   const longBio = member.long_bio || member.bio;
-  const paragraphs = longBio.split("\n\n").filter((p: string) => p.trim());
+  const paragraphs = longBio.split("\n\n").map((p: string) => p.trim()).filter(Boolean);
+  const firstName = member.name.split(" ")[0];
+
+  const hasSocial = member.social_linkedin || member.social_twitter || member.social_website;
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
 
-      <section className="pt-32 pb-16 md:pt-40 md:pb-24">
+      {/* Hero — split editorial */}
+      <section className="pt-[calc(var(--header-height,72px)+2rem)] pb-20 md:pb-28 bg-background">
         <div className="container">
           <Link
             to="/about"
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8"
+            className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-foreground/60 hover:text-accent transition-colors mb-10"
           >
-            <ArrowLeft size={16} /> Back to About
+            <ArrowLeft size={14} /> Back to the team
           </Link>
 
-          <div className="grid lg:grid-cols-2 gap-16 items-start">
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+            {/* Portrait */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8 }}
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7 }}
+              className="lg:col-span-5"
             >
-              <div className="rounded-3xl overflow-hidden shadow-2xl">
-                {heroImage ? (
-                  <img
-                    src={heroImage}
-                    alt={`${member.name} — ${member.role}`}
-                    className="w-full h-auto object-cover aspect-[3/4]"
-                  />
-                ) : (
-                  <div className="w-full aspect-[3/4] bg-primary/10 flex items-center justify-center text-6xl font-serif text-primary">
-                    {member.initials}
-                  </div>
-                )}
+              <div className="relative">
+                <div className="absolute -top-3 -left-3 h-1 w-24 bg-accent z-10" />
+                <div className="absolute -bottom-3 -right-3 h-24 w-1 bg-accent z-10" />
+                <div className="relative overflow-hidden bg-primary/5 aspect-[4/5] rounded-sm">
+                  {heroImage ? (
+                    <img
+                      src={heroImage}
+                      alt={`${member.name} — ${member.role}`}
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center text-7xl font-display text-primary/40">
+                      {member.initials}
+                    </div>
+                  )}
+                </div>
               </div>
             </motion.div>
 
+            {/* Identity */}
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.15 }}
+              transition={{ duration: 0.7, delay: 0.1 }}
+              className="lg:col-span-7 lg:pt-6"
             >
-              <p className="text-sm font-medium text-primary uppercase tracking-widest mb-3">
-                {member.role}
-              </p>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl text-foreground leading-[1.1] mb-6">
+              <div className="flex items-center gap-3 mb-5">
+                <span className="h-px w-10 bg-accent" />
+                <span className="text-xs font-medium uppercase tracking-[0.18em] text-accent">
+                  {member.role}
+                </span>
+              </div>
+
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-display tracking-tight text-foreground leading-[1.02] mb-8">
                 {member.name}
               </h1>
-              <p className="text-lg text-muted-foreground leading-relaxed mb-8 max-w-lg">
+
+              <p className="text-lg md:text-xl text-foreground/70 leading-relaxed max-w-2xl mb-10">
                 {member.bio}
               </p>
 
-              {credentials.length > 0 && (
-                <div className="space-y-4 mb-10">
-                  {credentials.map((cred: string, i: number) => (
-                    <div key={i} className="flex items-start gap-3">
-                      <Award size={20} className="text-primary mt-0.5 flex-shrink-0" />
-                      <p className="text-sm font-semibold text-foreground">{cred}</p>
-                    </div>
-                  ))}
+              {hasSocial && (
+                <div className="flex items-center gap-5 mb-10">
+                  {member.social_linkedin && (
+                    <a href={member.social_linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="text-foreground/50 hover:text-accent transition-colors">
+                      <Linkedin size={20} />
+                    </a>
+                  )}
+                  {member.social_twitter && (
+                    <a href={member.social_twitter} target="_blank" rel="noopener noreferrer" aria-label="Twitter / X" className="text-foreground/50 hover:text-accent transition-colors">
+                      <Twitter size={20} />
+                    </a>
+                  )}
+                  {member.social_website && (
+                    <a href={member.social_website} target="_blank" rel="noopener noreferrer" aria-label="Website" className="text-foreground/50 hover:text-accent transition-colors">
+                      <Globe size={20} />
+                    </a>
+                  )}
                 </div>
               )}
 
-              {/* Social links */}
-              <div className="flex items-center gap-4">
-                {member.social_linkedin && (
-                  <a href={member.social_linkedin} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
-                    <Linkedin size={20} />
-                  </a>
-                )}
-                {member.social_twitter && (
-                  <a href={member.social_twitter} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
-                    <Twitter size={20} />
-                  </a>
-                )}
-                {member.social_website && (
-                  <a href={member.social_website} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
-                    <Globe size={20} />
-                  </a>
-                )}
-              </div>
+              <Button asChild className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-7 h-11">
+                <Link to="/contact" className="inline-flex items-center gap-2">
+                  Work with {firstName} <ArrowRight size={16} />
+                </Link>
+              </Button>
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Extended Bio */}
-      {paragraphs.length > 0 && member.long_bio && (
-        <section className="py-16 md:py-24 bg-muted/30">
+      {/* Body — bio + credentials sidebar */}
+      {(paragraphs.length > 0 || credentials.length > 0) && (
+        <section className="py-20 md:py-28 bg-primary text-primary-foreground">
           <div className="container">
-            <div className="max-w-3xl mx-auto">
-              <motion.div
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={fadeUp}
-                custom={0}
-              >
-                <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-6">
-                  About {member.name.split(" ")[0]}
-                </h2>
-                <div className="space-y-5 text-muted-foreground leading-relaxed">
-                  {paragraphs.map((p: string, i: number) => (
-                    <p key={i}>{p}</p>
-                  ))}
+            <div className="grid lg:grid-cols-12 gap-12 lg:gap-20">
+              {/* Bio */}
+              {paragraphs.length > 0 && (
+                <div className="lg:col-span-8">
+                  <div className="flex items-center gap-3 mb-6">
+                    <span className="h-px w-10 bg-accent" />
+                    <span className="text-xs font-medium uppercase tracking-[0.18em] text-accent">
+                      About {firstName}
+                    </span>
+                  </div>
+                  <div className="space-y-6 text-lg leading-relaxed text-primary-foreground/85 font-light max-w-2xl">
+                    {paragraphs.map((p: string, i: number) => (
+                      <p key={i}>{p}</p>
+                    ))}
+                  </div>
+
+                  {member.signature_url && (
+                    <div className="mt-10 pt-8 border-t border-primary-foreground/10">
+                      <img
+                        src={member.signature_url}
+                        alt={`${member.name} signature`}
+                        className="h-14 object-contain opacity-80 [filter:invert(1)_brightness(1.2)]"
+                      />
+                    </div>
+                  )}
                 </div>
-              </motion.div>
+              )}
+
+              {/* Credentials */}
+              {credentials.length > 0 && (
+                <aside className="lg:col-span-4">
+                  <div className="lg:sticky lg:top-28 bg-primary-foreground/5 backdrop-blur-sm border border-primary-foreground/10 p-8 rounded-sm">
+                    <div className="flex items-center gap-2 mb-6 text-accent">
+                      <Award size={16} />
+                      <span className="text-xs font-medium uppercase tracking-[0.18em]">
+                        Credentials
+                      </span>
+                    </div>
+                    <ul className="space-y-4">
+                      {credentials.map((cred: string, i: number) => (
+                        <li key={i} className="flex gap-3 text-sm text-primary-foreground/90 leading-relaxed">
+                          <span className="text-accent shrink-0 mt-1">—</span>
+                          <span>{cred}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </aside>
+              )}
             </div>
           </div>
         </section>
       )}
 
       {/* CTA */}
-      <section className="py-16 md:py-24 bg-primary/5">
+      <section className="py-24 border-t border-border bg-background">
         <div className="container">
           <motion.div
-            initial="hidden"
-            whileInView="visible"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            variants={fadeUp}
-            custom={0}
+            transition={{ duration: 0.6 }}
             className="max-w-2xl mx-auto text-center"
           >
-            <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-4">
-              Get in Touch
+            <div className="flex items-center justify-center gap-3 mb-6">
+              <span className="h-px w-10 bg-accent" />
+              <span className="text-xs font-medium uppercase tracking-[0.18em] text-accent">Next step</span>
+              <span className="h-px w-10 bg-accent" />
+            </div>
+            <h2 className="text-4xl md:text-5xl font-display tracking-tight text-foreground mb-5">
+              Start a conversation with {firstName}
             </h2>
-            <p className="text-lg text-muted-foreground mb-8">
-              Reach out to learn more about how {member.name.split(" ")[0]} can support you.
+            <p className="text-lg text-foreground/60 mb-10">
+              Reach out to see whether {firstName}'s approach is the right fit for what you're navigating.
             </p>
-            <Button size="lg" asChild className="rounded-full px-8">
-              <Link to="/contact" className="inline-flex items-center gap-2">
-                Book a Consultation <ArrowRight size={18} />
+            <Button size="lg" asChild className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-10 h-12">
+              <Link to="/contact" className="inline-flex items-center gap-3">
+                Book a consultation <ArrowRight size={16} />
               </Link>
             </Button>
           </motion.div>
