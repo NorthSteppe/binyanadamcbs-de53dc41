@@ -133,74 +133,66 @@ const About = () => {
       </section>
 
       {/* Team */}
-      <section className="py-24 border-t border-border">
+      <section className="py-24 border-t border-border bg-background">
         <div className="container">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={0} className="text-center mb-16">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={0} className="max-w-3xl mb-16">
+            <div className="flex items-center gap-3 mb-5">
+              <span className="h-px w-10 bg-accent" />
+              <span className="text-xs font-medium uppercase tracking-[0.18em] text-accent">The Team</span>
+            </div>
             <EditableText contentKey="about.teamTitle" defaultValue={about.teamTitle} as="h2" className="text-4xl md:text-5xl font-display tracking-tight text-foreground mb-4" />
-            <EditableText contentKey="about.teamSubtitle" defaultValue={about.teamSubtitle} as="p" className="text-foreground/50 max-w-2xl mx-auto" />
+            <EditableText contentKey="about.teamSubtitle" defaultValue={about.teamSubtitle} as="p" className="text-foreground/60 max-w-2xl text-lg" />
           </motion.div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-14">
             {(teamMembers || []).map((member, i) => {
-              const credentials = member.credentials ? member.credentials.split("\n").filter(Boolean) : [];
-              const hasSocial = member.social_linkedin || member.social_twitter || member.social_website;
-
-              const cardContent = (
-                <motion.div key={member.id} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={i + 1}
-                  className="group text-center p-8 bg-card border border-border hover:border-primary/20 transition-colors duration-500 cursor-pointer">
-                  {member.avatar_url ? (
-                    <img src={member.avatar_url} alt={member.name} className="w-24 h-24 rounded-full object-cover mx-auto mb-5" />
-                  ) : (
-                    <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-5 text-2xl font-serif text-primary group-hover:bg-primary/20 transition-colors">
-                      {member.initials}
-                    </div>
-                  )}
-                  <h3 className="text-xl font-display tracking-tight text-foreground mb-1">{member.name}</h3>
-                  <p className="text-sm text-primary mb-3">{member.role}</p>
-
-                  {credentials.length > 0 && (
-                    <div className="flex flex-wrap justify-center gap-1.5 mb-3">
-                      {credentials.slice(0, 3).map((c, ci) => (
-                        <span key={ci} className="inline-flex items-center gap-1 text-[11px] text-muted-foreground bg-muted px-2 py-0.5">
-                          <Award size={10} className="text-primary shrink-0" />
-                          {c.trim()}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-
-                  <p className="text-sm text-foreground/50 leading-relaxed">{member.bio}</p>
-
-                  {member.signature_url && (
-                    <img src={member.signature_url} alt={`${member.name}'s signature`} className="h-8 object-contain mx-auto mt-4 opacity-40" />
-                  )}
-
-                  {hasSocial && (
-                    <div className="flex justify-center gap-3 mt-4">
-                      {member.social_linkedin && (
-                        <a href={member.social_linkedin} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" onClick={(e) => e.stopPropagation()}>
-                          <Linkedin size={16} />
-                        </a>
-                      )}
-                      {member.social_twitter && (
-                        <a href={member.social_twitter} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" onClick={(e) => e.stopPropagation()}>
-                          <Twitter size={16} />
-                        </a>
-                      )}
-                      {member.social_website && (
-                        <a href={member.social_website} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" onClick={(e) => e.stopPropagation()}>
-                          <Globe size={16} />
-                        </a>
-                      )}
-                    </div>
-                  )}
-                </motion.div>
-              );
+              const heroImage = member.profile_image_url || member.avatar_url;
+              const to = member.slug ? `/team/${member.slug}` : "/contact";
 
               return (
-                <Link key={member.id} to={member.slug ? `/team/${member.slug}` : "/contact"} className="no-underline">
-                  {cardContent}
-                </Link>
+                <motion.div
+                  key={member.id}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
+                  variants={fadeUp}
+                  custom={i + 1}
+                >
+                  <Link to={to} className="group block no-underline">
+                    <div className="relative overflow-hidden rounded-sm bg-primary/5 aspect-[4/5] mb-5">
+                      {heroImage ? (
+                        <img
+                          src={heroImage}
+                          alt={`${member.name} — ${member.role}`}
+                          className="absolute inset-0 w-full h-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.04]"
+                        />
+                      ) : (
+                        <div className="absolute inset-0 flex items-center justify-center text-5xl font-display text-primary/40">
+                          {member.initials}
+                        </div>
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-primary/85 via-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      <div className="absolute top-0 left-0 h-1 w-12 bg-accent transition-all duration-500 group-hover:w-24" />
+                      <div className="absolute bottom-5 left-5 right-5 text-primary-foreground translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+                        <span className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em]">
+                          View profile <ArrowRight size={12} />
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-accent">
+                        {member.role}
+                      </p>
+                      <h3 className="text-2xl font-display tracking-tight text-foreground group-hover:text-primary transition-colors">
+                        {member.name}
+                      </h3>
+                      <p className="text-sm text-foreground/60 leading-relaxed line-clamp-3 pt-1">
+                        {member.bio}
+                      </p>
+                    </div>
+                  </Link>
+                </motion.div>
               );
             })}
           </div>
