@@ -483,6 +483,30 @@ export type Database = {
         }
         Relationships: []
       }
+      business_planner: {
+        Row: {
+          data: Json
+          id: string
+          name: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          data?: Json
+          id?: string
+          name?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          data?: Json
+          id?: string
+          name?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       business_plans: {
         Row: {
           content: string
@@ -2127,6 +2151,7 @@ export type Database = {
           created_by: string
           description: string
           due_date: string | null
+          due_time: string | null
           id: string
           is_completed: boolean
           title: string
@@ -2138,6 +2163,7 @@ export type Database = {
           created_by: string
           description?: string
           due_date?: string | null
+          due_time?: string | null
           id?: string
           is_completed?: boolean
           title: string
@@ -2149,6 +2175,7 @@ export type Database = {
           created_by?: string
           description?: string
           due_date?: string | null
+          due_time?: string | null
           id?: string
           is_completed?: boolean
           title?: string
