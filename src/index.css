@@ -178,7 +178,8 @@
   html { background: hsl(var(--background)); }
 
   body:has(header.fixed) #root > div.min-h-screen > section:first-of-type:not([style*="padding-top"]),
-  body:has(header.fixed) #root > div.min-h-screen > main:first-of-type:not([style*="padding-top"]) {
+  body:has(header.fixed) #root > div.min-h-screen > main:first-of-type:not([style*="padding-top"]),
+  body:has(header.fixed) #root > div.min-h-screen > div:first-of-type:not([style*="padding-top"]) {
     padding-top: calc(var(--header-height) + 1rem);
   }
 
