@@ -5,6 +5,7 @@ import {
   TrendingUp,
   FileText,
   ToggleRight,
+  Calculator,
 } from "lucide-react";
 import {
   PortalShell,
@@ -53,6 +54,14 @@ const AdminDashboard = () => {
           icon={TrendingUp}
           label="Finance"
           hint="Revenue & payouts"
+        />
+        <BentoTile
+          to="/admin/business-maths"
+          size="md"
+          icon={Calculator}
+          label="Business maths"
+          hint="Revenue & cost planner"
+          accent="navy"
         />
         <BentoTile
           feature="admin.content"

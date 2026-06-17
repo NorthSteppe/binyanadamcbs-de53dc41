@@ -67,6 +67,7 @@ import UnifiedUserManagement from "./pages/admin/UnifiedUserManagement";
 import AuthSettings from "./pages/admin/AuthSettings";
 import SecurityDashboard from "./pages/admin/SecurityDashboard";
 import BusinessDashboard from "./pages/admin/BusinessDashboard";
+import BusinessMaths from "./pages/admin/BusinessMaths";
 
 
 import TherapistPayouts from "./pages/admin/TherapistPayouts";
@@ -225,6 +226,7 @@ const App = () => (
                   <Route path="/admin/courses" element={<AdminRoute><CourseManager /></AdminRoute>} />
                   <Route path="/admin/courses/:courseId/lessons" element={<AdminRoute><CourseLessonManager /></AdminRoute>} />
                   <Route path="/admin/business" element={<AdminRoute><BusinessDashboard /></AdminRoute>} />
+                  <Route path="/admin/business-maths" element={<AdminRoute><BusinessMaths /></AdminRoute>} />
                   <Route path="/admin/finance" element={<Navigate to="/admin/business" replace />} />
 
                   <Route path="/admin/payouts" element={<AdminRoute><TherapistPayouts /></AdminRoute>} />

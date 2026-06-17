@@ -310,6 +310,9 @@ const BusinessDashboard = () => {
                     <SelectItem value="12months">Last 12 months</SelectItem>
                   </SelectContent>
                 </Select>
+                <Button variant="outline" size="sm" onClick={() => navigate("/admin/business-maths")}>
+                  <ExternalLink size={14} className="mr-2" /> Revenue planner
+                </Button>
               </div>
             </div>
           </motion.div>
