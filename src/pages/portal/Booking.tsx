@@ -75,10 +75,8 @@ const Booking = () => {
   }, [searchParams]);
 
   useEffect(() => {
-    supabase.from("service_options")
-      .select("id, name, description, duration_minutes, price_cents, stripe_price_id, is_active, display_order, show_duration, show_price")
-      .eq("is_active", true).order("display_order")
-      .then(({ data }) => { if (data) setServices(data as unknown as ServiceOption[]); });
+    (supabase as any).rpc("list_active_service_options")
+      .then(({ data }: { data: any }) => { if (data) setServices(data as unknown as ServiceOption[]); });
     supabase.from("calendar_hour_rules" as any).select("*")
       .then(({ data }) => { if (data) setHourRules(data as any[]); });
   }, []);
