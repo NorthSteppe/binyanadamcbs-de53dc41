@@ -32,6 +32,7 @@ const Trust = () => {
       <Seo
         title="Trust, Security & Privacy · Blueprint"
         description="How Blueprint (Applied Constructional Behavioural Services) protects client data, manages access, and handles privacy."
+        path="/trust"
       />
       <Header />
 
