@@ -32,6 +32,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 import Unsubscribe from "./pages/Unsubscribe";
+import Trust from "./pages/Trust";
 import SearchPage from "./pages/Search";
 import ScrollToTop from "./components/ScrollToTop";
 // Client portal
