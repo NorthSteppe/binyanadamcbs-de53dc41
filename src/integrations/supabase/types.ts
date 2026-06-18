@@ -3340,6 +3340,20 @@ export type Database = {
         Args: { _manual_client_id: string; _target_user_id: string }
         Returns: undefined
       }
+      list_active_service_options: {
+        Args: never
+        Returns: {
+          description: string
+          display_order: number
+          duration_minutes: number
+          id: string
+          is_active: boolean
+          name: string
+          price_cents: number
+          show_duration: boolean
+          show_price: boolean
+        }[]
+      }
       move_to_dlq: {
         Args: {
           dlq_name: string
