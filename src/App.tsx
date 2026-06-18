@@ -184,6 +184,7 @@ const App = () => (
                   <Route path="/forgot-password" element={<ForgotPassword />} />
                   <Route path="/reset-password" element={<ResetPassword />} />
                   <Route path="/unsubscribe" element={<Unsubscribe />} />
+                  <Route path="/trust" element={<Trust />} />
                   <Route path="/search" element={<SearchPage />} />
                   {/* Blog / Insights */}
                   <Route path="/insights" element={<InsightsHub />} />
