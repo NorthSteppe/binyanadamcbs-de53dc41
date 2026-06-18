@@ -13,7 +13,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   ChevronLeft, ChevronRight, Plus, CalendarDays,
   LayoutGrid, List, Clock, Trash2, Maximize2, Minimize2,
@@ -1526,7 +1525,7 @@ const AdminCalendar = () => {
           </DialogHeader>
           {selectedEvent && (
             <>
-              <ScrollArea className="flex-1 min-h-0">
+              <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain">
                 <div className="space-y-4 px-6 py-4">
                   {/* Join Meeting Button */}
                   {selectedEvent.meetingUrl && selectedEvent.meetingUrl.trim() && (
@@ -1667,7 +1666,7 @@ const AdminCalendar = () => {
                     </div>
                   )}
                 </div>
-              </ScrollArea>
+              </div>
 
               {/* Sticky footer */}
               <div className="border-t border-border px-6 py-3 bg-background flex gap-2 shrink-0">
