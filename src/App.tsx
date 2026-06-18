@@ -32,6 +32,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 import Unsubscribe from "./pages/Unsubscribe";
+import Trust from "./pages/Trust";
 import SearchPage from "./pages/Search";
 import ScrollToTop from "./components/ScrollToTop";
 // Client portal
@@ -183,6 +184,7 @@ const App = () => (
                   <Route path="/forgot-password" element={<ForgotPassword />} />
                   <Route path="/reset-password" element={<ResetPassword />} />
                   <Route path="/unsubscribe" element={<Unsubscribe />} />
+                  <Route path="/trust" element={<Trust />} />
                   <Route path="/search" element={<SearchPage />} />
                   {/* Blog / Insights */}
                   <Route path="/insights" element={<InsightsHub />} />
