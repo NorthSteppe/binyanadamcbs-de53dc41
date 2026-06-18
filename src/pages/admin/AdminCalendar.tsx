@@ -136,6 +136,9 @@ const AdminCalendar = () => {
   const [draggedEvent, setDraggedEvent] = useState<CalendarEvent | null>(null);
   const [dropTarget, setDropTarget] = useState<string | null>(null);
   const [dragHover, setDragHover] = useState<{ time: Date; x: number; y: number } | null>(null);
+  // Pixels from the top of the grabbed tile to the cursor, so the dropped tile's
+  // top aligns with the drag ghost instead of snapping the cursor to the tile top.
+  const dragOffsetYRef = useRef(0);
 
   // AI Scheduler
   const [aiScheduling, setAiScheduling] = useState(false);
@@ -416,10 +419,14 @@ const AdminCalendar = () => {
     setDraggedEvent(event);
     e.dataTransfer.effectAllowed = "move";
     e.dataTransfer.setData("text/plain", event.id);
-    if (e.currentTarget instanceof HTMLElement) e.currentTarget.style.opacity = "0.5";
+    if (e.currentTarget instanceof HTMLElement) {
+      dragOffsetYRef.current = e.clientY - e.currentTarget.getBoundingClientRect().top;
+      e.currentTarget.style.opacity = "0.5";
+    }
   };
   const handleDragEnd = (e: React.DragEvent) => {
     if (e.currentTarget instanceof HTMLElement) e.currentTarget.style.opacity = "1";
+    dragOffsetYRef.current = 0;
     setDraggedEvent(null);
     setDropTarget(null);
     setDragHover(null);
@@ -434,7 +441,9 @@ const AdminCalendar = () => {
   // Compute minute-precision time inside a week/day hour cell (snapped to SNAP_MIN).
   const computeCellTime = (e: React.DragEvent, day: Date, hour: number): Date => {
     const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-    const offsetY = Math.max(0, Math.min(HOUR_PX, e.clientY - rect.top));
+    // Subtract the grab offset so the tile's top lands where the ghost shows it,
+    // rather than placing the tile top at the cursor position.
+    const offsetY = Math.max(0, Math.min(HOUR_PX, e.clientY - rect.top - dragOffsetYRef.current));
     const rawMin = (offsetY / HOUR_PX) * 60;
     const snapped = Math.round(rawMin / SNAP_MIN) * SNAP_MIN;
     const clamped = Math.max(0, Math.min(59, snapped));
@@ -817,8 +826,15 @@ const AdminCalendar = () => {
       {/* Floating time pill shown while dragging an event */}
       {dragHover && draggedEvent && (
         <div
-          className="fixed z-[100] pointer-events-none px-2.5 py-1 rounded-full text-xs font-mono font-semibold shadow-lg bg-foreground text-background"
-          style={{ left: dragHover.x + 14, top: dragHover.y + 14 }}
+          className="fixed z-[100] pointer-events-none whitespace-nowrap px-2.5 rounded-full text-xs font-mono font-semibold leading-none shadow-lg bg-foreground text-background"
+          style={{
+            left: Math.min(dragHover.x + 14, window.innerWidth - 150),
+            top: Math.min(dragHover.y + 14, window.innerHeight - 36),
+            // Inline padding-top opts this element out of the global header-offset
+            // rule (…:not([style*="padding-top"])) that otherwise inflates it to ~160px.
+            paddingTop: "0.3rem",
+            paddingBottom: "0.3rem",
+          }}
         >
           {format(dragHover.time, "EEE d MMM · HH:mm")}
         </div>
