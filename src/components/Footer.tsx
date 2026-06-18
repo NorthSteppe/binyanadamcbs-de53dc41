@@ -71,8 +71,9 @@ const Footer = () => {
         </div>
 
         <ScrollReveal delay={0.3}>
-          <div className="mt-16 pt-8 border-t border-border text-[11px] text-muted-foreground/40 text-center tracking-wide">
-            © {new Date().getFullYear()} <EditableText contentKey="footer.copyright" defaultValue={t.footer.copyright} as="span" />
+          <div className="mt-16 pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-3 text-[11px] text-muted-foreground/50 tracking-wide">
+            <span>© {new Date().getFullYear()} <EditableText contentKey="footer.copyright" defaultValue={t.footer.copyright} as="span" /></span>
+            <Link to="/trust" className="hover:text-foreground transition-colors">Trust, Security & Privacy</Link>
           </div>
         </ScrollReveal>
       </div>
