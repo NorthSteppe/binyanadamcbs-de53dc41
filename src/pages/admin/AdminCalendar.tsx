@@ -399,6 +399,39 @@ const AdminCalendar = () => {
     return map;
   }, [events]);
 
+  // Side-by-side layout for overlapping events: assign each event a column
+  // index and the total column count of its overlap cluster, so coexisting
+  // events render next to each other instead of stacked on top.
+  const eventLayout = useMemo(() => {
+    const layout = new Map<string, { col: number; cols: number }>();
+    eventsByDay.forEach((dayEvents) => {
+      const sorted = [...dayEvents].sort(
+        (a, b) => a.start.getTime() - b.start.getTime() || a.end.getTime() - b.end.getTime()
+      );
+      let cluster: CalendarEvent[] = [];
+      let columns: number[] = []; // last end-time per active column
+      let clusterEnd = -Infinity;
+      const flush = () => {
+        const cols = columns.length;
+        cluster.forEach((e) => { layout.get(e.id)!.cols = cols; });
+        cluster = []; columns = []; clusterEnd = -Infinity;
+      };
+      for (const e of sorted) {
+        const s = e.start.getTime();
+        const en = e.end.getTime();
+        if (cluster.length && s >= clusterEnd) flush();
+        let col = columns.findIndex((end) => end <= s);
+        if (col === -1) { columns.push(en); col = columns.length - 1; }
+        else columns[col] = en;
+        layout.set(e.id, { col, cols: 0 });
+        cluster.push(e);
+        clusterEnd = Math.max(clusterEnd, en);
+      }
+      if (cluster.length) flush();
+    });
+    return layout;
+  }, [eventsByDay]);
+
   // Navigation
   const navigate = (dir: 1 | -1) => {
     if (viewMode === "month") setCurrentDate(dir === 1 ? addMonths(currentDate, 1) : subMonths(currentDate, 1));
@@ -1099,15 +1132,19 @@ const AdminCalendar = () => {
                               const duration = differenceInMinutes(ev.end, ev.start);
                               const heightPx = Math.max(16, (duration / 60) * 64);
                               const topPx = (ev.start.getMinutes() / 60) * 64;
+                              const lay = eventLayout.get(ev.id) || { col: 0, cols: 1 };
+                              const widthPct = 100 / lay.cols;
                               return (
                                 <div
                                   key={ev.id} draggable
                                   onDragStart={(e) => handleDragStart(e, ev)}
                                   onDragEnd={handleDragEnd}
                                   onClick={(e) => handleEventClick(e, ev)}
-                                  className="absolute left-0.5 right-0.5 rounded px-1 py-0.5 text-[9px] font-medium cursor-grab active:cursor-grabbing hover:opacity-80 z-10 flex flex-col overflow-hidden"
+                                  className="absolute rounded px-1 py-0.5 text-[9px] font-medium cursor-grab active:cursor-grabbing hover:opacity-80 z-10 flex flex-col overflow-hidden"
                                   style={{
                                     top: `${topPx}px`, height: `${heightPx}px`,
+                                    left: `calc(${lay.col * widthPct}% + 2px)`,
+                                    width: `calc(${widthPct}% - 4px)`,
                                     backgroundColor: `${ev.color}25`, color: ev.color,
                                     borderLeft: `2px solid ${ev.color}`,
                                   }}
