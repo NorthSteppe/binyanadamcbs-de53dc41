@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/hooks/useAuth";
 import NotificationBell from "@/components/NotificationBell";
+import { useCustomNavPages } from "@/hooks/useCustomNavPages";
 
 const Header = ({ hidelogo = false }: { hidelogo?: boolean }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -28,11 +29,14 @@ const Header = ({ hidelogo = false }: { hidelogo?: boolean }) => {
     { label: t.nav.supervision, path: "/supervision" },
   ];
 
+  const { data: customNav = [] } = useCustomNavPages();
+
   const navLinks = [
     { label: t.nav.services, path: "/services", children: serviceSubLinks },
     { label: "Courses", path: "/courses" },
     { label: "Insights", path: "/insights" },
     { label: (t as any).about?.tagline || "About Us", path: "/about" },
+    ...customNav.map((c) => ({ label: c.title, path: `/p/${c.slug}` })),
   ];
 
   const portalEntries = [
