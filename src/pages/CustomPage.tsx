@@ -58,7 +58,7 @@ const CustomPage = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <Seo title={page.title} description={page.subtitle} />
+      <Seo title={page.title} description={page.subtitle} path={`/p/${page.slug}`} />
       <Header />
 
       <main className="flex-1">
