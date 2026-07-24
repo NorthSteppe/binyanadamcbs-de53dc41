@@ -151,7 +151,7 @@ const OfferDetail = () => {
                   className="flex items-start gap-3"
                 >
                   <CheckCircle2 className="text-primary mt-0.5 flex-shrink-0" size={16} />
-                  <p className="text-sm text-foreground">{outcome}</p>
+                  <p className="text-sm text-foreground"><EditableText contentKey={k(`outcome.${i}`)} defaultValue={outcome} as="span" /></p>
                 </motion.div>
               ))}
             </div>
