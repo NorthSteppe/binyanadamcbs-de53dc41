@@ -35,6 +35,8 @@ import Unsubscribe from "./pages/Unsubscribe";
 import Trust from "./pages/Trust";
 import OAuthConsent from "./pages/OAuthConsent";
 import SearchPage from "./pages/Search";
+import CustomPage from "./pages/CustomPage";
+import CustomPagesManager from "./pages/admin/CustomPagesManager";
 import ScrollToTop from "./components/ScrollToTop";
 // Client portal
 import Dashboard from "./pages/portal/Dashboard";
@@ -188,6 +190,7 @@ const App = () => (
                   <Route path="/trust" element={<Trust />} />
                   <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
                   <Route path="/search" element={<SearchPage />} />
+                  <Route path="/p/:slug" element={<CustomPage />} />
                   {/* Blog / Insights */}
                   <Route path="/insights" element={<InsightsHub />} />
                   <Route path="/insights/article/:slug" element={<ArticlePage />} />
@@ -221,6 +224,7 @@ const App = () => (
                   <Route path="/admin/hero-images" element={<AdminRoute><HeroImageManager /></AdminRoute>} />
                   <Route path="/admin/site-content" element={<AdminRoute><SiteContentManager /></AdminRoute>} />
                   <Route path="/admin/edit" element={<AdminRoute><SiteContentManager /></AdminRoute>} />
+                  <Route path="/admin/pages" element={<AdminRoute><CustomPagesManager /></AdminRoute>} />
                   <Route path="/admin/team-members" element={<AdminRoute><TeamMemberManager /></AdminRoute>} />
                   <Route path="/admin/service-options" element={<AdminRoute><ServiceOptionsManager /></AdminRoute>} />
                   <Route path="/admin/users" element={<AdminRoute><UnifiedUserManagement /></AdminRoute>} />
