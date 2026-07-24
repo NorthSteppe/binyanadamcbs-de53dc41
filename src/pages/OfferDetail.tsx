@@ -87,7 +87,7 @@ const OfferDetail = () => {
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.1 }}
                   >
-                    {para}
+                    <EditableText contentKey={k(`desc.${i}`)} defaultValue={para} as="span" />
                   </motion.p>
                 ))}
               </div>
