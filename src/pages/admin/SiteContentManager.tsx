@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSiteContent, useUpdateSiteContent, SiteContent } from "@/hooks/useSiteContent";
 import { useEditMode } from "@/hooks/useEditMode";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,7 +7,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Upload, Save, Wand2, ExternalLink } from "lucide-react";
+import { Upload, Save, Wand2, ExternalLink, LayoutGrid } from "lucide-react";
 import { toast } from "sonner";
 
 const PUBLIC_PAGES: { label: string; path: string }[] = [
@@ -135,6 +135,26 @@ const SiteContentManager = () => {
           <h1 className="text-2xl md:text-3xl text-foreground mb-1">Site Content Manager</h1>
           <p className="text-muted-foreground">Edit images, quotes, and visual styling across the website.</p>
         </div>
+
+        {/* Pages & categories */}
+        <div className="mb-10 p-6 rounded-2xl border border-border bg-card">
+          <div className="flex items-start gap-3 mb-3">
+            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+              <LayoutGrid className="text-primary" size={18} />
+            </div>
+            <div className="flex-1">
+              <h2 className="text-lg font-semibold text-foreground">Pages & Categories</h2>
+              <p className="text-sm text-muted-foreground">
+                Add new pages (services, insights, nav items, or custom), reorder them, and toggle nav visibility. Each new page comes with a blank editable template.
+              </p>
+            </div>
+            <Button asChild size="sm" className="gap-1.5">
+              <Link to="/admin/pages"><ExternalLink size={13} /> Manage pages</Link>
+            </Button>
+          </div>
+        </div>
+
+
 
         {/* Live editor launcher */}
         <div className="mb-10 p-6 rounded-2xl border border-border bg-gradient-to-br from-primary/5 to-card">
