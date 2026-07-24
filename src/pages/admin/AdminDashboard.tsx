@@ -65,11 +65,12 @@ const AdminDashboard = () => {
         />
         <BentoTile
           feature="admin.content"
-          to="/admin/site-content"
+          to="/admin/edit"
           size="md"
           icon={FileText}
-          label="Site content"
-          hint="Pages, blog, hero"
+          label="Edit"
+          hint="Edit site text, images & fonts"
+          accent="orange"
         />
         <BentoTile
           feature="admin.features"
