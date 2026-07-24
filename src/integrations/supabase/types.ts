@@ -1202,6 +1202,7 @@ export type Database = {
           id: string
           in_nav: boolean
           is_published: boolean
+          nav_parent: string | null
           slug: string
           subtitle: string
           title: string
@@ -1215,6 +1216,7 @@ export type Database = {
           id?: string
           in_nav?: boolean
           is_published?: boolean
+          nav_parent?: string | null
           slug: string
           subtitle?: string
           title: string
@@ -1228,6 +1230,7 @@ export type Database = {
           id?: string
           in_nav?: boolean
           is_published?: boolean
+          nav_parent?: string | null
           slug?: string
           subtitle?: string
           title?: string

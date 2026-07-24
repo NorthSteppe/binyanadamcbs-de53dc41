@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
@@ -11,8 +11,9 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { ArrowDown, ArrowUp, ExternalLink, Plus, Trash2 } from "lucide-react";
+import { ArrowDown, ArrowUp, ExternalLink, Plus, Trash2, Wand2 } from "lucide-react";
 import { toast } from "sonner";
+import { useEditMode } from "@/hooks/useEditMode";
 
 interface CustomPage {
   id: string;
@@ -24,6 +25,7 @@ interface CustomPage {
   hero_image: string;
   in_nav: boolean;
   is_published: boolean;
+  nav_parent: string | null;
 }
 
 const CATEGORY_TYPES = [
@@ -33,15 +35,31 @@ const CATEGORY_TYPES = [
   { value: "custom", label: "Custom" },
 ];
 
+const NAV_PARENTS = [
+  { value: "top", label: "Top level (alongside About Us)" },
+  { value: "services", label: "Under Services" },
+  { value: "courses", label: "Under Courses" },
+  { value: "insights", label: "Under Insights" },
+  { value: "about", label: "Under About Us" },
+];
+
 const slugify = (s: string) =>
   s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
 const CustomPagesManager = () => {
   const qc = useQueryClient();
+  const navigate = useNavigate();
+  const { setEditMode } = useEditMode();
+  const launchLiveEdit = (path: string) => {
+    setEditMode(true);
+    navigate(path);
+    toast.success("Live editor enabled — click any text or image to edit");
+  };
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [subtitle, setSubtitle] = useState("");
   const [type, setType] = useState("custom");
+  const [navParent, setNavParent] = useState("top");
 
   const { data: pages = [], isLoading } = useQuery({
     queryKey: ["custom-pages-admin"],
@@ -63,11 +81,12 @@ const CustomPagesManager = () => {
       const { error } = await (supabase as any).from("custom_pages").insert({
         title, slug: finalSlug, subtitle, category_type: type,
         display_order: nextOrder, in_nav: type === "nav", is_published: true,
+        nav_parent: navParent === "top" ? null : navParent,
       });
       if (error) throw error;
     },
     onSuccess: () => {
-      setTitle(""); setSlug(""); setSubtitle(""); setType("custom");
+      setTitle(""); setSlug(""); setSubtitle(""); setType("custom"); setNavParent("top");
       qc.invalidateQueries({ queryKey: ["custom-pages-admin"] });
       qc.invalidateQueries({ queryKey: ["custom-pages-nav"] });
       toast.success("Page created — click 'View' to edit its content");
@@ -153,6 +172,18 @@ const CustomPagesManager = () => {
                 </SelectContent>
               </Select>
             </div>
+            <div>
+              <Label>Nav location</Label>
+              <Select value={navParent} onValueChange={setNavParent}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {NAV_PARENTS.map((c) => (
+                    <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-[11px] text-muted-foreground mt-1">Where the link appears in the top nav bar (only if "In nav" is on).</p>
+            </div>
           </div>
           <div className="mt-4">
             <Button onClick={() => createMutation.mutate()} disabled={createMutation.isPending}>
@@ -189,7 +220,7 @@ const CustomPagesManager = () => {
                 <p className="text-xs text-muted-foreground mt-1">/p/{p.slug}</p>
               </div>
 
-              <div className="flex items-center gap-4">
+              <div className="flex flex-wrap items-center gap-3">
                 <label className="flex items-center gap-2 text-xs text-muted-foreground">
                   <Switch
                     checked={p.in_nav}
@@ -204,8 +235,26 @@ const CustomPagesManager = () => {
                   />
                   Published
                 </label>
+                <div className="min-w-[180px]">
+                  <Select
+                    value={p.nav_parent ?? "top"}
+                    onValueChange={(v) =>
+                      updateMutation.mutate({ id: p.id, nav_parent: v === "top" ? null : v })
+                    }
+                  >
+                    <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {NAV_PARENTS.map((c) => (
+                        <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <Button size="sm" className="gap-1" onClick={() => launchLiveEdit(`/p/${p.slug}`)}>
+                  <Wand2 size={13} /> Live edit
+                </Button>
                 <Button size="sm" variant="outline" asChild className="gap-1">
-                  <Link to={`/p/${p.slug}`}><ExternalLink size={13} /> View / Edit</Link>
+                  <Link to={`/p/${p.slug}`}><ExternalLink size={13} /> View</Link>
                 </Button>
                 <Button
                   size="icon" variant="ghost"

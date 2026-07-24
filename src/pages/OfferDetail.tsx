@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/i18n/LanguageContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import EditableText from "@/components/editable/EditableText";
 
 const OfferDetail = () => {
   const { serviceArea, offerSlug } = useParams();
@@ -24,6 +25,7 @@ const OfferDetail = () => {
   };
 
   const config = areaConfig[serviceArea as string];
+  const k = (s: string) => `offer.${serviceArea}.${offerSlug}.${s}`;
 
   if (!offer || !config) {
     return (
@@ -61,10 +63,10 @@ const OfferDetail = () => {
             className="max-w-3xl"
           >
             <h1 className={`text-3xl md:text-4xl lg:text-5xl leading-tight mb-4 ${config.textOn}`}>
-              {offer.title}
+              <EditableText contentKey={k("title")} defaultValue={offer.title} as="span" />
             </h1>
             <p className={`text-lg leading-relaxed ${config.textOn} opacity-80 max-w-2xl`}>
-              {offer.summary}
+              <EditableText contentKey={k("summary")} defaultValue={offer.summary} as="span" />
             </p>
           </motion.div>
         </div>
@@ -85,7 +87,7 @@ const OfferDetail = () => {
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.1 }}
                   >
-                    {para}
+                    <EditableText contentKey={k(`desc.${i}`)} defaultValue={para} as="span" />
                   </motion.p>
                 ))}
               </div>
@@ -99,7 +101,7 @@ const OfferDetail = () => {
                   {offer.keyPoints.map((point: string, i: number) => (
                     <li key={i} className="flex items-start gap-3 text-sm text-foreground">
                       <CheckCircle2 className="text-primary mt-0.5 flex-shrink-0" size={16} />
-                      {point}
+                      <EditableText contentKey={k(`keyPoint.${i}`)} defaultValue={point} as="span" />
                     </li>
                   ))}
                 </ul>
@@ -125,7 +127,7 @@ const OfferDetail = () => {
                   className="bg-background rounded-2xl p-6 border border-border/50 flex items-start gap-3"
                 >
                   <div className={`w-2.5 h-2.5 rounded-full mt-1 flex-shrink-0 ${config.accent}`} />
-                  <p className="text-sm text-foreground">{item}</p>
+                  <p className="text-sm text-foreground"><EditableText contentKey={k(`whoFor.${i}`)} defaultValue={item} as="span" /></p>
                 </motion.div>
               ))}
             </div>
@@ -149,7 +151,7 @@ const OfferDetail = () => {
                   className="flex items-start gap-3"
                 >
                   <CheckCircle2 className="text-primary mt-0.5 flex-shrink-0" size={16} />
-                  <p className="text-sm text-foreground">{outcome}</p>
+                  <p className="text-sm text-foreground"><EditableText contentKey={k(`outcome.${i}`)} defaultValue={outcome} as="span" /></p>
                 </motion.div>
               ))}
             </div>
