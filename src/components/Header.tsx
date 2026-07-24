@@ -21,22 +21,28 @@ const Header = ({ hidelogo = false }: { hidelogo?: boolean }) => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const { data: customNav = [] } = useCustomNavPages();
+  const customUnder = (parent: string) =>
+    customNav
+      .filter((c) => (c.nav_parent || "").toLowerCase() === parent)
+      .map((c) => ({ label: c.title, path: `/p/${c.slug}` }));
+  const topLevelCustom = customNav.filter((c) => !c.nav_parent);
+
   const serviceSubLinks = [
     { label: t.nav.education, path: "/education" },
     { label: t.nav.therapy, path: "/therapy" },
     { label: t.nav.families, path: "/families" },
     { label: t.nav.organisations, path: "/organisations" },
     { label: t.nav.supervision, path: "/supervision" },
+    ...customUnder("services"),
   ];
-
-  const { data: customNav = [] } = useCustomNavPages();
 
   const navLinks = [
     { label: t.nav.services, path: "/services", children: serviceSubLinks },
-    { label: "Courses", path: "/courses" },
-    { label: "Insights", path: "/insights" },
-    { label: (t as any).about?.tagline || "About Us", path: "/about" },
-    ...customNav.map((c) => ({ label: c.title, path: `/p/${c.slug}` })),
+    { label: "Courses", path: "/courses", children: customUnder("courses").length ? customUnder("courses") : undefined },
+    { label: "Insights", path: "/insights", children: customUnder("insights").length ? customUnder("insights") : undefined },
+    { label: (t as any).about?.tagline || "About Us", path: "/about", children: customUnder("about").length ? customUnder("about") : undefined },
+    ...topLevelCustom.map((c) => ({ label: c.title, path: `/p/${c.slug}` })),
   ];
 
   const portalEntries = [
