@@ -220,7 +220,7 @@ const CustomPagesManager = () => {
                 <p className="text-xs text-muted-foreground mt-1">/p/{p.slug}</p>
               </div>
 
-              <div className="flex items-center gap-4">
+              <div className="flex flex-wrap items-center gap-3">
                 <label className="flex items-center gap-2 text-xs text-muted-foreground">
                   <Switch
                     checked={p.in_nav}
@@ -235,8 +235,26 @@ const CustomPagesManager = () => {
                   />
                   Published
                 </label>
+                <div className="min-w-[180px]">
+                  <Select
+                    value={p.nav_parent ?? "top"}
+                    onValueChange={(v) =>
+                      updateMutation.mutate({ id: p.id, nav_parent: v === "top" ? null : v })
+                    }
+                  >
+                    <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {NAV_PARENTS.map((c) => (
+                        <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <Button size="sm" className="gap-1" onClick={() => launchLiveEdit(`/p/${p.slug}`)}>
+                  <Wand2 size={13} /> Live edit
+                </Button>
                 <Button size="sm" variant="outline" asChild className="gap-1">
-                  <Link to={`/p/${p.slug}`}><ExternalLink size={13} /> View / Edit</Link>
+                  <Link to={`/p/${p.slug}`}><ExternalLink size={13} /> View</Link>
                 </Button>
                 <Button
                   size="icon" variant="ghost"
