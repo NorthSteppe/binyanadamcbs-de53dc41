@@ -172,6 +172,18 @@ const CustomPagesManager = () => {
                 </SelectContent>
               </Select>
             </div>
+            <div>
+              <Label>Nav location</Label>
+              <Select value={navParent} onValueChange={setNavParent}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {NAV_PARENTS.map((c) => (
+                    <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-[11px] text-muted-foreground mt-1">Where the link appears in the top nav bar (only if "In nav" is on).</p>
+            </div>
           </div>
           <div className="mt-4">
             <Button onClick={() => createMutation.mutate()} disabled={createMutation.isPending}>
