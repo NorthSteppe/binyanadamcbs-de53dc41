@@ -1,0 +1,2 @@
+ALTER TABLE public.custom_pages ADD COLUMN IF NOT EXISTS nav_parent text;
+COMMENT ON COLUMN public.custom_pages.nav_parent IS 'Where in the nav to place this page: null = top-level; or a slug like services, portals, about';
