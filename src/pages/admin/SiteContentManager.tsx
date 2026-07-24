@@ -190,6 +190,25 @@ const SiteContentManager = () => {
               </Button>
             ))}
           </div>
+
+          <div className="mt-5 pt-5 border-t border-border">
+            <p className="text-sm font-medium text-foreground mb-1">Edit any page by URL</p>
+            <p className="text-xs text-muted-foreground mb-2">
+              Works for detail pages like <code>/therapy/act-therapy</code>, <code>/p/&lt;slug&gt;</code>, insights articles, courses — anything on the site.
+            </p>
+            <div className="flex gap-2">
+              <Input
+                value={customUrl}
+                onChange={(e) => setCustomUrl(e.target.value)}
+                onKeyDown={(e) => { if (e.key === "Enter") launchCustom(); }}
+                placeholder="/therapy/act-therapy"
+                className="max-w-sm"
+              />
+              <Button size="sm" className="gap-1.5" onClick={launchCustom}>
+                <ArrowRight size={13} /> Open in editor
+              </Button>
+            </div>
+          </div>
         </div>
 
         {isLoading && <p className="text-muted-foreground">Loading…</p>}
