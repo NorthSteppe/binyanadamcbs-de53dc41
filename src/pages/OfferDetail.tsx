@@ -25,6 +25,7 @@ const OfferDetail = () => {
   };
 
   const config = areaConfig[serviceArea as string];
+  const k = (s: string) => `offer.${serviceArea}.${offerSlug}.${s}`;
 
   if (!offer || !config) {
     return (
