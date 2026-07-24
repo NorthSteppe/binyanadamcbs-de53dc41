@@ -16,7 +16,7 @@ const TeamMemberProfile = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("team_members")
-        .select("*")
+        .select("id,name,role,bio,initials,slug,avatar_url,display_order,is_active,credentials,signature_url,social_linkedin,social_twitter,social_website,user_id,long_bio,profile_image_url")
         .eq("slug", slug!)
         .eq("is_active", true)
         .maybeSingle();
