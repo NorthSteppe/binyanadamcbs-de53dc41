@@ -120,11 +120,19 @@ const SiteContentManager = () => {
   const { data: items, isLoading } = useSiteContent();
   const { setEditMode } = useEditMode();
   const navigate = useNavigate();
+  const [customUrl, setCustomUrl] = useState("");
 
   const launchEditor = (path: string) => {
     setEditMode(true);
     navigate(path);
     toast.success("Live editor enabled — click any text or image to style it");
+  };
+
+  const launchCustom = () => {
+    let path = customUrl.trim();
+    if (!path) return;
+    if (!path.startsWith("/")) path = "/" + path;
+    launchEditor(path);
   };
 
   return (
