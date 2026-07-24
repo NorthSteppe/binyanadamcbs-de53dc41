@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/i18n/LanguageContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import EditableText from "@/components/editable/EditableText";
 
 const OfferDetail = () => {
   const { serviceArea, offerSlug } = useParams();
