@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate, Navigate } from "react-router-dom";
+import { Link, useNavigate, Navigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,13 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useAuth } from "@/hooks/useAuth";
 
+// Only same-origin relative paths are safe to redirect to after sign-in.
+const safeNext = (value: string | null): string | null => {
+  if (!value) return null;
+  if (!value.startsWith("/") || value.startsWith("//")) return null;
+  return value;
+};
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,8 +27,11 @@ const Login = () => {
   const { toast } = useToast();
   const { t } = useLanguage();
   const { user, isAdmin, isTeamMember, roles, loading: authLoading } = useAuth();
+  const [searchParams] = useSearchParams();
+  const next = safeNext(searchParams.get("next"));
 
   if (!authLoading && user) {
+    if (next) return <Navigate to={next} replace />;
     if (isAdmin) return <Navigate to="/admin" replace />;
     if (isTeamMember) return <Navigate to="/staff" replace />;
     if (roles.includes("supervisee")) return <Navigate to="/supervisee" replace />;
@@ -29,6 +39,7 @@ const Login = () => {
   }
 
   const getRedirectPath = async (userId: string) => {
+    if (next) return next;
     const { data } = await supabase.from("user_roles").select("role").eq("user_id", userId);
     const roles = data?.map(r => r.role) || [];
     if (roles.includes("admin")) return "/admin";
@@ -52,9 +63,10 @@ const Login = () => {
   };
 
   const handleGoogleLogin = async () => {
-    const { error } = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
-    });
+    const redirect_uri = next
+      ? `${window.location.origin}${next}`
+      : window.location.origin;
+    const { error } = await lovable.auth.signInWithOAuth("google", { redirect_uri });
     if (error) {
       toast({ title: "Google login failed", description: String(error), variant: "destructive" });
     }
@@ -118,7 +130,12 @@ const Login = () => {
             </form>
             <p className="text-sm text-muted-foreground text-center mt-8">
               {t.login.noAccount}{" "}
-              <Link to="/signup" className="text-foreground font-medium hover:underline">{t.login.signUpLink}</Link>
+              <Link
+                to={next ? `/signup?next=${encodeURIComponent(next)}` : "/signup"}
+                className="text-foreground font-medium hover:underline"
+              >
+                {t.login.signUpLink}
+              </Link>
             </p>
           </div>
         </motion.div>
