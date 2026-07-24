@@ -127,7 +127,7 @@ const OfferDetail = () => {
                   className="bg-background rounded-2xl p-6 border border-border/50 flex items-start gap-3"
                 >
                   <div className={`w-2.5 h-2.5 rounded-full mt-1 flex-shrink-0 ${config.accent}`} />
-                  <p className="text-sm text-foreground">{item}</p>
+                  <p className="text-sm text-foreground"><EditableText contentKey={k(`whoFor.${i}`)} defaultValue={item} as="span" /></p>
                 </motion.div>
               ))}
             </div>
