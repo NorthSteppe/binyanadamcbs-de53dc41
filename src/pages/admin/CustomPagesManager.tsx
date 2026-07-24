@@ -55,6 +55,7 @@ const CustomPagesManager = () => {
     navigate(path);
     toast.success("Live editor enabled — click any text or image to edit");
   };
+  const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [subtitle, setSubtitle] = useState("");
   const [type, setType] = useState("custom");
