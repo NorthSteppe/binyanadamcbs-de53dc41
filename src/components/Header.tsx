@@ -37,7 +37,7 @@ const Header = ({ hidelogo = false }: { hidelogo?: boolean }) => {
     ...customUnder("services"),
   ];
 
-  const navLinks = [
+  const navLinks: { label: string; path: string; children?: { label: string; path: string }[] }[] = [
     { label: t.nav.services, path: "/services", children: serviceSubLinks },
     { label: "Courses", path: "/courses", children: customUnder("courses").length ? customUnder("courses") : undefined },
     { label: "Insights", path: "/insights", children: customUnder("insights").length ? customUnder("insights") : undefined },
