@@ -33,6 +33,7 @@ import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 import Unsubscribe from "./pages/Unsubscribe";
 import Trust from "./pages/Trust";
+import OAuthConsent from "./pages/OAuthConsent";
 import SearchPage from "./pages/Search";
 import ScrollToTop from "./components/ScrollToTop";
 // Client portal
@@ -185,6 +186,7 @@ const App = () => (
                   <Route path="/reset-password" element={<ResetPassword />} />
                   <Route path="/unsubscribe" element={<Unsubscribe />} />
                   <Route path="/trust" element={<Trust />} />
+                  <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
                   <Route path="/search" element={<SearchPage />} />
                   {/* Blog / Insights */}
                   <Route path="/insights" element={<InsightsHub />} />

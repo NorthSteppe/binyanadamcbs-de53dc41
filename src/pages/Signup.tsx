@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate, Navigate } from "react-router-dom";
+import { Link, useNavigate, Navigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,6 +14,12 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useAuth } from "@/hooks/useAuth";
 
+const safeNext = (value: string | null): string | null => {
+  if (!value) return null;
+  if (!value.startsWith("/") || value.startsWith("//")) return null;
+  return value;
+};
+
 const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,6 +32,12 @@ const Signup = () => {
   const { toast } = useToast();
   const { t } = useLanguage();
   const { user, isAdmin, isTeamMember, roles, loading: authLoading } = useAuth();
+
+  const [searchParams] = useSearchParams();
+  const next = safeNext(searchParams.get("next"));
+  const emailRedirectTo = next
+    ? `${window.location.origin}${next}`
+    : `${window.location.origin}/login`;
 
   useEffect(() => {
     if (!authLoading && user) {
@@ -45,6 +57,7 @@ const Signup = () => {
   }, [user, authLoading]);
 
   if (!authLoading && user) {
+    if (next) return <Navigate to={next} replace />;
     if (isAdmin) return <Navigate to="/admin" replace />;
     if (isTeamMember) return <Navigate to="/staff" replace />;
     if (roles.includes("supervisee")) return <Navigate to="/supervisee" replace />;
@@ -57,7 +70,7 @@ const Signup = () => {
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { full_name: fullName } },
+      options: { data: { full_name: fullName }, emailRedirectTo },
     });
     setLoading(false);
     if (error) {
@@ -73,7 +86,7 @@ const Signup = () => {
         }
       }
       toast({ title: t.signup.successTitle, description: (accountType === "team" || accountType === "supervisee") ? "Account created. Your access request is pending admin approval." : t.signup.successDescription });
-      navigate("/login");
+      navigate(next ? `/login?next=${encodeURIComponent(next)}` : "/login");
     }
   };
 
@@ -86,9 +99,10 @@ const Signup = () => {
     if (googleRoleChoice === "team" || googleRoleChoice === "supervisee") {
       sessionStorage.setItem("pending_google_role", googleRoleChoice);
     }
-    const { error } = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
-    });
+    const redirect_uri = next
+      ? `${window.location.origin}${next}`
+      : window.location.origin;
+    const { error } = await lovable.auth.signInWithOAuth("google", { redirect_uri });
     if (error) {
       toast({ title: "Google signup failed", description: String(error), variant: "destructive" });
     }
