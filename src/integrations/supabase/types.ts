@@ -1193,6 +1193,48 @@ export type Database = {
         }
         Relationships: []
       }
+      custom_pages: {
+        Row: {
+          category_type: string
+          created_at: string
+          display_order: number
+          hero_image: string
+          id: string
+          in_nav: boolean
+          is_published: boolean
+          slug: string
+          subtitle: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category_type?: string
+          created_at?: string
+          display_order?: number
+          hero_image?: string
+          id?: string
+          in_nav?: boolean
+          is_published?: boolean
+          slug: string
+          subtitle?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category_type?: string
+          created_at?: string
+          display_order?: number
+          hero_image?: string
+          id?: string
+          in_nav?: boolean
+          is_published?: boolean
+          slug?: string
+          subtitle?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       daily_plans: {
         Row: {
           created_at: string
