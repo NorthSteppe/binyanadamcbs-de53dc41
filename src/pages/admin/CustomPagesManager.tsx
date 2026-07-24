@@ -51,6 +51,7 @@ const CustomPagesManager = () => {
   const [slug, setSlug] = useState("");
   const [subtitle, setSubtitle] = useState("");
   const [type, setType] = useState("custom");
+  const [navParent, setNavParent] = useState("top");
 
   const { data: pages = [], isLoading } = useQuery({
     queryKey: ["custom-pages-admin"],
@@ -72,11 +73,12 @@ const CustomPagesManager = () => {
       const { error } = await (supabase as any).from("custom_pages").insert({
         title, slug: finalSlug, subtitle, category_type: type,
         display_order: nextOrder, in_nav: type === "nav", is_published: true,
+        nav_parent: navParent === "top" ? null : navParent,
       });
       if (error) throw error;
     },
     onSuccess: () => {
-      setTitle(""); setSlug(""); setSubtitle(""); setType("custom");
+      setTitle(""); setSlug(""); setSubtitle(""); setType("custom"); setNavParent("top");
       qc.invalidateQueries({ queryKey: ["custom-pages-admin"] });
       qc.invalidateQueries({ queryKey: ["custom-pages-nav"] });
       toast.success("Page created — click 'View' to edit its content");
