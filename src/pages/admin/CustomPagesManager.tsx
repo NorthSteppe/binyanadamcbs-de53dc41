@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
@@ -11,8 +11,9 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { ArrowDown, ArrowUp, ExternalLink, Plus, Trash2 } from "lucide-react";
+import { ArrowDown, ArrowUp, ExternalLink, Plus, Trash2, Wand2 } from "lucide-react";
 import { toast } from "sonner";
+import { useEditMode } from "@/hooks/useEditMode";
 
 interface CustomPage {
   id: string;
