@@ -48,7 +48,13 @@ const slugify = (s: string) =>
 
 const CustomPagesManager = () => {
   const qc = useQueryClient();
-  const [title, setTitle] = useState("");
+  const navigate = useNavigate();
+  const { setEditMode } = useEditMode();
+  const launchLiveEdit = (path: string) => {
+    setEditMode(true);
+    navigate(path);
+    toast.success("Live editor enabled — click any text or image to edit");
+  };
   const [slug, setSlug] = useState("");
   const [subtitle, setSubtitle] = useState("");
   const [type, setType] = useState("custom");
