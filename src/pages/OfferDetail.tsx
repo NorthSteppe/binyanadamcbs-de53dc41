@@ -63,10 +63,10 @@ const OfferDetail = () => {
             className="max-w-3xl"
           >
             <h1 className={`text-3xl md:text-4xl lg:text-5xl leading-tight mb-4 ${config.textOn}`}>
-              {offer.title}
+              <EditableText contentKey={k("title")} defaultValue={offer.title} as="span" />
             </h1>
             <p className={`text-lg leading-relaxed ${config.textOn} opacity-80 max-w-2xl`}>
-              {offer.summary}
+              <EditableText contentKey={k("summary")} defaultValue={offer.summary} as="span" />
             </p>
           </motion.div>
         </div>
