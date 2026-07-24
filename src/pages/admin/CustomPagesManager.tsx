@@ -24,6 +24,7 @@ interface CustomPage {
   hero_image: string;
   in_nav: boolean;
   is_published: boolean;
+  nav_parent: string | null;
 }
 
 const CATEGORY_TYPES = [
@@ -31,6 +32,14 @@ const CATEGORY_TYPES = [
   { value: "insight", label: "Insight" },
   { value: "nav", label: "Nav item" },
   { value: "custom", label: "Custom" },
+];
+
+const NAV_PARENTS = [
+  { value: "top", label: "Top level (alongside About Us)" },
+  { value: "services", label: "Under Services" },
+  { value: "courses", label: "Under Courses" },
+  { value: "insights", label: "Under Insights" },
+  { value: "about", label: "Under About Us" },
 ];
 
 const slugify = (s: string) =>
