@@ -7,7 +7,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Upload, Save, Wand2, ExternalLink, LayoutGrid } from "lucide-react";
+import { Upload, Save, Wand2, ExternalLink, LayoutGrid, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 
 const PUBLIC_PAGES: { label: string; path: string }[] = [
