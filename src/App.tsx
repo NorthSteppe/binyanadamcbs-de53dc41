@@ -220,6 +220,7 @@ const App = () => (
                   <Route path="/admin/team-requests" element={<AdminRoute><TeamRequests /></AdminRoute>} />
                   <Route path="/admin/hero-images" element={<AdminRoute><HeroImageManager /></AdminRoute>} />
                   <Route path="/admin/site-content" element={<AdminRoute><SiteContentManager /></AdminRoute>} />
+                  <Route path="/admin/edit" element={<AdminRoute><SiteContentManager /></AdminRoute>} />
                   <Route path="/admin/team-members" element={<AdminRoute><TeamMemberManager /></AdminRoute>} />
                   <Route path="/admin/service-options" element={<AdminRoute><ServiceOptionsManager /></AdminRoute>} />
                   <Route path="/admin/users" element={<AdminRoute><UnifiedUserManagement /></AdminRoute>} />
