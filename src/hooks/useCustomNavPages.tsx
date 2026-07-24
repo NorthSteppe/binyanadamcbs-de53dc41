@@ -6,6 +6,7 @@ export interface CustomNavPage {
   slug: string;
   title: string;
   display_order: number;
+  nav_parent: string | null;
 }
 
 export const useCustomNavPages = () => {
@@ -14,7 +15,7 @@ export const useCustomNavPages = () => {
     queryFn: async () => {
       const { data, error } = await (supabase as any)
         .from("custom_pages")
-        .select("id, slug, title, display_order")
+        .select("id, slug, title, display_order, nav_parent")
         .eq("in_nav", true)
         .eq("is_published", true)
         .order("display_order", { ascending: true });
