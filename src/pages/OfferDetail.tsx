@@ -101,7 +101,7 @@ const OfferDetail = () => {
                   {offer.keyPoints.map((point: string, i: number) => (
                     <li key={i} className="flex items-start gap-3 text-sm text-foreground">
                       <CheckCircle2 className="text-primary mt-0.5 flex-shrink-0" size={16} />
-                      {point}
+                      <EditableText contentKey={k(`keyPoint.${i}`)} defaultValue={point} as="span" />
                     </li>
                   ))}
                 </ul>
