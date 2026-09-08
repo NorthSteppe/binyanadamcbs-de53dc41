@@ -2,14 +2,15 @@ import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
-import { Loader2, Paperclip, Upload, FileText, FolderOpen } from "lucide-react";
+import { Loader2, Paperclip, Upload, FileText, FolderOpen, UserPlus } from "lucide-react";
 
-interface ClientOpt { id: string; name: string }
+interface ClientOpt { id: string; name: string; manual?: boolean }
 interface DraftRow { id: string; file_name: string; file_url: string; created_at: string }
 
 interface Props {
@@ -32,19 +33,53 @@ const FBAAttachDialog = ({ open, onOpenChange, reportHtml, reportData, clientNam
   const [drafts, setDrafts] = useState<DraftRow[]>([]);
   const [loadingDrafts, setLoadingDrafts] = useState(false);
 
+  const [newName, setNewName] = useState("");
+  const [creating, setCreating] = useState(false);
+
+  const isManual = clientId.startsWith("manual:");
+  const rawId = isManual ? clientId.slice("manual:".length) : clientId;
+  const targetCols = isManual ? { manual_client_id: rawId } : { client_id: rawId };
+  const folderId = isManual ? `manual_${rawId}` : rawId;
+
+  const loadClients = async () => {
+    const [{ data: profs }, { data: manuals }] = await Promise.all([
+      supabase.from("profiles").select("id, full_name").order("full_name"),
+      supabase.from("manual_clients" as any).select("id, full_name").order("full_name"),
+    ]);
+    const list: ClientOpt[] = [
+      ...((profs as any[]) || []).map((c: any) => ({ id: c.id, name: c.full_name || "Unnamed" })),
+      ...((manuals as any[]) || []).map((c: any) => ({ id: `manual:${c.id}`, name: `${c.full_name || "Unnamed"} (not registered)`, manual: true })),
+    ];
+    setClients(list);
+  };
+
   useEffect(() => {
     if (!open) return;
-    supabase.from("profiles").select("id, full_name").order("full_name").then(({ data }) => {
-      if (data) setClients(data.map((c: any) => ({ id: c.id, name: c.full_name || "Unnamed" })));
-    });
+    loadClients();
   }, [open]);
+
+  const handleCreateManual = async () => {
+    if (!newName.trim() || !user) return;
+    setCreating(true);
+    const { data, error } = await supabase
+      .from("manual_clients" as any)
+      .insert({ full_name: newName.trim(), created_by: user.id } as any)
+      .select("id")
+      .single();
+    setCreating(false);
+    if (error || !data) { toast.error("Could not add client: " + (error?.message || "")); return; }
+    await loadClients();
+    setClientId(`manual:${(data as any).id}`);
+    setNewName("");
+    toast.success("Client added — you can now attach the report");
+  };
 
   useEffect(() => {
     if (mode !== "load" || !clientId) { setDrafts([]); return; }
     setLoadingDrafts(true);
     supabase.from("client_documents")
       .select("id, file_name, file_url, created_at")
-      .eq("client_id", clientId)
+      .eq(isManual ? "manual_client_id" : "client_id", rawId)
       .eq("file_type", "fba-draft-json")
       .order("created_at", { ascending: false })
       .then(({ data }) => {
@@ -59,8 +94,8 @@ const FBAAttachDialog = ({ open, onOpenChange, reportHtml, reportData, clientNam
     try {
       const ts = Date.now();
       const base = `FBA-${(clientNameHint || "report").replace(/[^a-zA-Z0-9_-]+/g, "_")}-${ts}`;
-      const htmlPath = `${clientId}/fba-reports/${base}.html`;
-      const jsonPath = `${clientId}/fba-reports/${base}.fba.json`;
+      const htmlPath = `${folderId}/fba-reports/${base}.html`;
+      const jsonPath = `${folderId}/fba-reports/${base}.fba.json`;
       const htmlBlob = new Blob([reportHtml], { type: "text/html" });
       const jsonBlob = new Blob([JSON.stringify(reportData)], { type: "application/json" });
       const bucket = supabase.storage.from("client-documents");
@@ -71,9 +106,9 @@ const FBAAttachDialog = ({ open, onOpenChange, reportHtml, reportData, clientNam
       if (h.error) throw h.error;
       if (j.error) throw j.error;
       const { error: insErr } = await supabase.from("client_documents").insert([
-        { client_id: clientId, uploaded_by: user.id, file_name: `${base}.html`, file_url: htmlPath, file_type: "fba-report-html", notes: "FBA report (printable)" },
-        { client_id: clientId, uploaded_by: user.id, file_name: `${base}.fba.json`, file_url: jsonPath, file_type: "fba-draft-json", notes: "FBA editable draft — re-uploadable into the tool" },
-      ]);
+        { ...targetCols, uploaded_by: user.id, file_name: `${base}.html`, file_url: htmlPath, file_type: "fba-report-html", notes: "FBA report (printable)" },
+        { ...targetCols, uploaded_by: user.id, file_name: `${base}.fba.json`, file_url: jsonPath, file_type: "fba-draft-json", notes: "FBA editable draft — re-uploadable into the tool" },
+      ] as any);
       if (insErr) throw insErr;
       toast.success("Report attached to client documents");
       if (clearAfter) { onClearDraft(); }
@@ -133,6 +168,23 @@ const FBAAttachDialog = ({ open, onOpenChange, reportHtml, reportData, clientNam
               </SelectContent>
             </Select>
           </div>
+
+          <div className="space-y-1.5 rounded-lg border border-dashed p-2.5">
+            <Label className="text-xs">Client not on the website? Add them here</Label>
+            <div className="flex gap-2">
+              <Input
+                value={newName}
+                onChange={(e) => setNewName(e.target.value)}
+                placeholder="Full name"
+                className="h-8 text-xs"
+              />
+              <Button size="sm" variant="outline" onClick={handleCreateManual} disabled={creating || !newName.trim()} className="gap-1.5">
+                {creating ? <Loader2 className="animate-spin" size={13} /> : <UserPlus size={13} />} Add
+              </Button>
+            </div>
+            <p className="text-[10px] text-muted-foreground">Creates an offline client record so you can save the report against them.</p>
+          </div>
+
 
           {mode === "attach" && (
             <label className="flex items-center gap-2 text-xs text-muted-foreground">
