@@ -29,18 +29,8 @@ const Contact = () => {
     const message = data.get("message") as string;
 
     try {
-      await supabase.functions.invoke("send-transactional-email", {
-        body: {
-          templateName: "notification",
-          recipientEmail: "adamdayan@bacbs.com",
-          templateData: {
-            subject: `New contact form message from ${name}`,
-            title: "New Contact Form Submission",
-            message: `**From:** ${name} (${email})\n**Interested in:** ${service || "Not specified"}\n\n${message}`,
-            ctaUrl: `mailto:${email}`,
-            ctaLabel: `Reply to ${name}`,
-          },
-        },
+      await supabase.functions.invoke("send-contact-message", {
+        body: { name, email, service, message },
       });
       toast({ title: t.contact.successTitle, description: t.contact.successDescription });
       form.reset();

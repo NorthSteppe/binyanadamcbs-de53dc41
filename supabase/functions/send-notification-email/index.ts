@@ -1,4 +1,5 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { sendTemplateEmail } from '../_shared/transactional-email-templates/send-email.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -93,24 +94,42 @@ Deno.serve(async (req) => {
     })
   }
 
-  // --- Send via transactional email system ---
+  // --- Send via Lovable's managed email API ---
   const idempotencyKey = `notification-${body.user_id}-${Date.now()}`
 
-  const { error: sendError } = await serviceClient.functions.invoke('send-transactional-email', {
-    body: {
-      templateName: 'notification',
-      recipientEmail: user.email,
+  try {
+    const result = await sendTemplateEmail('notification', user.email, {
       idempotencyKey,
       templateData: {
         title: body.title,
         message: body.message,
         link: body.link,
       },
-    },
-  })
+    })
 
-  if (sendError) {
-    console.error('Failed to send notification email', { error: sendError })
+    const { error: logError } = await serviceClient.from('email_send_log').insert({
+      template_name: 'notification',
+      recipient_email: user.email,
+      status: result.sent ? 'sent' : 'suppressed',
+    })
+    if (logError) console.error('Failed to write email_send_log', { error: logError })
+
+    if (!result.sent) {
+      return new Response(JSON.stringify({ success: false, reason: result.reason }), {
+        status: 200,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    console.error('Failed to send notification email', { error: message })
+    const { error: logError } = await serviceClient.from('email_send_log').insert({
+      template_name: 'notification',
+      recipient_email: user.email,
+      status: 'failed',
+      error_message: message.slice(0, 1000),
+    })
+    if (logError) console.error('Failed to write email_send_log', { error: logError })
     return new Response(JSON.stringify({ error: 'Failed to send email' }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
