@@ -14,16 +14,8 @@ const NewsletterSignup = ({ variant = "default" }: { variant?: "default" | "inli
     if (!email) return;
     setLoading(true);
     try {
-      await supabase.functions.invoke("send-transactional-email", {
-        body: {
-          templateName: "notification",
-          recipientEmail: "adamdayan@bacbs.com",
-          templateData: {
-            subject: "New Newsletter Subscriber",
-            title: "New Newsletter Signup",
-            message: `${email} has subscribed to the Blueprint CBS newsletter.`,
-          },
-        },
+      await supabase.functions.invoke("send-newsletter-signup", {
+        body: { email },
       });
       toast.success("Thank you! You'll receive practical insights, not theory.");
       setEmail("");
