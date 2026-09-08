@@ -32,19 +32,53 @@ const FBAAttachDialog = ({ open, onOpenChange, reportHtml, reportData, clientNam
   const [drafts, setDrafts] = useState<DraftRow[]>([]);
   const [loadingDrafts, setLoadingDrafts] = useState(false);
 
+  const [newName, setNewName] = useState("");
+  const [creating, setCreating] = useState(false);
+
+  const isManual = clientId.startsWith("manual:");
+  const rawId = isManual ? clientId.slice("manual:".length) : clientId;
+  const targetCols = isManual ? { manual_client_id: rawId } : { client_id: rawId };
+  const folderId = isManual ? `manual_${rawId}` : rawId;
+
+  const loadClients = async () => {
+    const [{ data: profs }, { data: manuals }] = await Promise.all([
+      supabase.from("profiles").select("id, full_name").order("full_name"),
+      supabase.from("manual_clients" as any).select("id, full_name").order("full_name"),
+    ]);
+    const list: ClientOpt[] = [
+      ...((profs as any[]) || []).map((c: any) => ({ id: c.id, name: c.full_name || "Unnamed" })),
+      ...((manuals as any[]) || []).map((c: any) => ({ id: `manual:${c.id}`, name: `${c.full_name || "Unnamed"} (not registered)`, manual: true })),
+    ];
+    setClients(list);
+  };
+
   useEffect(() => {
     if (!open) return;
-    supabase.from("profiles").select("id, full_name").order("full_name").then(({ data }) => {
-      if (data) setClients(data.map((c: any) => ({ id: c.id, name: c.full_name || "Unnamed" })));
-    });
+    loadClients();
   }, [open]);
+
+  const handleCreateManual = async () => {
+    if (!newName.trim() || !user) return;
+    setCreating(true);
+    const { data, error } = await supabase
+      .from("manual_clients" as any)
+      .insert({ full_name: newName.trim(), created_by: user.id } as any)
+      .select("id")
+      .single();
+    setCreating(false);
+    if (error || !data) { toast.error("Could not add client: " + (error?.message || "")); return; }
+    await loadClients();
+    setClientId(`manual:${(data as any).id}`);
+    setNewName("");
+    toast.success("Client added — you can now attach the report");
+  };
 
   useEffect(() => {
     if (mode !== "load" || !clientId) { setDrafts([]); return; }
     setLoadingDrafts(true);
     supabase.from("client_documents")
       .select("id, file_name, file_url, created_at")
-      .eq("client_id", clientId)
+      .eq(isManual ? "manual_client_id" : "client_id", rawId)
       .eq("file_type", "fba-draft-json")
       .order("created_at", { ascending: false })
       .then(({ data }) => {
@@ -59,8 +93,8 @@ const FBAAttachDialog = ({ open, onOpenChange, reportHtml, reportData, clientNam
     try {
       const ts = Date.now();
       const base = `FBA-${(clientNameHint || "report").replace(/[^a-zA-Z0-9_-]+/g, "_")}-${ts}`;
-      const htmlPath = `${clientId}/fba-reports/${base}.html`;
-      const jsonPath = `${clientId}/fba-reports/${base}.fba.json`;
+      const htmlPath = `${folderId}/fba-reports/${base}.html`;
+      const jsonPath = `${folderId}/fba-reports/${base}.fba.json`;
       const htmlBlob = new Blob([reportHtml], { type: "text/html" });
       const jsonBlob = new Blob([JSON.stringify(reportData)], { type: "application/json" });
       const bucket = supabase.storage.from("client-documents");
