@@ -168,6 +168,23 @@ const FBAAttachDialog = ({ open, onOpenChange, reportHtml, reportData, clientNam
             </Select>
           </div>
 
+          <div className="space-y-1.5 rounded-lg border border-dashed p-2.5">
+            <Label className="text-xs">Client not on the website? Add them here</Label>
+            <div className="flex gap-2">
+              <Input
+                value={newName}
+                onChange={(e) => setNewName(e.target.value)}
+                placeholder="Full name"
+                className="h-8 text-xs"
+              />
+              <Button size="sm" variant="outline" onClick={handleCreateManual} disabled={creating || !newName.trim()} className="gap-1.5">
+                {creating ? <Loader2 className="animate-spin" size={13} /> : <UserPlus size={13} />} Add
+              </Button>
+            </div>
+            <p className="text-[10px] text-muted-foreground">Creates an offline client record so you can save the report against them.</p>
+          </div>
+
+
           {mode === "attach" && (
             <label className="flex items-center gap-2 text-xs text-muted-foreground">
               <Checkbox checked={clearAfter} onCheckedChange={(v) => setClearAfter(!!v)} />
