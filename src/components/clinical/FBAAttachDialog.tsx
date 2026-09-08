@@ -105,9 +105,9 @@ const FBAAttachDialog = ({ open, onOpenChange, reportHtml, reportData, clientNam
       if (h.error) throw h.error;
       if (j.error) throw j.error;
       const { error: insErr } = await supabase.from("client_documents").insert([
-        { client_id: clientId, uploaded_by: user.id, file_name: `${base}.html`, file_url: htmlPath, file_type: "fba-report-html", notes: "FBA report (printable)" },
-        { client_id: clientId, uploaded_by: user.id, file_name: `${base}.fba.json`, file_url: jsonPath, file_type: "fba-draft-json", notes: "FBA editable draft — re-uploadable into the tool" },
-      ]);
+        { ...targetCols, uploaded_by: user.id, file_name: `${base}.html`, file_url: htmlPath, file_type: "fba-report-html", notes: "FBA report (printable)" },
+        { ...targetCols, uploaded_by: user.id, file_name: `${base}.fba.json`, file_url: jsonPath, file_type: "fba-draft-json", notes: "FBA editable draft — re-uploadable into the tool" },
+      ] as any);
       if (insErr) throw insErr;
       toast.success("Report attached to client documents");
       if (clearAfter) { onClearDraft(); }
