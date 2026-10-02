@@ -1,34 +1,41 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ArrowRight, Sparkles, X } from "lucide-react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { ArrowLeft, ArrowRight, RotateCcw, X } from "lucide-react";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 
-export interface PathwayOption {
-  label: string;
-  description?: string;
-  action: { type: "route" | "next"; value: string };
-}
-
-export interface PathwaySlide {
+export interface QuizOption {
   id: string;
-  order_index: number;
-  question: string;
-  subtitle: string | null;
-  options: PathwayOption[];
+  step_id: string;
+  label: string;
+  display_order: number;
+  next_step_id: string | null;
+  destination_url: string | null;
+}
+export interface QuizStep {
+  id: string;
+  step_key: string;
+  greeting_text: string | null;
+  heading: string;
+  display_order: number;
   is_start: boolean;
+  is_active: boolean;
 }
 
-interface PathwayQuizProps {
+interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  /** Skip click tracking (admin preview) */
+  preview?: boolean;
 }
 
-export const PathwayQuiz = ({ open, onOpenChange }: PathwayQuizProps) => {
-  const [slides, setSlides] = useState<PathwaySlide[]>([]);
-  const [history, setHistory] = useState<number[]>([]);
+const db = supabase as any;
+
+export const PathwayQuiz = ({ open, onOpenChange, preview }: Props) => {
+  const [steps, setSteps] = useState<QuizStep[]>([]);
+  const [options, setOptions] = useState<QuizOption[]>([]);
+  const [history, setHistory] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -37,142 +44,107 @@ export const PathwayQuiz = ({ open, onOpenChange }: PathwayQuizProps) => {
     let cancelled = false;
     (async () => {
       setLoading(true);
-      const { data } = await supabase
-        .from("pathway_quiz_slides")
-        .select("*")
-        .eq("is_active", true)
-        .order("order_index", { ascending: true });
+      const [s, o] = await Promise.all([
+        db.from("quiz_steps").select("*").eq("is_active", true).order("display_order"),
+        db.from("quiz_options").select("*").order("display_order"),
+      ]);
       if (cancelled) return;
-      const list = (data ?? []) as unknown as PathwaySlide[];
-      setSlides(list);
-      const startIdx = Math.max(0, list.findIndex((s) => s.is_start));
-      setHistory([startIdx === -1 ? 0 : startIdx]);
+      const list: QuizStep[] = s.data ?? [];
+      setSteps(list);
+      setOptions(o.data ?? []);
+      const start = list.find((x) => x.is_start) ?? list[0];
+      setHistory(start ? [start.id] : []);
       setLoading(false);
     })();
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, [open]);
 
-  const currentIdx = history[history.length - 1] ?? 0;
-  const current = slides[currentIdx];
+  const current = steps.find((s) => s.id === history[history.length - 1]);
+  const currentOptions = options.filter((o) => o.step_id === current?.id);
 
-  const handleOption = (opt: PathwayOption) => {
-    if (opt.action.type === "route") {
-      onOpenChange(false);
-      setTimeout(() => navigate(opt.action.value), 200);
+  const choose = (opt: QuizOption) => {
+    if (!preview) db.from("quiz_option_clicks").insert({ option_id: opt.id }).then(() => {});
+    if (opt.next_step_id && steps.some((s) => s.id === opt.next_step_id)) {
+      setHistory((h) => [...h, opt.next_step_id!]);
       return;
     }
-    // next: go to next slide in sequence
-    const next = currentIdx + 1;
-    if (next < slides.length) {
-      setHistory((h) => [...h, next]);
-    } else {
-      onOpenChange(false);
+    onOpenChange(false);
+    if (opt.destination_url) {
+      const url = opt.destination_url;
+      setTimeout(() => (/^https?:\/\//.test(url) ? (window.location.href = url) : navigate(url)), 200);
     }
-  };
-
-  const handleBack = () => {
-    setHistory((h) => (h.length > 1 ? h.slice(0, -1) : h));
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent
-        className="max-w-2xl border-white/20 bg-background/80 p-0 backdrop-blur-2xl sm:rounded-3xl [&>button]:hidden"
-      >
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto border-2 border-[hsl(var(--sky))] bg-[hsl(var(--cream))] p-0 sm:rounded-3xl [&>button]:hidden">
+        <DialogTitle className="sr-only">Find your pathway</DialogTitle>
         <button
           onClick={() => onOpenChange(false)}
-          className="absolute right-4 top-4 z-10 rounded-full p-2 text-muted-foreground transition hover:bg-white/10 hover:text-foreground"
+          className="absolute right-4 top-4 z-10 rounded-full p-2 text-muted-foreground transition hover:bg-[hsl(var(--sky))]/40 hover:text-foreground"
           aria-label="Close"
         >
           <X size={18} />
         </button>
 
-
-
-        <div className="relative overflow-hidden px-6 py-10 sm:px-12 sm:py-14">
-          {/* gradient orb backdrop */}
-          <div className="pointer-events-none absolute -top-32 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-primary/20 blur-3xl" />
-
-          {loading || !current ? (
-            <div className="flex h-72 items-center justify-center">
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <Sparkles size={16} className="animate-pulse" />
-                <span className="text-sm">Preparing your pathway…</span>
-              </div>
-            </div>
+        <div className="px-6 py-10 sm:px-10 sm:py-12">
+          {loading ? (
+            <div className="flex h-64 items-center justify-center text-sm text-muted-foreground">Preparing your pathway…</div>
+          ) : !current ? (
+            <div className="flex h-64 items-center justify-center text-sm text-muted-foreground">The questionnaire isn't available right now.</div>
           ) : (
             <AnimatePresence mode="wait">
               <motion.div
                 key={current.id}
-                initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                exit={{ opacity: 0, y: -24, filter: "blur(8px)" }}
-                transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                className="relative"
+                initial={{ opacity: 0, x: 24 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -24 }}
+                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
               >
-                <div className="mb-6 flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-                  <Sparkles size={12} />
-                  Let's Explore Together
-                  <span className="ml-auto">
-                    Step {history.length}{slides.length ? ` / ${slides.length}` : ""}
-                  </span>
+                <div className="mb-5 text-[11px] font-semibold uppercase tracking-[0.2em] text-primary/70">
+                  Step {history.length}
                 </div>
-
-                <h2 className="font-display text-3xl font-light leading-tight text-foreground sm:text-4xl">
-                  {current.question}
-                </h2>
-                {current.subtitle && (
-                  <p className="mt-3 text-sm text-muted-foreground sm:text-base">
-                    {current.subtitle}
+                {current.greeting_text && (
+                  <p className="mb-5 rounded-2xl border-l-4 border-[hsl(var(--sky))] bg-background/70 p-4 text-sm leading-relaxed text-muted-foreground">
+                    {current.greeting_text}
                   </p>
                 )}
+                <h2 className="font-display text-2xl font-semibold leading-snug text-primary sm:text-3xl">
+                  {current.heading}
+                </h2>
 
-                <div className="mt-8 grid gap-3">
-                  {current.options.map((opt, i) => (
+                <div className="mt-7 grid gap-3">
+                  {currentOptions.map((opt, i) => (
                     <motion.button
-                      key={i}
-                      initial={{ opacity: 0, y: 12 }}
+                      key={opt.id}
+                      initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.08 * i, duration: 0.35 }}
-                      onClick={() => handleOption(opt)}
-                      className="group flex w-full items-center justify-between gap-4 rounded-2xl border border-white/15 bg-white/[0.04] px-5 py-4 text-left transition hover:border-primary/60 hover:bg-white/[0.08]"
+                      transition={{ delay: 0.05 * i, duration: 0.3 }}
+                      onClick={() => choose(opt)}
+                      className="group flex w-full items-center justify-between gap-4 rounded-2xl border border-[hsl(var(--sky))] bg-background px-5 py-4 text-left text-[15px] leading-relaxed text-foreground shadow-sm transition hover:border-primary hover:shadow-md"
                     >
-                      <div className="min-w-0">
-                        <div className="text-[15px] font-medium text-foreground">
-                          {opt.label}
-                        </div>
-                        {opt.description && (
-                          <div className="mt-0.5 text-xs text-muted-foreground">
-                            {opt.description}
-                          </div>
-                        )}
-                      </div>
-                      <ArrowRight
-                        size={18}
-                        className="shrink-0 text-muted-foreground transition group-hover:translate-x-1 group-hover:text-primary"
-                      />
+                      <span>{opt.label}</span>
+                      <ArrowRight size={18} className="shrink-0 text-primary/50 transition group-hover:translate-x-1 group-hover:text-accent" />
                     </motion.button>
                   ))}
                 </div>
 
-                <div className="mt-8 flex items-center justify-between">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleBack}
-                    disabled={history.length <= 1}
-                    className="text-muted-foreground hover:text-foreground"
-                  >
-                    <ArrowLeft size={14} className="mr-1" /> Back
-                  </Button>
+                <div className="mt-8 flex items-center justify-between text-sm">
                   <button
-                    onClick={() => onOpenChange(false)}
-                    className="text-xs text-muted-foreground transition hover:text-foreground"
+                    onClick={() => setHistory((h) => h.slice(0, -1))}
+                    disabled={history.length <= 1}
+                    className="inline-flex items-center gap-1 text-muted-foreground transition hover:text-primary disabled:opacity-0"
                   >
-                    Skip the quiz
+                    <ArrowLeft size={14} /> Back
                   </button>
+                  {history.length > 1 && (
+                    <button
+                      onClick={() => setHistory((h) => h.slice(0, 1))}
+                      className="inline-flex items-center gap-1 text-muted-foreground transition hover:text-primary"
+                    >
+                      <RotateCcw size={14} /> Start again
+                    </button>
+                  )}
                 </div>
               </motion.div>
             </AnimatePresence>
