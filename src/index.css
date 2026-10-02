@@ -32,6 +32,8 @@
 
     --accent: 27 92% 53%;              /* Blueprint orange */
     --accent-foreground: 0 0% 100%;
+    --cream: 40 38% 97%;
+    --sky: 205 70% 88%;
 
     --destructive: 0 72% 50%;
     --destructive-foreground: 0 0% 100%;
@@ -114,6 +116,8 @@
 
     --accent: 27 92% 58%;
     --accent-foreground: 213 64% 10%;
+    --cream: 213 45% 12%;
+    --sky: 205 50% 30%;
 
     --destructive: 0 70% 55%;
     --destructive-foreground: 0 0% 100%;
