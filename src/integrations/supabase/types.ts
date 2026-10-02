@@ -1822,6 +1822,116 @@ export type Database = {
         }
         Relationships: []
       }
+      quiz_option_clicks: {
+        Row: {
+          created_at: string
+          id: string
+          option_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          option_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          option_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_option_clicks_option_id_fkey"
+            columns: ["option_id"]
+            isOneToOne: false
+            referencedRelation: "quiz_options"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quiz_options: {
+        Row: {
+          created_at: string
+          destination_url: string | null
+          display_order: number
+          id: string
+          label: string
+          next_step_id: string | null
+          step_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          destination_url?: string | null
+          display_order?: number
+          id?: string
+          label: string
+          next_step_id?: string | null
+          step_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          destination_url?: string | null
+          display_order?: number
+          id?: string
+          label?: string
+          next_step_id?: string | null
+          step_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_options_next_step_id_fkey"
+            columns: ["next_step_id"]
+            isOneToOne: false
+            referencedRelation: "quiz_steps"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quiz_options_step_id_fkey"
+            columns: ["step_id"]
+            isOneToOne: false
+            referencedRelation: "quiz_steps"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quiz_steps: {
+        Row: {
+          created_at: string
+          display_order: number
+          greeting_text: string | null
+          heading: string
+          id: string
+          is_active: boolean
+          is_start: boolean
+          step_key: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number
+          greeting_text?: string | null
+          heading: string
+          id?: string
+          is_active?: boolean
+          is_start?: boolean
+          step_key: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          greeting_text?: string | null
+          heading?: string
+          id?: string
+          is_active?: boolean
+          is_start?: boolean
+          step_key?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       resources: {
         Row: {
           category: string
