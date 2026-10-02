@@ -7,6 +7,7 @@ import { LanguageProvider } from "@/i18n/LanguageContext";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { EditModeProvider } from "@/hooks/useEditMode";
 import { PreferencesProvider } from "@/hooks/usePreferences";
+import { useEmailNotificationListener } from "@/hooks/useEmailNotificationListener";
 
 import EditModeToggle from "@/components/editable/EditModeToggle";
 
@@ -142,7 +143,8 @@ const queryClient = new QueryClient({
 
 const AppLoader = ({ children }: { children: React.ReactNode }) => {
   const { loading } = useAuth();
-  // Email notifications are now handled server-side via database trigger
+  // Sends email notifications when the user has them enabled
+  useEmailNotificationListener();
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
