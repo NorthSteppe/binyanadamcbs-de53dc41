@@ -88,7 +88,7 @@ export const translations = {
     education: {
       title: "Holding behaviour with dignity, in schools",
       subtitle: "Schools & education settings",
-      tagline: "A whole-school culture where children are understood before they're managed. We help leaders build systems that are humane, consistent, and quietly transformative.",
+      tagline: "A whole-school culture where children are understood before they're managed.",
       ctaText: "Start a school conversation",
       services: [
         { name: "Whole-School PBS Framework Design", slug: "whole-school-pbs" },
@@ -105,27 +105,27 @@ export const translations = {
       packages: [
         {
           name: "Starter School Package",
-          description: "An initial assessment to understand your school's behavioural landscape and identify priorities.",
+          description: "A focused assessment to map your school's behavioural priorities.",
           includes: ["Behavioural audit", "Staff consultation", "Priority report with recommendations"],
-          ideal: "Schools exploring PBS for the first time",
+          ideal: "Schools new to PBS",
         },
         {
           name: "Assessment & Strategic Roadmap",
-          description: "Deep-dive assessment with a structured implementation roadmap aligned to your school's values.",
+          description: "Deep-dive assessment with a clear implementation roadmap.",
           includes: ["Comprehensive FBAs", "Staff survey & analysis", "Strategic roadmap document", "SLT briefing"],
-          ideal: "Schools ready to commit to cultural change",
+          ideal: "Schools ready to commit to change",
         },
         {
           name: "Full PBS Implementation",
-          description: "End-to-end design and delivery of a whole-school PBS framework with ongoing support.",
+          description: "End-to-end whole-school PBS design, with ongoing support.",
           includes: ["Framework design", "Policy development", "Staff training programme", "Data systems", "Termly reviews"],
-          ideal: "Schools seeking transformational, sustained change",
+          ideal: "Schools seeking lasting change",
         },
         {
           name: "Ongoing Behaviour Leadership Partnership",
-          description: "Retained advisory support for your leadership team with regular consultation and supervision.",
+          description: "Retained advisory support for your leadership team.",
           includes: ["Monthly SLT consultations", "Case supervision", "Training updates", "Data review sessions"],
-          ideal: "Schools maintaining and evolving their PBS culture",
+          ideal: "Schools sustaining their PBS culture",
         },
       ],
     },
@@ -2394,7 +2394,7 @@ export const translations = {
     education: {
       title: "PBS בחינוך",
       subtitle: "בתי ספר ומסגרות חינוכיות",
-      tagline: "תרבות התנהגותית בית-ספרית בנויה על בהירות וכבוד. מהערכה ליישום, אנחנו בונים מערכות שמחזיקות מעמד.",
+      tagline: "תרבות בית-ספרית שבה מבינים את הילד לפני שמנהלים אותו.",
       ctaText: "בקשת הערכה בית-ספרית",
       services: [
         { name: "עיצוב מסגרת PBS בית-ספרית", slug: "whole-school-pbs" },
@@ -2411,27 +2411,27 @@ export const translations = {
       packages: [
         {
           name: "חבילת התחלה בית-ספרית",
-          description: "הערכה ראשונית להבנת הנוף ההתנהגותי של בית הספר וזיהוי עדיפויות.",
+          description: "הערכה ממוקדת לזיהוי עדיפויות התנהגותיות בבית הספר.",
           includes: ["ביקורת התנהגותית", "ייעוץ צוות", "דוח עדיפויות עם המלצות"],
-          ideal: "בתי ספר שחוקרים PBS לראשונה",
+          ideal: "בתי ספר המתחילים עם PBS",
         },
         {
           name: "הערכה ומפת דרכים אסטרטגית",
-          description: "הערכה מעמיקה עם מפת דרכים ליישום מובנה בהתאם לערכי בית הספר.",
+          description: "הערכה מעמיקה עם מפת דרכים ברורה ליישום.",
           includes: ["FBAs מקיפים", "סקר וניתוח צוות", "מסמך מפת דרכים אסטרטגית", "תדריך הנהגה"],
-          ideal: "בתי ספר מוכנים להתחייב לשינוי תרבותי",
+          ideal: "בתי ספר מוכנים להתחייב לשינוי",
         },
         {
           name: "יישום PBS מלא",
-          description: "עיצוב ומתן מסגרת PBS בית-ספרית מקצה לקצה עם תמיכה שוטפת.",
+          description: "עיצוב PBS בית-ספרי מקצה לקצה, עם תמיכה שוטפת.",
           includes: ["עיצוב מסגרת", "פיתוח מדיניות", "תוכנית הכשרת צוות", "מערכות נתונים", "סקירות תקופתיות"],
-          ideal: "בתי ספר המחפשים שינוי טרנספורמטיבי ובר-קיימא",
+          ideal: "בתי ספר המחפשים שינוי בר-קיימא",
         },
         {
           name: "שותפות הנהגה התנהגותית שוטפת",
-          description: "תמיכה ייעוצית שוטפת לצוות ההנהגה עם ייעוץ והדרכה סדירים.",
+          description: "תמיכה ייעוצית שוטפת לצוות ההנהגה.",
           includes: ["ייעוצי הנהגה חודשיים", "הדרכת מקרים", "עדכוני הכשרה", "מפגשי סקירת נתונים"],
-          ideal: "בתי ספר שמתחזקים ומפתחים את תרבות ה-PBS שלהם",
+          ideal: "בתי ספר המקיימים את תרבות ה-PBS שלהם",
         },
       ],
     },
