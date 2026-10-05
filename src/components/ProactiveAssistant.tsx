@@ -120,7 +120,7 @@ const ProactiveAssistant = () => {
     if (!user) return;
     supabase
       .from("sessions")
-      .select("session_date, session_type")
+      .select("session_date, title, status")
       .eq("client_id", user.id)
       .gte("session_date", new Date().toISOString())
       .order("session_date", { ascending: true })
