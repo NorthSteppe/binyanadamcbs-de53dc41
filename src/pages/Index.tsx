@@ -98,6 +98,22 @@ const Index = () => {
                 </>
               )}
             </div>
+
+            <a
+              href={`https://wa.me/447715460054?text=${encodeURIComponent("Hi, I am directed here from bacbs.com")}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => {
+                // Force a real top-level new tab — embedded previews get
+                // blocked by WhatsApp's frame headers (ERR_BLOCKED_BY_RESPONSE).
+                e.preventDefault();
+                window.open(`https://wa.me/447715460054?text=${encodeURIComponent("Hi, I am directed here from bacbs.com")}`, "_blank", "noopener,noreferrer");
+              }}
+              className="mt-4 inline-flex items-center gap-2.5 rounded-full border border-border bg-transparent px-7 h-11 text-[14px] font-medium text-foreground hover:bg-secondary/60 transition-colors"
+            >
+              <MessageCircle size={16} className="text-primary" />
+              <EditableText contentKey="landing.whatsappBtn" defaultValue="Contact us here" as="span" />
+            </a>
           </motion.div>
         </div>
       </main>
