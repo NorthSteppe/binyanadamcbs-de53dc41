@@ -365,7 +365,7 @@ const ProactiveAssistant = () => {
             onClick={() => { setOpen(true); setShowBubble(false); }}
             className="fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full bg-white shadow-apple-lg hover:shadow-apple-xl transition-shadow flex items-center justify-center border border-border/30"
           >
-            <BlueprintCharacter size={52} />
+            <BlueprintCharacter size={60} />
             {showBubble && (
               <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-white" />
             )}
