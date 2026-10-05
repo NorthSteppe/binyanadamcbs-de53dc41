@@ -1,7 +1,7 @@
 import Seo from "@/components/Seo";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, LayoutDashboard, Shield, Users } from "lucide-react";
+import { ArrowRight, LayoutDashboard, MessageCircle, Shield, Users } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/i18n/LanguageContext";
