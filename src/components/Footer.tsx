@@ -59,6 +59,10 @@ const Footer = () => {
                 href={WHATSAPP_URL}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.open(WHATSAPP_URL, "_blank", "noopener,noreferrer");
+                }}
                 className="inline-flex items-center gap-2 hover:text-foreground transition-colors duration-300"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" className="w-3.5 h-3.5 fill-current opacity-60">
