@@ -5,12 +5,21 @@ const WHATSAPP_NUMBER = "447715460054";
 const WHATSAPP_MESSAGE = encodeURIComponent("Hi, I am directed here from bacbs.com");
 const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_MESSAGE}`;
 
+const openWhatsApp = (e: React.MouseEvent) => {
+  // Force a real top-level new tab — inside embedded previews a plain
+  // anchor navigation can be blocked by WhatsApp's frame headers
+  // (ERR_BLOCKED_BY_RESPONSE on api.whatsapp.com).
+  e.preventDefault();
+  window.open(WHATSAPP_URL, "_blank", "noopener,noreferrer");
+};
+
 const WhatsAppButton = () => {
   return (
     <motion.a
       href={WHATSAPP_URL}
       target="_blank"
       rel="noopener noreferrer"
+      onClick={openWhatsApp}
       initial={{ scale: 0 }}
       animate={{ scale: 1 }}
       transition={{ delay: 1, type: "spring", stiffness: 200 }}
