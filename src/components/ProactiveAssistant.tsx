@@ -287,7 +287,7 @@ const ProactiveAssistant = () => {
             name: firstName,
             upcoming_sessions: upcomingSessions.map(s => ({
               date: s.session_date,
-              type: s.session_type || "session",
+              type: s.title || "session",
             })),
             pending_tasks: pendingTasks.map(t => t.title),
           } : undefined,
