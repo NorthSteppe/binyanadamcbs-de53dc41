@@ -10,67 +10,24 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
+import assistantAvatar from "@/assets/assistant-avatar.jpg.asset.json";
+
 type Msg = { role: "user" | "assistant"; content: string };
 
 const ASSISTANT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/assistant`;
 const STORAGE_KEY = "blueprint_assistant_dismissed";
 
-// ─── Pixar-style friendly character ──────────────────────────────────────────
+// ─── Assistant avatar (profile-photo style, fitted in a circle) ─────────────
 const BlueprintCharacter = ({ size = 40 }: { size?: number }) => (
-  <svg viewBox="0 0 120 130" width={size} height={size} xmlns="http://www.w3.org/2000/svg">
-    {/* Collar / shirt hint */}
-    <ellipse cx="60" cy="124" rx="42" ry="20" fill="#5B8DEF" />
-    <rect x="42" y="104" width="36" height="26" rx="4" fill="#5B8DEF" />
-
-    {/* Neck */}
-    <rect x="50" y="92" width="20" height="18" rx="4" fill="#F5C49A" />
-
-    {/* Head */}
-    <ellipse cx="60" cy="57" rx="40" ry="44" fill="#F5C49A" />
-
-    {/* Hair */}
-    <path d="M20,46 Q18,8 60,6 Q102,8 100,46 Q88,20 60,20 Q32,20 20,46Z" fill="#2C1A0D" />
-
-    {/* Left ear */}
-    <ellipse cx="20" cy="60" rx="9" ry="12" fill="#F5C49A" />
-    <ellipse cx="20" cy="60" rx="5" ry="8" fill="#EAA87C" />
-
-    {/* Right ear */}
-    <ellipse cx="100" cy="60" rx="9" ry="12" fill="#F5C49A" />
-    <ellipse cx="100" cy="60" rx="5" ry="8" fill="#EAA87C" />
-
-    {/* Eye whites */}
-    <ellipse cx="43" cy="60" rx="13" ry="15" fill="white" />
-    <ellipse cx="77" cy="60" rx="13" ry="15" fill="white" />
-
-    {/* Irises */}
-    <circle cx="43" cy="62" r="9.5" fill="#4A2A0C" />
-    <circle cx="77" cy="62" r="9.5" fill="#4A2A0C" />
-
-    {/* Pupils */}
-    <circle cx="43" cy="62" r="6" fill="#0E0600" />
-    <circle cx="77" cy="62" r="6" fill="#0E0600" />
-
-    {/* Eye highlights — key to the Pixar warmth */}
-    <circle cx="39" cy="57" r="3.2" fill="white" />
-    <circle cx="73" cy="57" r="3.2" fill="white" />
-    <circle cx="46" cy="65" r="1.6" fill="white" opacity="0.55" />
-    <circle cx="80" cy="65" r="1.6" fill="white" opacity="0.55" />
-
-    {/* Eyebrows — slightly raised = friendly, not stern */}
-    <path d="M30,41 Q43,34 56,40" stroke="#2C1A0D" strokeWidth="3.5" strokeLinecap="round" fill="none" />
-    <path d="M64,40 Q77,34 90,41" stroke="#2C1A0D" strokeWidth="3.5" strokeLinecap="round" fill="none" />
-
-    {/* Nose */}
-    <path d="M56,74 Q60,80 64,74" stroke="#C07840" strokeWidth="2.2" strokeLinecap="round" fill="none" />
-
-    {/* Warm smile */}
-    <path d="M42,84 Q60,98 78,84" stroke="#C07840" strokeWidth="3" strokeLinecap="round" fill="none" />
-
-    {/* Cheek blush */}
-    <ellipse cx="25" cy="75" rx="11" ry="7" fill="#FF9B88" opacity="0.32" />
-    <ellipse cx="95" cy="75" rx="11" ry="7" fill="#FF9B88" opacity="0.32" />
-  </svg>
+  <img
+    src={assistantAvatar.url}
+    alt="Blueprint assistant"
+    width={size}
+    height={size}
+    className="rounded-full object-cover"
+    style={{ width: size, height: size, flexShrink: 0 }}
+    draggable={false}
+  />
 );
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -408,7 +365,7 @@ const ProactiveAssistant = () => {
             onClick={() => { setOpen(true); setShowBubble(false); }}
             className="fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full bg-white shadow-apple-lg hover:shadow-apple-xl transition-shadow flex items-center justify-center border border-border/30"
           >
-            <BlueprintCharacter size={52} />
+            <BlueprintCharacter size={60} />
             {showBubble && (
               <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-white" />
             )}
