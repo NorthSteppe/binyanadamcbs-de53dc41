@@ -120,7 +120,7 @@ const ProactiveAssistant = () => {
     if (!user) return;
     supabase
       .from("sessions")
-      .select("session_date, session_type")
+      .select("session_date, title, status")
       .eq("client_id", user.id)
       .gte("session_date", new Date().toISOString())
       .order("session_date", { ascending: true })
@@ -287,7 +287,7 @@ const ProactiveAssistant = () => {
             name: firstName,
             upcoming_sessions: upcomingSessions.map(s => ({
               date: s.session_date,
-              type: s.session_type || "session",
+              type: s.title || "session",
             })),
             pending_tasks: pendingTasks.map(t => t.title),
           } : undefined,
