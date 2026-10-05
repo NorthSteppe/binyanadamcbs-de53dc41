@@ -10,6 +10,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
+import assistantAvatar from "@/assets/assistant-avatar.jpg.asset.json";
+
 type Msg = { role: "user" | "assistant"; content: string };
 
 const ASSISTANT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/assistant`;
