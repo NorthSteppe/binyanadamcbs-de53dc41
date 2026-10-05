@@ -77,72 +77,81 @@ export const PathwayQuiz = ({ open, onOpenChange, preview }: Props) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto border-2 border-[hsl(var(--sky))] bg-[hsl(var(--cream))] p-0 sm:rounded-3xl [&>button]:hidden">
+      <DialogContent className="max-w-xl max-h-[85vh] overflow-y-auto border border-[hsl(var(--sky))] bg-[hsl(var(--cream))] p-0 shadow-[0_24px_80px_-24px_hsla(213,64%,14%,0.35)] sm:rounded-3xl [&>button]:hidden">
         <DialogTitle className="sr-only">Find your pathway</DialogTitle>
         <button
           onClick={() => onOpenChange(false)}
           className="absolute right-4 top-4 z-10 rounded-full p-2 text-muted-foreground transition hover:bg-[hsl(var(--sky))]/40 hover:text-foreground"
           aria-label="Close"
         >
-          <X size={18} />
+          <X size={16} />
         </button>
 
-        <div className="px-6 py-10 sm:px-10 sm:py-12">
+        <div className="px-7 py-9 sm:px-10 sm:py-11">
           {loading ? (
-            <div className="flex h-64 items-center justify-center text-sm text-muted-foreground">Preparing your pathway…</div>
+            <div className="flex h-56 items-center justify-center text-sm text-muted-foreground">Preparing your pathway…</div>
           ) : !current ? (
-            <div className="flex h-64 items-center justify-center text-sm text-muted-foreground">The questionnaire isn't available right now.</div>
+            <div className="flex h-56 items-center justify-center text-sm text-muted-foreground">The questionnaire isn't available right now.</div>
           ) : (
             <AnimatePresence mode="wait">
               <motion.div
                 key={current.id}
-                initial={{ opacity: 0, x: 24 }}
+                initial={{ opacity: 0, x: 14 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -24 }}
-                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                exit={{ opacity: 0, x: -14 }}
+                transition={{ duration: 0.4, ease: [0.33, 1, 0.68, 1] }}
               >
-                <div className="mb-5 text-[11px] font-semibold uppercase tracking-[0.2em] text-primary/70">
-                  Step {history.length}
-                </div>
+                {history.length > 1 && (
+                  <div className="mb-6 flex items-center gap-1.5" aria-hidden>
+                    {history.map((id, i) => (
+                      <span
+                        key={id + i}
+                        className={`h-1.5 rounded-full transition-all duration-500 ${
+                          i === history.length - 1 ? "w-6 bg-accent" : "w-1.5 bg-primary/25"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                )}
                 {current.greeting_text && (
-                  <p className="mb-5 rounded-2xl border-l-4 border-[hsl(var(--sky))] bg-background/70 p-4 text-sm leading-relaxed text-muted-foreground">
+                  <p className="mb-5 border-l-2 border-[hsl(var(--sky))] pl-4 text-[13px] leading-relaxed text-muted-foreground">
                     {current.greeting_text}
                   </p>
                 )}
-                <h2 className="font-display text-2xl font-semibold leading-snug text-primary sm:text-3xl">
+                <h2 className="font-display text-[22px] font-semibold leading-snug text-primary sm:text-2xl">
                   {current.heading}
                 </h2>
 
-                <div className="mt-7 grid gap-3">
+                <div className="mt-6 grid gap-2.5">
                   {currentOptions.map((opt, i) => (
                     <motion.button
                       key={opt.id}
-                      initial={{ opacity: 0, y: 10 }}
+                      initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.05 * i, duration: 0.3 }}
+                      transition={{ delay: 0.04 * i, duration: 0.35, ease: [0.33, 1, 0.68, 1] }}
                       onClick={() => choose(opt)}
-                      className="group flex w-full items-center justify-between gap-4 rounded-2xl border border-[hsl(var(--sky))] bg-background px-5 py-4 text-left text-[15px] leading-relaxed text-foreground shadow-sm transition hover:border-primary hover:shadow-md"
+                      className="group flex w-full items-center justify-between gap-4 rounded-2xl border border-transparent bg-background px-5 py-3.5 text-left text-[15px] leading-snug text-foreground transition-all duration-300 ease-out hover:border-primary/30 hover:bg-secondary/50 hover:shadow-[0_6px_20px_-8px_hsla(213,64%,14%,0.18)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
                       <span>{opt.label}</span>
-                      <ArrowRight size={18} className="shrink-0 text-primary/50 transition group-hover:translate-x-1 group-hover:text-accent" />
+                      <ArrowRight size={16} className="shrink-0 text-primary/35 transition-all duration-300 group-hover:translate-x-0.5 group-hover:text-accent" />
                     </motion.button>
                   ))}
                 </div>
 
-                <div className="mt-8 flex items-center justify-between text-sm">
+                <div className="mt-7 flex items-center justify-between text-[13px]">
                   <button
                     onClick={() => setHistory((h) => h.slice(0, -1))}
                     disabled={history.length <= 1}
-                    className="inline-flex items-center gap-1 text-muted-foreground transition hover:text-primary disabled:opacity-0"
+                    className="inline-flex items-center gap-1.5 text-muted-foreground transition hover:text-primary disabled:pointer-events-none disabled:opacity-0"
                   >
-                    <ArrowLeft size={14} /> Back
+                    <ArrowLeft size={13} /> Back
                   </button>
                   {history.length > 1 && (
                     <button
                       onClick={() => setHistory((h) => h.slice(0, 1))}
-                      className="inline-flex items-center gap-1 text-muted-foreground transition hover:text-primary"
+                      className="inline-flex items-center gap-1.5 text-muted-foreground transition hover:text-primary"
                     >
-                      <RotateCcw size={14} /> Start again
+                      <RotateCcw size={13} /> Start again
                     </button>
                   )}
                 </div>
