@@ -14,7 +14,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import welcomeImage from "@/assets/blueprint-welcome.jpg";
 
 const Index = () => {
-  const { t } = useLanguage();
+  const { t, isRTL } = useLanguage();
   const copy = t.landing.foundation;
   const { user, isAdmin, isTeamMember } = useAuth();
   const [quizOpen, setQuizOpen] = useState(false);
@@ -59,7 +59,7 @@ const Index = () => {
             imgClassName="h-full w-full object-cover object-[65%_center] lg:object-center"
           />
           <div className="absolute inset-0 -z-10 bg-background/90 sm:bg-background/80 lg:bg-transparent" />
-          <div className="container py-12 md:py-16 lg:py-20">
+          <div className="container py-8 md:py-12 lg:py-16">
           <motion.div
             initial={reducedMotion ? false : { opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
@@ -71,22 +71,22 @@ const Index = () => {
               defaultSrc="/lovable-uploads/blueprint-logo.png"
               alt="Blueprint"
               className="mb-5"
-              imgClassName="h-20 w-auto object-contain md:h-24"
+              imgClassName="h-12 w-auto object-contain md:h-20"
             />
             <EditableText contentKey="landing.foundation.intro" defaultValue={copy.intro} as="p" className="text-xs font-medium text-muted-foreground mb-4" />
-            <h1 className="text-5xl md:text-6xl font-display text-primary leading-tight tracking-normal mb-4">Blueprint</h1>
+            <h1 data-no-translate className="text-5xl md:text-6xl font-display text-primary leading-tight tracking-normal mb-4">Blueprint</h1>
             <EditableText
-              contentKey="landing.title"
+              contentKey={isRTL ? "landing.foundation.welcome.he" : "landing.title"}
               defaultValue={copy.welcome}
               as="p"
               className="text-xl md:text-2xl text-foreground leading-snug mb-4 font-display font-medium tracking-normal text-balance"
             />
 
             <EditableText
-              contentKey="landing.subtitle"
+              contentKey={isRTL ? "landing.foundation.summary.he" : "landing.subtitle"}
               defaultValue={copy.summary}
               as="p"
-              className="text-base text-muted-foreground leading-relaxed mb-7 max-w-md"
+              className="text-sm md:text-base text-muted-foreground leading-relaxed mb-7 max-w-md"
             />
 
             <div className="flex flex-wrap gap-3">
