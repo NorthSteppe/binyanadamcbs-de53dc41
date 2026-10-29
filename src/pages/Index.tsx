@@ -76,14 +76,14 @@ const Index = () => {
             <EditableText contentKey="landing.foundation.intro" defaultValue={copy.intro} as="p" className="text-xs font-medium text-muted-foreground mb-4" />
             <h1 data-no-translate className="text-5xl md:text-6xl font-display text-primary leading-tight tracking-normal mb-4">Blueprint</h1>
             <EditableText
-              contentKey={isRTL ? "landing.foundation.welcome.he" : "landing.title"}
+              contentKey={`landing.foundation.welcome.${isRTL ? "he" : "en"}`}
               defaultValue={copy.welcome}
               as="p"
               className="text-xl md:text-2xl text-foreground leading-snug mb-4 font-display font-medium tracking-normal text-balance"
             />
 
             <EditableText
-              contentKey={isRTL ? "landing.foundation.summary.he" : "landing.subtitle"}
+              contentKey={`landing.foundation.summary.${isRTL ? "he" : "en"}`}
               defaultValue={copy.summary}
               as="p"
               className="text-sm md:text-base text-muted-foreground leading-relaxed mb-7 max-w-md"
